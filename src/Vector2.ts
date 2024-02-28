@@ -86,7 +86,7 @@ export default class Vector2 {
    * @returns The magnitude of the vector.
    */
   public magnitude() : number {
-    return -1;
+    return Math.sqrt(this._x * this._x + this._y * this._y);
   }
 
 }
