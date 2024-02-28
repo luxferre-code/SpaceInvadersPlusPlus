@@ -194,4 +194,10 @@ describe("Tests for Vector2 class", () => {
     const result = vector.distance(vector);
     expect(result).toEqual(0);
   });
+  test('should copy a vector', () => {
+    const vector = new Vector2(1, 2);
+    const result = vector.copy();
+    expect(result.x).toEqual(1);
+    expect(result.y).toEqual(2);
+  });
 });

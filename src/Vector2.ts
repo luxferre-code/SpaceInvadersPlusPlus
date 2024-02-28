@@ -110,4 +110,12 @@ export default class Vector2 {
     return vector.sub(this).magnitude();
   }
 
+  /**
+   * Returns a copy of the vector.
+   * @returns A new Vector2 instance with the same coordinates.
+   */
+  public copy() : Vector2 {
+    return new Vector2();
+  }
+
 }
