@@ -18,4 +18,14 @@ export default class Vector2 {
 
   public get x() { return this._x; }
   public get y() { return this._y; }
+
+  /**
+   * Adds two vectors together and returns the result.
+   * @param vector - The vector to add to this one.
+   * @returns A new Vector2 instance with the resulting coordinates.
+   */
+  public add(vector: Vector2) : Vector2 {
+    return new Vector2(this._x + vector.x, this._y + vector.y);
+  }
+
 }
