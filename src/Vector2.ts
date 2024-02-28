@@ -115,7 +115,7 @@ export default class Vector2 {
    * @returns A new Vector2 instance with the same coordinates.
    */
   public copy() : Vector2 {
-    return new Vector2();
+    return new Vector2(this.x, this.y);
   }
 
 }
