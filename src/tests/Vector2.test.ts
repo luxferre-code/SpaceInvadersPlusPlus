@@ -148,4 +148,9 @@ describe("Tests for Vector2 class", () => {
     const result = vector.magnitude();
     expect(result).toEqual(0);
   });
+  test('should magnitude of a vector with negative values', () => {
+    const vector = new Vector2(-3, -4);
+    const result = vector.magnitude();
+    expect(result).toEqual(5);
+  });
 });
