@@ -107,7 +107,7 @@ export default class Vector2 {
    * @returns The distance between the two vectors.
    */
   public distance(vector: Vector2) : number {
-    return -1;
+    return vector.sub(this).magnitude();
   }
 
 }
