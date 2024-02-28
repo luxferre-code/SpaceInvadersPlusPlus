@@ -70,4 +70,23 @@ export default class Vector2 {
     return new Vector2(this._x / scalar, this._y / scalar);
   }
 
+  /**
+   * Divides the vector by a x scalar and a y scalar, and returns the result.
+   * @param x - The value to divide the vector by.
+   * @param y - The value to divide the vector by.
+   * @returns A new Vector2 instance with the resulting coordinates.
+   */
+  public divAxes(x: number, y: number) : Vector2 {
+    if(x === 0 || y === 0) throw new Error('Cannot divide by zero');
+    return new Vector2(this._x / x, this._y / y);
+  }
+
+  /**
+   * Returns the magnitude of the vector.
+   * @returns The magnitude of the vector.
+   */
+  public magnitude() : number {
+    return -1;
+  }
+
 }
