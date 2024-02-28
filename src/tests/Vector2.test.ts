@@ -128,4 +128,8 @@ describe("Tests for Vector2 class", () => {
     const vector = new Vector2(2, 4);
     expect(() => vector.div(0)).toThrow();
   })
+  test('should divide a vector with default values by 0', () => {
+    const vector = new Vector2();
+    expect(() => vector.div(0)).toThrow();
+  })
 });
