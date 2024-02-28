@@ -159,4 +159,10 @@ describe("Tests for Vector2 class", () => {
     expect(result.x).toEqual(0.6);
     expect(result.y).toEqual(0.8);
   });
+  test('should normalize a vector with default parameters', () => {
+    const vector = new Vector2();
+    const result = vector.normalize();
+    expect(result.x).toEqual(0);
+    expect(result.y).toEqual(0);
+  });
 });

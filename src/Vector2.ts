@@ -95,7 +95,10 @@ export default class Vector2 {
    */
   public normalize() : Vector2 {
     const mag = this.magnitude();
-    return new Vector2(this._x / mag, this._y / mag);
+    const vector: Vector2 = new Vector2(this._x / mag, this._y / mag);
+    if(Number.isNaN(vector.x)) vector._x = 0;
+    if(Number.isNaN(vector.y)) vector._y = 0;
+    return vector;
   }
 
 }
