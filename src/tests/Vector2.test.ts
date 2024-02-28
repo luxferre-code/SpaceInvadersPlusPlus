@@ -127,9 +127,15 @@ describe("Tests for Vector2 class", () => {
   test('should divide a vector by 0', () => {
     const vector = new Vector2(2, 4);
     expect(() => vector.div(0)).toThrow();
-  })
+  });
   test('should divide a vector with default values by 0', () => {
     const vector = new Vector2();
     expect(() => vector.div(0)).toThrow();
+  });
+  test('should divide a vector by a negative scalar', () => {
+    const vector = new Vector2(2, 4);
+    const result = vector.div(-2);
+    expect(result.x).toEqual(-1);
+    expect(result.y).toEqual(-2);
   })
 });
