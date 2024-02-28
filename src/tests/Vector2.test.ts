@@ -58,4 +58,10 @@ describe("Tests for Vector2 class", () => {
     expect(result.x).toEqual(2);
     expect(result.y).toEqual(4);
   });
+  test('should multiply a vector by a scalar with default parameters', () => {
+    const vector = new Vector2();
+    const result = vector.mult(2);
+    expect(result.x).toEqual(0);
+    expect(result.y).toEqual(0);
+  })
 });
