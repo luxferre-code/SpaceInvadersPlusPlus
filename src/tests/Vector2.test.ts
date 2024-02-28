@@ -26,5 +26,10 @@ describe("Tests for Vector2 class", () => {
     expect(result.x).toEqual(0);
     expect(result.y).toEqual(0);
   });
-
+  test('should add a vector with himself', () => {
+    const vector = new Vector2(2, 2);
+    const result = vector.add(vector);
+    expect(result.x).toEqual(4);
+    expect(result.y).toEqual(4);
+  });
 });
