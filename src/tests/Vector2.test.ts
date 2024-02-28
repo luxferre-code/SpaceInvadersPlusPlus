@@ -189,4 +189,9 @@ describe("Tests for Vector2 class", () => {
     const result = vector1.distance(vector2);
     expect(result).toEqual(2.8284271247461903);
   });
+  test('should calculate the dustance between same vector', () => {
+    const vector = new Vector2(1, 2);
+    const result = vector.distance(vector);
+    expect(result).toEqual(0);
+  });
 });
