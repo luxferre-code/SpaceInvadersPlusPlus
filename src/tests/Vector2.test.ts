@@ -11,5 +11,12 @@ describe("Tests for Vector2 class", () => {
       const vector: Vector2 = new Vector2(1, 2);
       expect(vector.x).toEqual(1);
       expect(vector.y).toEqual(2);
-  })
+  });
+  test('should add two vectors', () => {
+      const vector1: Vector2 = new Vector2(1, 2);
+      const vector2: Vector2 = new Vector2(3, 4);
+      const result: Vector2 = vector1.add(vector2);
+      expect(result.x).toEqual(4);
+      expect(result.y).toEqual(6);
+  });
 });
