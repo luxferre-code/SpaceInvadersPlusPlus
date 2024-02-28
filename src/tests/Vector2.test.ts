@@ -19,4 +19,12 @@ describe("Tests for Vector2 class", () => {
       expect(result.x).toEqual(4);
       expect(result.y).toEqual(6);
   });
+  test('should add two vectors with default parameters', () => {
+    const vector1 = new Vector2();
+    const vector2 = new Vector2();
+    const result = vector1.add(vector2);
+    expect(result.x).toEqual(0);
+    expect(result.y).toEqual(0);
+  });
+
 });
