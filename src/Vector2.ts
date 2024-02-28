@@ -66,6 +66,7 @@ export default class Vector2 {
    * @returns A new Vector2 instance with the resulting coordinates.
    */
   public div(scalar: number) : Vector2 {
+    if(scalar === 0) throw new Error('Cannot divide by zero');
     return new Vector2(this._x / scalar, this._y / scalar);
   }
 
