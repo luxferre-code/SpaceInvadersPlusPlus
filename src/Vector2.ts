@@ -28,4 +28,13 @@ export default class Vector2 {
     return new Vector2(this._x + vector.x, this._y + vector.y);
   }
 
+  /**
+   * Subtracts two vectors and returns the result.
+   * @param vector - The vector to subtract from this one.
+   * @returns A new Vector2 instance with the resulting coordinates.
+   */
+  public sub(vector: Vector2) : Vector2 {
+    return -1
+  }
+
 }
