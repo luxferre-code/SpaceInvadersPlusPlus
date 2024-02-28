@@ -112,4 +112,10 @@ describe("Tests for Vector2 class", () => {
     expect(result.x).toEqual(0);
     expect(result.y).toEqual(0);
   });
+  test('should divide a vector by a scalar', () => {
+    const vector = new Vector2(2, 4);
+    const result = vector.div(2);
+    expect(result.x).toEqual(1);
+    expect(result.y).toEqual(2);
+  });
 });

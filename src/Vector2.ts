@@ -60,4 +60,13 @@ export default class Vector2 {
     return result;
   }
 
+  /**
+   * Divides the vector by a scalar and returns the result.
+   * @param scalar - The value to divide the vector by.
+   * @returns A new Vector2 instance with the resulting coordinates.
+   */
+  public div(scalar: number) : Vector2 {
+    return new Vector2();
+  }
+
 }
