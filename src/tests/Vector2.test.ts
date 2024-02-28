@@ -206,4 +206,10 @@ describe("Tests for Vector2 class", () => {
     const result = vector1.equals(vector2);
     expect(result).toEqual(true);
   });
+  test('should check if two vectors are not equal', () => {
+    const vector1 = new Vector2(1, 2);
+    const vector2 = new Vector2(3, 4);
+    const result = vector1.equals(vector2);
+    expect(result).toEqual(false);
+  });
 });
