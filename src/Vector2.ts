@@ -121,9 +121,10 @@ export default class Vector2 {
   /**
    * Returns boolean indicating if the vector is equal to another vector.
    * @param vector - The vector to compare to.
+   * @returns A boolean indicating if the vectors are equal.
    */
-  public equals() : boolean {
-    return false;
+  public equals(vector: Vector2) : boolean {
+    return this.x === vector._x && this.y === vector._y;
   }
 
 }
