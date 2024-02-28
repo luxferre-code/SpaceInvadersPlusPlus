@@ -70,4 +70,10 @@ describe("Tests for Vector2 class", () => {
     expect(result.x).toEqual(0);
     expect(result.y).toEqual(0);
   });
+  test('should multiply a vector by a negative scalar', () => {
+    const vector = new Vector2(1, 2);
+    const result = vector.mult(-1);
+    expect(result.x).toEqual(-1);
+    expect(result.y).toEqual(-2);
+  });
 });
