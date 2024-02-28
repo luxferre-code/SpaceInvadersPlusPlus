@@ -57,7 +57,7 @@ export default class Vector2 {
    * @returns A new Vector2 instance with the resulting coordinates.
    */
   public multAxes(x: number, y: number) : Vector2 {
-    return new Vector2();
+    return new Vector2(this._x * x, this._y * y);
   }
 
 }
