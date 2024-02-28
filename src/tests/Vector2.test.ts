@@ -51,5 +51,11 @@ describe("Tests for Vector2 class", () => {
     const result = vector.sub(vector);
     expect(result.x).toEqual(0);
     expect(result.y).toEqual(0);
-  })
+  });
+  test('should multiply a vector by a scalar', () => {
+    const vector = new Vector2(1, 2);
+    const result = vector.mult(2);
+    expect(result.x).toEqual(2);
+    expect(result.y).toEqual(4);
+  });
 });
