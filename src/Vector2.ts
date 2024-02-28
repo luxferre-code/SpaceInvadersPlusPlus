@@ -94,7 +94,8 @@ export default class Vector2 {
    * @returns A new Vector2 instance with the normalized coordinates.
    */
   public normalize() : Vector2 {
-    return new Vector2();
+    const mag = this.magnitude();
+    return new Vector2(this._x / mag, this._y / mag);
   }
 
 }

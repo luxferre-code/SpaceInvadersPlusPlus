@@ -158,5 +158,5 @@ describe("Tests for Vector2 class", () => {
     const result = vector.normalize();
     expect(result.x).toEqual(0.6);
     expect(result.y).toEqual(0.8);
-  })
+  });
 });
