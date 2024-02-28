@@ -5,6 +5,7 @@
 export default class Vector2 {
   private _x: number;
   private _y: number;
+  private static readonly range = 0.01;
 
   /**
    * Creates a new Vector2 instance.
@@ -43,7 +44,10 @@ export default class Vector2 {
    * @returns A new Vector2 instance with the resulting coordinates.
    */
   public mult(scalar: number) : Vector2 {
-    return new Vector2(this._x * scalar, this._y * scalar);
+    const result: Vector2 = new Vector2(this._x * scalar, this._y * scalar);
+    if(result.x < Vector2.range && result.x > -Vector2.range) result._x = 0;
+    if(result.y < Vector2.range && result.y > -Vector2.range) result._y = 0;
+    return result;
   }
 
 }
