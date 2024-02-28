@@ -44,10 +44,7 @@ export default class Vector2 {
    * @returns A new Vector2 instance with the resulting coordinates.
    */
   public mult(scalar: number) : Vector2 {
-    const result: Vector2 = new Vector2(this._x * scalar, this._y * scalar);
-    if(result.x < Vector2.range && result.x > -Vector2.range) result._x = 0;
-    if(result.y < Vector2.range && result.y > -Vector2.range) result._y = 0;
-    return result;
+    return this.multAxes(scalar, scalar);
   }
 
   /**
@@ -57,7 +54,10 @@ export default class Vector2 {
    * @returns A new Vector2 instance with the resulting coordinates.
    */
   public multAxes(x: number, y: number) : Vector2 {
-    return new Vector2(this._x * x, this._y * y);
+    const result: Vector2 = new Vector2(this._x * x, this._y * y);
+    if(result.x < Vector2.range && result.x > -Vector2.range) result._x = 0;
+    if(result.y < Vector2.range && result.y > -Vector2.range) result._y = 0;
+    return result;
   }
 
 }
