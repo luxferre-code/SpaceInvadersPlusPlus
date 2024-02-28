@@ -177,4 +177,10 @@ describe("Tests for Vector2 class", () => {
     const result = vector1.distance(vector2);
     expect(result).toEqual(2.8284271247461903);
   });
+  test('should calculate the distance between two vectors with default parameters', () => {
+    const vector1 = new Vector2();
+    const vector2 = new Vector2();
+    const result = vector1.distance(vector2);
+    expect(result).toEqual(0);
+  });
 });
