@@ -39,4 +39,11 @@ describe("Tests for Vector2 class", () => {
     expect(result.x).toEqual(-2);
     expect(result.y).toEqual(-2);
   });
+  test('should subtract two vectors with default parameters', () => {
+    const vector1 = new Vector2();
+    const vector2 = new Vector2();
+    const result = vector1.sub(vector2);
+    expect(result.x).toEqual(0);
+    expect(result.y).toEqual(0);
+  });
 });
