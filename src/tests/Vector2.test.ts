@@ -76,4 +76,10 @@ describe("Tests for Vector2 class", () => {
     expect(result.x).toEqual(-1);
     expect(result.y).toEqual(-2);
   });
+  test('should multiply a vector by a scalar and set to 0 if < 0.01 && > -0.01', () => {
+    const vector = new Vector2(0.0049, 0.0049);
+    const result = vector.mult(2);
+    expect(result.x).toEqual(0);
+    expect(result.y).toEqual(0);
+  })
 });
