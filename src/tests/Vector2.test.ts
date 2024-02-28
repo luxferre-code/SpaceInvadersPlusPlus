@@ -124,4 +124,8 @@ describe("Tests for Vector2 class", () => {
     expect(result.x).toEqual(0);
     expect(result.y).toEqual(0);
   });
+  test('should divide a vector by 0', () => {
+    const vector = new Vector2(2, 4);
+    expect(() => vector.div(0)).toThrow();
+  })
 });
