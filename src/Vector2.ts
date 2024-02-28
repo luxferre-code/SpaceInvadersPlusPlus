@@ -118,4 +118,12 @@ export default class Vector2 {
     return new Vector2(this.x, this.y);
   }
 
+  /**
+   * Returns boolean indicating if the vector is equal to another vector.
+   * @param vector - The vector to compare to.
+   */
+  public equals() : boolean {
+    return false;
+  }
+
 }
