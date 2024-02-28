@@ -143,4 +143,9 @@ describe("Tests for Vector2 class", () => {
     const result = vector.magnitude();
     expect(result).toEqual(5);
   });
+  test('should magnitude of a vector with default parameters', () => {
+    const vector = new Vector2();
+    const result = vector.magnitude();
+    expect(result).toEqual(0);
+  });
 });
