@@ -34,7 +34,7 @@ export default class Vector2 {
    * @returns A new Vector2 instance with the resulting coordinates.
    */
   public sub(vector: Vector2) : Vector2 {
-    return -1
+    return new Vector2(this._x - vector.x , this._y - vector.y);
   }
 
 }
