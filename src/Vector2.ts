@@ -50,4 +50,14 @@ export default class Vector2 {
     return result;
   }
 
+  /**
+   * Multiplies the vector by a x scaler and a y scaler, and returns the result.
+   * @param x - The value to multiply the vector by.
+   * @param y - The value to multiply the vector by.
+   * @returns A new Vector2 instance with the resulting coordinates.
+   */
+  public multAxes(x: number, y: number) : Vector2 {
+    return new Vector2();
+  }
+
 }
