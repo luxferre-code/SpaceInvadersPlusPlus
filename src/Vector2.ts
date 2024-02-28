@@ -101,4 +101,13 @@ export default class Vector2 {
     return vector;
   }
 
+  /**
+   * Returns the distance between two vectors.
+   * @param vector - The vector to calculate the distance to.
+   * @returns The distance between the two vectors.
+   */
+  public distance(vector: Vector2) : number {
+    return -1;
+  }
+
 }

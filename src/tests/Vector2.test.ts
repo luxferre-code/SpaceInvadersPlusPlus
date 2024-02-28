@@ -165,4 +165,16 @@ describe("Tests for Vector2 class", () => {
     expect(result.x).toEqual(0);
     expect(result.y).toEqual(0);
   });
+  test('should normalize a vector with negative values', () => {
+    const vector = new Vector2(-3, -4);
+    const result = vector.normalize();
+    expect(result.x).toEqual(-0.6);
+    expect(result.y).toEqual(-0.8);
+  });
+  test('should calculate the distance between two vectors', () => {
+    const vector1 = new Vector2(1, 2);
+    const vector2 = new Vector2(3, 4);
+    const result = vector1.distance(vector2);
+    expect(result).toEqual(2.8284271247461903);
+  });
 });
