@@ -153,4 +153,10 @@ describe("Tests for Vector2 class", () => {
     const result = vector.magnitude();
     expect(result).toEqual(5);
   });
+  test('should normalize a vector', () => {
+    const vector = new Vector2(3, 4);
+    const result = vector.normalize();
+    expect(result.x).toEqual(0.6);
+    expect(result.y).toEqual(0.8);
+  })
 });

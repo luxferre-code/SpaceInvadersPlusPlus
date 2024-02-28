@@ -89,4 +89,12 @@ export default class Vector2 {
     return Math.sqrt(this._x * this._x + this._y * this._y);
   }
 
+  /**
+   * Returns the normalized version of the vector.
+   * @returns A new Vector2 instance with the normalized coordinates.
+   */
+  public normalize() : Vector2 {
+    return new Vector2();
+  }
+
 }
