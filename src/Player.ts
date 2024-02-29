@@ -7,7 +7,7 @@ export default class Player {
 
     private static maxHP: number = 5;
     private static speedAcceleration: number = 1;
-    private static maxSpeed: number = 20;
+    public static maxSpeed: number = 20;
     private horizontalMovement: boolean = false;
     private verticalMovement: boolean = false;
     private imageLoaded: boolean = false;

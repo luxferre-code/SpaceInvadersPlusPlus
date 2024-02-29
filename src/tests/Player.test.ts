@@ -48,4 +48,12 @@ describe("Tests for Player class", () => {
         expect(player.position.x).toEqual(1);
         expect(player.position.y).toEqual(1);
     });
+    test('should can move with a speed limiter', () => {
+        const player: Player = new Player("Player1", "red", new CanvasMock() as unknown as HTMLCanvasElement, undefined, false, new ImageMock() as unknown as HTMLImageElement);
+        player.speed = new Vector2(10000, 10000);
+        Player.maxSpeed = 20;
+        player.move();
+        expect(player.position.x).toEqual(20);
+        expect(player.position.y).toEqual(20);
+    });
 });
