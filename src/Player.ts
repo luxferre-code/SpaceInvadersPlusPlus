@@ -68,6 +68,8 @@ export default class Player {
     /**
      * Method to move the player
      */
-    public move() : void {}
+    public move() : void {
+        this.position = this.position.add(this.speed);
+    }
 
 }
