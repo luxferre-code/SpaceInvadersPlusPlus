@@ -39,5 +39,5 @@ describe("Tests for Player class", () => {
         const player: Player = new Player("Player1", "red", new CanvasMock() as unknown as HTMLCanvasElement, undefined, false, new ImageMock() as unknown as HTMLImageElement);
         player.incrementScore(100);
         expect(player.score).toEqual(100);
-    })
+    });
 });

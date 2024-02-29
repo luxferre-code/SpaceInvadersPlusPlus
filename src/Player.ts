@@ -62,7 +62,7 @@ export default class Player {
      * @param scoreAdded    (number)    The score to add
      */
     public incrementScore(scoreAdded: number) : void {
-        
+        this._score += scoreAdded;
     }
 
 
