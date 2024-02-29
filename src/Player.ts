@@ -69,6 +69,8 @@ export default class Player {
      * Method to move the player
      */
     public move() : void {
+        if(this.speed.x > Player.maxSpeed) this.speed = new Vector2(Player.maxSpeed, this.speed.y);
+        if(this.speed.y > Player.maxSpeed) this.speed = new Vector2(this.speed.x, Player.maxSpeed);
         this.position = this.position.add(this.speed);
     }
 
