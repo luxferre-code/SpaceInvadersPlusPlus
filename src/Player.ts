@@ -74,17 +74,28 @@ export default class Player {
      * Method to move the player
      */
     public move() : void {
-        if(!this.imageLoaded) return;
-        if (this.speed.x > Player.maxSpeed || this.speed.y > Player.maxSpeed || this.speed.x < -Player.maxSpeed || this.speed.y < -Player.maxSpeed) {
-            const clampedSpeedX = Math.max(-Player.maxSpeed, Math.min(Player.maxSpeed, this.speed.x));
-            const clampedSpeedY = Math.max(-Player.maxSpeed, Math.min(Player.maxSpeed, this.speed.y));
-            this.speed = new Vector2(clampedSpeedX, clampedSpeedY);
+        if(this.imageLoaded) {
+            if(Math.abs(this.speed.x) > Player.maxSpeed || Math.abs(this.speed.y) > Player.maxSpeed) {
+                const clampedSpeedX = Math.max(-Player.maxSpeed, Math.min(Player.maxSpeed, this.speed.x));
+                const clampedSpeedY = Math.max(-Player.maxSpeed, Math.min(Player.maxSpeed, this.speed.y));
+                this.speed = new Vector2(clampedSpeedX, clampedSpeedY);
+            }
+            let next = this.position.add(this.speed);
+            if(next.x < 0 || next.y < 0) next = new Vector2(Math.max(0, next.x), Math.max(0, next.y));
+            const canvasWidth = this._context.canvas.clientWidth;
+            const canvasHeight = this._context.canvas.clientHeight;
+            const skinWidth = this.skin.width;
+            const skinHeight = this.skin.height;
+            if(next.x + skinWidth > canvasWidth) {
+                const offsetX = next.x + skinWidth - canvasWidth;
+                next = next.sub(new Vector2(offsetX, 0));
+            }
+            if(next.y + skinHeight > canvasHeight) {
+                const offsetY = next.y + skinHeight - canvasHeight;
+                next = next.sub(new Vector2(0, offsetY));
+            }
+            this.position = next;
         }
-        let next = this.position.add(this.speed);
-        if(next.x < 0 || next.y < 0) return;
-        if(next.x + this.skin.width > this._context.canvas.clientWidth) next = next.sub(new Vector2(next.x + this.skin.width - this._context.canvas.clientWidth, 0));
-        if(next.y + this.skin.height > this._context.canvas.clientHeight) next = next.sub(new Vector2(0, next.y + this.skin.height - this._context.canvas.clientHeight));
-        this.position = next;
     }
 
 }
