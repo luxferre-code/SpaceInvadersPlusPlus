@@ -86,4 +86,13 @@ describe("Tests for Player class", () => {
         expect(player.position.x).toEqual(0);
         expect(player.position.y).toEqual(0);
     });
+    test('should can\'t move if the next position is < 0', () => {
+        const player: Player = new Player("Player1", "red", new CanvasMock() as unknown as HTMLCanvasElement, undefined, false, new ImageMock() as unknown as HTMLImageElement);
+        player.speed = new Vector2(-1, -1);
+        player.forceImageLoaded();
+        player.move();
+        expect(player.position.x).toEqual(0);
+        expect(player.position.y).toEqual(0);
+    });
+    
 });
