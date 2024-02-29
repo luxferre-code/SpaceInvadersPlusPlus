@@ -56,4 +56,11 @@ describe("Tests for Player class", () => {
         expect(player.position.x).toEqual(20);
         expect(player.position.y).toEqual(20);
     });
+    test('should move with a negative speed', () => {
+        const player: Player = new Player("Player1", "red", new CanvasMock() as unknown as HTMLCanvasElement, undefined, false, new ImageMock() as unknown as HTMLImageElement);
+        player.speed = new Vector2(-1, -1);
+        player.move();
+        expect(player.position.x).toEqual(-1);
+        expect(player.position.y).toEqual(-1);
+    })
 });
