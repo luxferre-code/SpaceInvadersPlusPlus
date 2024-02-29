@@ -65,19 +65,21 @@ describe("Tests for Player class", () => {
     test('should move with a negative speed', () => {
         const player: Player = new Player("Player1", "red", new CanvasMock() as unknown as HTMLCanvasElement, undefined, false, new ImageMock() as unknown as HTMLImageElement);
         player.speed = new Vector2(-1, -1);
+        player.position = new Vector2(1, 1);
         player.forceImageLoaded();
         player.move();
-        expect(player.position.x).toEqual(-1);
-        expect(player.position.y).toEqual(-1);
+        expect(player.position.x).toEqual(0);
+        expect(player.position.y).toEqual(0);
     });
     test('should move with a negative speed and a speed limiter', () => {
         const player: Player = new Player("Player1", "red", new CanvasMock() as unknown as HTMLCanvasElement, undefined, false, new ImageMock() as unknown as HTMLImageElement);
         player.speed = new Vector2(-10000, -10000);
+        player.position = new Vector2(20, 20);
         player.forceImageLoaded();
         Player.maxSpeed = 20;
         player.move();
-        expect(player.position.x).toEqual(-20);
-        expect(player.position.y).toEqual(-20);
+        expect(player.position.x).toEqual(0);
+        expect(player.position.y).toEqual(0);
     });
     test('should can\'t move if the player has no image loaded', () => {
         const player: Player = new Player("Player1", "red", new CanvasMock() as unknown as HTMLCanvasElement, undefined, false, new ImageMock() as unknown as HTMLImageElement);

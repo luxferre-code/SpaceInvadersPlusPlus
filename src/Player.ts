@@ -79,7 +79,9 @@ export default class Player {
             const clampedSpeedY = Math.max(-Player.maxSpeed, Math.min(Player.maxSpeed, this.speed.y));
             this.speed = new Vector2(clampedSpeedX, clampedSpeedY);
         }
-        this.position = this.position.add(this.speed);
+        const next = this.position.add(this.speed);
+        if(next.x < 0 || next.y < 0) return;
+        this.position = next;
     }
 
 }
