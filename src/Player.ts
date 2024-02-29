@@ -49,5 +49,13 @@ export default class Player {
     public get speed() : Vector2 { return this._speed; }
     public set speed(speed: Vector2) { this._speed = speed; }
 
+    /**
+     * Method to decrease the player's HP
+     * @returns  (boolean) true if the player is alive, false otherwise
+     */
+    public lostHP() : boolean {
+        return false;
+    }
+
 
 }

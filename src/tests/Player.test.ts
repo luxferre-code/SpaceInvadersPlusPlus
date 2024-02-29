@@ -25,4 +25,8 @@ describe("Tests for Player class", () => {
         expect(player.speed.x).toEqual(0);
         expect(player.speed.y).toEqual(0);
     });
+    test('should can lost a HP', () => {
+        const player: Player = new Player("Player1", "red", new CanvasMock() as unknown as HTMLCanvasElement, undefined, false, new ImageMock() as unknown as HTMLImageElement);
+        expect(player.lostHP()).toEqual(true);
+    })
 });
