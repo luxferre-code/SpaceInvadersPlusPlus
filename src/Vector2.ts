@@ -19,6 +19,8 @@ export default class Vector2 {
 
   public get x() { return this._x; }
   public get y() { return this._y; }
+  public set x(x: number) { this._x = x; }
+  public set y(y: number) { this._y = y; }
 
   /**
    * Adds two vectors together and returns the result.
@@ -125,6 +127,10 @@ export default class Vector2 {
    */
   public equals(vector: Vector2) : boolean {
     return this.x === vector._x && this.y === vector._y;
+  }
+
+  public toString() : string {
+    return `(${this._x}, ${this._y})`;
   }
 
 }

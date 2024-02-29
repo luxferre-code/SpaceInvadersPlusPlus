@@ -34,7 +34,33 @@ export default class Player {
         this._skin.onload = () => this.imageLoaded = true;
     }
 
-    private addEventListener(canvas: HTMLCanvasElement) : void {}
+    private addEventListener(canvas: HTMLCanvasElement) : void {
+        console.log("Adding event listener to the canvas.");
+        console.log(canvas);
+        window.addEventListener("keydown", (event: KeyboardEvent) => {
+            if (event.key === "ArrowUp" && -this._speed.y < Player.maxSpeed) {
+                this._speed.y -= Player.speedAcceleration;
+                this.verticalMovement = true;
+            }
+            if (event.key === "ArrowDown" && this._speed.y < Player.maxSpeed) {
+                this._speed.y += Player.speedAcceleration;
+                this.verticalMovement = true;
+            }
+            if (event.key === "ArrowLeft" && -this._speed.x < Player.maxSpeed) {
+                this._speed.x -= Player.speedAcceleration;
+                this.horizontalMovement = true;
+            }
+            if (event.key === "ArrowRight" && this._speed.x < Player.maxSpeed) {
+                this._speed.x += Player.speedAcceleration;
+                this.horizontalMovement = true;
+            }
+            
+        });
+        window.addEventListener("keyup", (event: KeyboardEvent) => {
+            if(event.key === "ArrowUp" || event.key === "ArrowDown") this.verticalMovement = false;
+            if(event.key === "ArrowLeft" || event.key === "ArrowRight") this.horizontalMovement = false;
+        });
+    }
 
     public get name() : string { return this._name; }
     public set name(name: string) { this._name = name; }
@@ -74,6 +100,8 @@ export default class Player {
      * Method to move the player
      */
     public move() : void {
+        console.log(this.skin.width);
+        console.log(this.skin.height);
         if(this.imageLoaded) {
             if(Math.abs(this.speed.x) > Player.maxSpeed || Math.abs(this.speed.y) > Player.maxSpeed) {
                 const clampedSpeedX = Math.max(-Player.maxSpeed, Math.min(Player.maxSpeed, this.speed.x));
@@ -96,6 +124,18 @@ export default class Player {
             }
             this.position = next;
         }
+    }
+
+    public render() : void {
+        this._context.fillStyle = this._color;
+        this._context.beginPath();
+        // Draw image if is loaded
+        if(this.imageLoaded) this._context.drawImage(this._skin, this._position.x, this._position.y, 50, 50);
+        else {
+            this._context.arc(this._position.x, this._position.y, 25, 0, 2 * Math.PI);
+            this._context.fill();
+        }
+        this._context.fill();
     }
 
 }
