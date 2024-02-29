@@ -54,7 +54,7 @@ export default class Player {
      * @returns  (boolean) true if the player is alive, false otherwise
      */
     public lostHP() : boolean {
-        return this._hp-- > 0;
+        return --this._hp > 0;
     }
 
 
