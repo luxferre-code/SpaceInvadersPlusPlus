@@ -57,6 +57,10 @@ export default class Player {
         return --this._hp > 0;
     }
 
+    public forceImageLoaded() : void {
+        this.imageLoaded = true;
+    }
+
     /**
      * Method to increase the player's score
      * @param scoreAdded    (number)    The score to add
@@ -69,6 +73,7 @@ export default class Player {
      * Method to move the player
      */
     public move() : void {
+        if(!this.imageLoaded) return;
         if (this.speed.x > Player.maxSpeed || this.speed.y > Player.maxSpeed || this.speed.x < -Player.maxSpeed || this.speed.y < -Player.maxSpeed) {
             const clampedSpeedX = Math.max(-Player.maxSpeed, Math.min(Player.maxSpeed, this.speed.x));
             const clampedSpeedY = Math.max(-Player.maxSpeed, Math.min(Player.maxSpeed, this.speed.y));
