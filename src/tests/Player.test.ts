@@ -5,13 +5,17 @@ import Vector2 from "../Vector2";
 class CanvasMock {
     getContext(context: string) {
         return {
-            fillRect: () => {}
+            fillRect: () => {},
+            width: 100,
+            height: 100,
         };
     }
 }
 
 class ImageMock {
     src: string = "";
+    width: number = 10;
+    height: number = 10;
 }
 
 describe("Tests for Player class", () => {
@@ -70,5 +74,12 @@ describe("Tests for Player class", () => {
         player.move();
         expect(player.position.x).toEqual(-20);
         expect(player.position.y).toEqual(-20);
+    });
+    test('should can\'t move if the player has no image loaded', () => {
+        const player: Player = new Player("Player1", "red", new CanvasMock() as unknown as HTMLCanvasElement, undefined, false, new ImageMock() as unknown as HTMLImageElement);
+        player.speed = new Vector2(1, 1);
+        player.move();
+        expect(player.position.x).toEqual(0);
+        expect(player.position.y).toEqual(0);
     });
 });
