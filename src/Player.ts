@@ -69,10 +69,11 @@ export default class Player {
      * Method to move the player
      */
     public move() : void {
-        if(this.speed.x > Player.maxSpeed) this.speed = new Vector2(Player.maxSpeed, this.speed.y);
-        if(this.speed.y > Player.maxSpeed) this.speed = new Vector2(this.speed.x, Player.maxSpeed);
-        if(this.speed.x < -Player.maxSpeed) this.speed = new Vector2(-Player.maxSpeed, this.speed.y);
-        if(this.speed.y < -Player.maxSpeed) this.speed = new Vector2(this.speed.x, -Player.maxSpeed);
+        if (this.speed.x > Player.maxSpeed || this.speed.y > Player.maxSpeed || this.speed.x < -Player.maxSpeed || this.speed.y < -Player.maxSpeed) {
+            const clampedSpeedX = Math.max(-Player.maxSpeed, Math.min(Player.maxSpeed, this.speed.x));
+            const clampedSpeedY = Math.max(-Player.maxSpeed, Math.min(Player.maxSpeed, this.speed.y));
+            this.speed = new Vector2(clampedSpeedX, clampedSpeedY);
+        }
         this.position = this.position.add(this.speed);
     }
 
