@@ -57,5 +57,14 @@ export default class Player {
         return --this._hp > 0;
     }
 
+    /**
+     * Method to increase the player's score
+     * @param scoreAdded    (number)    The score to add
+     */
+    public incrementScore(scoreAdded: number) : void {
+        
+    }
+
+
 
 }
