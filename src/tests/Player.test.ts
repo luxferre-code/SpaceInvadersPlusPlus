@@ -108,4 +108,11 @@ describe("Tests for Player class", () => {
         expect(player.position.x).toEqual(new CanvasMock().getContext("").canvas.clientWidth - player.skin.width);
         expect(player.position.y).toEqual(new CanvasMock().getContext("").canvas.clientHeight - player.skin.height);
     });    
+    test('should speed decrement automatically *0.9 if player don\'t click', () => {
+        const player: Player = new Player("Player1", "red", new CanvasMock() as unknown as HTMLCanvasElement, undefined, false, new ImageMock() as unknown as HTMLImageElement);
+        player.speed = new Vector2(100, 100);
+        player.move()
+        expect(player.speed.x).toEqual(90);
+        expect(player.speed.y).toEqual(90);
+    });
 });

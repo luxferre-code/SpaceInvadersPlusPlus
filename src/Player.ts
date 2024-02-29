@@ -8,8 +8,8 @@ export default class Player {
     private static maxHP: number = 5;
     private static speedAcceleration: number = 1;
     public static maxSpeed: number = 20;
-    private horizontalMovement: boolean = false;
-    private verticalMovement: boolean = false;
+    private _horizontalMovement: boolean = false;
+    private _verticalMovement: boolean = false;
     private imageLoaded: boolean = false;
     private _name: string;
     private _score: number;
@@ -40,25 +40,25 @@ export default class Player {
         window.addEventListener("keydown", (event: KeyboardEvent) => {
             if (event.key === "ArrowUp" && -this._speed.y < Player.maxSpeed) {
                 this._speed.y -= Player.speedAcceleration;
-                this.verticalMovement = true;
+                this._verticalMovement = true;
             }
             if (event.key === "ArrowDown" && this._speed.y < Player.maxSpeed) {
                 this._speed.y += Player.speedAcceleration;
-                this.verticalMovement = true;
+                this._verticalMovement = true;
             }
             if (event.key === "ArrowLeft" && -this._speed.x < Player.maxSpeed) {
                 this._speed.x -= Player.speedAcceleration;
-                this.horizontalMovement = true;
+                this._horizontalMovement = true;
             }
             if (event.key === "ArrowRight" && this._speed.x < Player.maxSpeed) {
                 this._speed.x += Player.speedAcceleration;
-                this.horizontalMovement = true;
+                this._horizontalMovement = true;
             }
             
         });
         window.addEventListener("keyup", (event: KeyboardEvent) => {
-            if(event.key === "ArrowUp" || event.key === "ArrowDown") this.verticalMovement = false;
-            if(event.key === "ArrowLeft" || event.key === "ArrowRight") this.horizontalMovement = false;
+            if(event.key === "ArrowUp" || event.key === "ArrowDown") this._verticalMovement = false;
+            if(event.key === "ArrowLeft" || event.key === "ArrowRight") this._horizontalMovement = false;
         });
     }
 
@@ -75,6 +75,8 @@ export default class Player {
     public get speed() : Vector2 { return this._speed; }
     public set speed(speed: Vector2) { this._speed = speed; }
     public get skin() : HTMLImageElement { return this._skin; }
+    public set verticalMovement(verticalMovement: boolean) { this._verticalMovement = verticalMovement; }
+    public get verticalMovement() : boolean { return this._verticalMovement; }
 
     /**
      * Method to decrease the player's HP
@@ -100,8 +102,6 @@ export default class Player {
      * Method to move the player
      */
     public move() : void {
-        console.log(this.skin.width);
-        console.log(this.skin.height);
         if(this.imageLoaded) {
             if(Math.abs(this.speed.x) > Player.maxSpeed || Math.abs(this.speed.y) > Player.maxSpeed) {
                 const clampedSpeedX = Math.max(-Player.maxSpeed, Math.min(Player.maxSpeed, this.speed.x));
