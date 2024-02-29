@@ -65,6 +65,9 @@ export default class Player {
         this._score += scoreAdded;
     }
 
-
+    /**
+     * Method to move the player
+     */
+    public move() : void {}
 
 }

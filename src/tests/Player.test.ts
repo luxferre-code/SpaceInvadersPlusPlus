@@ -1,5 +1,6 @@
 import { describe, test, expect } from "vitest";
 import Player from '../Player';
+import Vector2 from "../Vector2";
 
 class CanvasMock {
     getContext(context: string) {
@@ -39,5 +40,12 @@ describe("Tests for Player class", () => {
         const player: Player = new Player("Player1", "red", new CanvasMock() as unknown as HTMLCanvasElement, undefined, false, new ImageMock() as unknown as HTMLImageElement);
         player.incrementScore(100);
         expect(player.score).toEqual(100);
+    });
+    test('should can move', () => {
+        const player: Player = new Player("Player1", "red", new CanvasMock() as unknown as HTMLCanvasElement, undefined, false, new ImageMock() as unknown as HTMLImageElement);
+        player.speed = new Vector2(1, 1);
+        player.move();
+        expect(player.position.x).toEqual(1);
+        expect(player.position.y).toEqual(1);
     });
 });
