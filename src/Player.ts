@@ -77,6 +77,8 @@ export default class Player {
     public get skin() : HTMLImageElement { return this._skin; }
     public set verticalMovement(verticalMovement: boolean) { this._verticalMovement = verticalMovement; }
     public get verticalMovement() : boolean { return this._verticalMovement; }
+    public set horizontalMovement(horizontalMovement: boolean) { this._horizontalMovement = horizontalMovement; }
+    public get horizontalMovement() : boolean { return this._horizontalMovement; }
 
     /**
      * Method to decrease the player's HP
@@ -124,6 +126,8 @@ export default class Player {
             }
             this.position = next;
         }
+        if(!this.verticalMovement) this.speed = new Vector2(this.speed.x * 0.9, this.speed.y);
+        if(!this.horizontalMovement) this.speed = new Vector2(this.speed.x, this.speed.y * 0.9);
     }
 
     public render() : void {
