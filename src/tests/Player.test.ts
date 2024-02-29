@@ -28,5 +28,11 @@ describe("Tests for Player class", () => {
     test('should can lost a HP', () => {
         const player: Player = new Player("Player1", "red", new CanvasMock() as unknown as HTMLCanvasElement, undefined, false, new ImageMock() as unknown as HTMLImageElement);
         expect(player.lostHP()).toEqual(true);
-    })
+    });
+    test('should can lost HP and die', () => {
+        const player: Player = new Player("Player1", "red", new CanvasMock() as unknown as HTMLCanvasElement, undefined, false, new ImageMock() as unknown as HTMLImageElement);
+        player.hp = 2;
+        expect(player.lostHP()).toEqual(true);
+        expect(player.lostHP()).toEqual(false);
+    });
 });
