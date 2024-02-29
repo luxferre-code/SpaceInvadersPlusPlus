@@ -96,5 +96,13 @@ describe("Tests for Player class", () => {
         expect(player.position.x).toEqual(0);
         expect(player.position.y).toEqual(0);
     });
-    
+    test('should can\'t move if the next position is > canvas.width or canvas.height', () => {
+        const canvas = new CanvasMock() as unknown as HTMLCanvasElement;
+        const player: Player = new Player("Player1", "red", canvas, undefined, false, new ImageMock() as unknown as HTMLImageElement);
+        player.speed = new Vector2(100, 100);
+        player.forceImageLoaded();
+        player.move();
+        expect(player.position.x).toEqual(canvas.width - player.skin.width);
+        expect(player.position.y).toEqual(canvas.height - player.skin.height);
+    });    
 });

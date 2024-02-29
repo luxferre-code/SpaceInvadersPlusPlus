@@ -48,6 +48,7 @@ export default class Player {
     public set position(position: Vector2) { this._position = position; }
     public get speed() : Vector2 { return this._speed; }
     public set speed(speed: Vector2) { this._speed = speed; }
+    public get skin() : HTMLImageElement { return this._skin; }
 
     /**
      * Method to decrease the player's HP
