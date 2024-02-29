@@ -6,8 +6,10 @@ class CanvasMock {
     getContext(context: string) {
         return {
             fillRect: () => {},
-            width: 100,
-            height: 100,
+            canvas: {
+                clientWidth: 100,
+                clientHeight: 100
+            }
         };
     }
 }
@@ -100,9 +102,10 @@ describe("Tests for Player class", () => {
         const canvas = new CanvasMock() as unknown as HTMLCanvasElement;
         const player: Player = new Player("Player1", "red", canvas, undefined, false, new ImageMock() as unknown as HTMLImageElement);
         player.speed = new Vector2(100, 100);
+        player.position = new Vector2(80, 80);
         player.forceImageLoaded();
         player.move();
-        expect(player.position.x).toEqual(canvas.width - player.skin.width);
-        expect(player.position.y).toEqual(canvas.height - player.skin.height);
+        expect(player.position.x).toEqual(new CanvasMock().getContext("").canvas.clientWidth - player.skin.width);
+        expect(player.position.y).toEqual(new CanvasMock().getContext("").canvas.clientHeight - player.skin.height);
     });    
 });

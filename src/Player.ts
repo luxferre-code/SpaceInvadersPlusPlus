@@ -80,8 +80,10 @@ export default class Player {
             const clampedSpeedY = Math.max(-Player.maxSpeed, Math.min(Player.maxSpeed, this.speed.y));
             this.speed = new Vector2(clampedSpeedX, clampedSpeedY);
         }
-        const next = this.position.add(this.speed);
+        let next = this.position.add(this.speed);
         if(next.x < 0 || next.y < 0) return;
+        if(next.x + this.skin.width > this._context.canvas.clientWidth) next = next.sub(new Vector2(next.x + this.skin.width - this._context.canvas.clientWidth, 0));
+        if(next.y + this.skin.height > this._context.canvas.clientHeight) next = next.sub(new Vector2(0, next.y + this.skin.height - this._context.canvas.clientHeight));
         this.position = next;
     }
 
