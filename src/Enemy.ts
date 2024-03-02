@@ -3,22 +3,22 @@ import Vector2 from "./Vector2";
 
 export default class Enemy {
 
-    private position: Vector2;
-    private speed: Vector2;
-    private context: CanvasRenderingContext2D;
-    private skin: HTMLImageElement;
-    private imageLoaded: boolean = false;
-    private dead: boolean = false;
-    private hp: number = 1;
-    private scoreToGive: number = 10;
+    private _position: Vector2;
+    private _speed: Vector2;
+    private _context: CanvasRenderingContext2D;
+    private _skin: HTMLImageElement;
+    private _imageLoaded: boolean = false;
+    private _dead: boolean = false;
+    private _hp: number = 1;
+    private _scoreToGive: number = 10;
 
     constructor(canvas: HTMLCanvasElement, position: Vector2 = Enemy.generateRandomPosition(canvas), speed: Vector2 = new Vector2(-1, 0), skin: HTMLImageElement = new Image()) {
-        this.position = position;
-        this.speed = speed;
-        this.context = canvas.getContext("2d")!;
-        this.skin = skin;
-        this.skin.src = "/assets/skins/skin-red.png";
-        this.skin.onload = () => this.imageLoaded = true;
+        this._position = position;
+        this._speed = speed;
+        this._context = canvas.getContext("2d")!;
+        this._skin = skin;
+        this._skin.src = "/assets/skins/skin-red.png";
+        this._skin.onload = () => this._imageLoaded = true;
     }
 
     public static generateRandomPosition(canvas: HTMLCanvasElement) : Vector2 {
@@ -26,13 +26,24 @@ export default class Enemy {
     }
 
     public killedBy(player: Player) : boolean {
-        this.hp--;
-        if(this.hp > 0) return false;
-        this.dead = true;
-        player.score += this.scoreToGive;
+        this._hp--;
+        if(this._hp > 0) return false;
+        this._dead = true;
+        player.score += this._scoreToGive;
         return true;
     }
 
-    public get isDead() : boolean { return this.dead; }
+    public get isDead() : boolean { return this._dead; }
+
+    public render() : void {
+        this._context.beginPath();
+        // Draw image if is loaded
+        if(this._imageLoaded) this._context.drawImage(this._skin, this._position.x, this._position.y, 50, 50);
+        else {
+            this._context.arc(this._position.x, this._position.y, 25, 0, 2 * Math.PI);
+            this._context.fill();
+        }
+        this._context.fill();
+    }
 
 } 
