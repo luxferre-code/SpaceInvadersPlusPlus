@@ -41,7 +41,11 @@ export default class Enemy {
     public set speed(speed: Vector2) { this._speed = speed; }
 
     public next() : void {
-
+        if(Enemy.horizontally) {
+            this._position.x += this._speed.x;
+        } else {
+            //TODO
+        }
     }
 
     public render() : void {
