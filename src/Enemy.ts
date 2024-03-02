@@ -13,7 +13,7 @@ export default class Enemy {
     private _scoreToGive: number = 10;
     private static _horizontally: boolean = true;
 
-    constructor(canvas: HTMLCanvasElement, position: Vector2 = Enemy.generateRandomPosition(canvas), speed: Vector2 = new Vector2(-1, 0), skin: HTMLImageElement = new Image()) {
+    constructor(canvas: HTMLCanvasElement, position: Vector2 = Enemy.generateRandomPosition(canvas), speed: Vector2 = new Vector2(Enemy._horizontally ? 0 : 10, Enemy._horizontally ? 10 : 0), skin: HTMLImageElement = new Image()) {
         this._position = position;
         this._speed = speed;
         this._context = canvas.getContext("2d")!;
@@ -42,7 +42,8 @@ export default class Enemy {
 
     public next() : void {
         if(Enemy.horizontally) {
-            this._position.x += this._speed.x;
+            console.log("Moving horizontally");
+            this._position.y += this._speed.y;
         } else {
             //TODO
         }

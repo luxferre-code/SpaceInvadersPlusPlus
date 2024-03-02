@@ -1,3 +1,4 @@
+import Enemy from "./Enemy";
 import Player from "./Player";
 
 console.log("yo");
@@ -16,15 +17,20 @@ resize();
 
 const context: CanvasRenderingContext2D = canvas.getContext("2d")!;
 const player: Player = new Player("Player 1", "red", canvas);
+const enemy : Enemy = new Enemy(canvas);
 
 console.log(player.toString());
 
 function render() {
     context.clearRect(0, 0, canvas.width, canvas.height);
     player.render();
+    enemy.render();
     requestAnimationFrame(render);
 }
 
-setInterval(() => player.move(), 1000 / 20);
+setInterval(() => {
+    player.move()
+    enemy.next();
+}, 1000 / 20);
 
 render();
