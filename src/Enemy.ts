@@ -11,6 +11,7 @@ export default class Enemy {
     private _dead: boolean = false;
     private _hp: number = 1;
     private _scoreToGive: number = 10;
+    private static _horizontally: boolean = true;
 
     constructor(canvas: HTMLCanvasElement, position: Vector2 = Enemy.generateRandomPosition(canvas), speed: Vector2 = new Vector2(-1, 0), skin: HTMLImageElement = new Image()) {
         this._position = position;
@@ -34,6 +35,14 @@ export default class Enemy {
     }
 
     public get isDead() : boolean { return this._dead; }
+    public static get horizontally() { return Enemy._horizontally; }
+    public static set horizontally(value: boolean) { Enemy._horizontally = value; }
+    public get position() : Vector2 { return this._position; }
+    public set speed(speed: Vector2) { this._speed = speed; }
+
+    public next() : void {
+
+    }
 
     public render() : void {
         this._context.beginPath();

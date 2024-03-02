@@ -18,4 +18,12 @@ describe('Tests for Enemy class', () => {
         expect(enemy.isDead).toBeTruthy();
         expect(player.score).toEqual(10);
     });
-})
+    test('should move the enemy horizontally', () => {
+        Enemy.horizontally = true;
+        const enemy : Enemy = new Enemy(new CanvasMock() as unknown as HTMLCanvasElement, new Vector2(0, 0), new Vector2(0, 0), new ImageMock() as unknown as HTMLImageElement);
+        enemy.speed = new Vector2(10, 0);
+        enemy.next();
+        expect(enemy.position.x).toEqual(10);
+        expect(enemy.position.y).toEqual(0);
+    });
+});
