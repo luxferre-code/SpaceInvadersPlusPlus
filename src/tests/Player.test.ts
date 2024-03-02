@@ -3,7 +3,7 @@ import Player from '../Player';
 import Vector2 from "../Vector2";
 
 class CanvasMock {
-    getContext(context: string) {
+    getContext(_context: string) {
         return {
             fillRect: () => {},
             canvas: {
