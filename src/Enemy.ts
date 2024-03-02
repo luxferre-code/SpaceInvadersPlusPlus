@@ -1,3 +1,4 @@
+import Player from "./Player";
 import Vector2 from "./Vector2";
 
 export default class Enemy {
@@ -7,6 +8,7 @@ export default class Enemy {
     private context: CanvasRenderingContext2D;
     private skin: HTMLImageElement;
     private imageLoaded: boolean = false;
+    private dead: boolean = false;
 
     constructor(canvas: HTMLCanvasElement, position: Vector2 = Enemy.generateRandomPosition(canvas), speed: Vector2 = new Vector2(-1, 0), skin: HTMLImageElement = new Image()) {
         this.position = position;
@@ -19,6 +21,14 @@ export default class Enemy {
 
     public static generateRandomPosition(canvas: HTMLCanvasElement) : Vector2 {
         return new Vector2(Math.random() * canvas.width, 0);
+    }
+
+    public killedBy(player: Player) : boolean {
+        return false;
+    }
+
+    public get isDead() : boolean {
+        return this.dead;
     }
 
 
