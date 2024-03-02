@@ -9,6 +9,8 @@ export default class Enemy {
     private skin: HTMLImageElement;
     private imageLoaded: boolean = false;
     private dead: boolean = false;
+    private hp: number = 1;
+    private scoreToGive: number = 10;
 
     constructor(canvas: HTMLCanvasElement, position: Vector2 = Enemy.generateRandomPosition(canvas), speed: Vector2 = new Vector2(-1, 0), skin: HTMLImageElement = new Image()) {
         this.position = position;
@@ -24,12 +26,13 @@ export default class Enemy {
     }
 
     public killedBy(player: Player) : boolean {
-        return false;
+        this.hp--;
+        if(this.hp > 0) return false;
+        this.dead = true;
+        player.score += this.scoreToGive;
+        return true;
     }
 
-    public get isDead() : boolean {
-        return this.dead;
-    }
-
+    public get isDead() : boolean { return this.dead; }
 
 } 
