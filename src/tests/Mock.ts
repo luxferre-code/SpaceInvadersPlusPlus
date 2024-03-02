@@ -8,6 +8,8 @@ export class CanvasMock {
             }
         };
     }
+    width: number = 100;
+    height: number = 100;
 }
 
 export class ImageMock {

@@ -18,7 +18,7 @@ export default class Enemy {
     }
 
     public static generateRandomPosition(canvas: HTMLCanvasElement) : Vector2 {
-        return new Vector2(-1, -1);
+        return new Vector2(Math.random() * canvas.width, 0);
     }
 
 
