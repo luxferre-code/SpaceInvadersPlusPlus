@@ -1,24 +1,7 @@
 import { describe, test, expect } from "vitest";
 import Player from '../Player';
 import Vector2 from "../Vector2";
-
-class CanvasMock {
-    getContext(_context: string) {
-        return {
-            fillRect: () => {},
-            canvas: {
-                clientWidth: 100,
-                clientHeight: 100
-            }
-        };
-    }
-}
-
-class ImageMock {
-    src: string = "";
-    width: number = 10;
-    height: number = 10;
-}
+import { CanvasMock, ImageMock } from "./Mock";
 
 describe("Tests for Player class", () => {
     test('should be instantiated with default parameters', () => {
