@@ -1,25 +1,20 @@
 import Player from "./Player";
+import Sprite2D from "./Sprite2D";
 import Vector2 from "./Vector2";
 
-export default class Enemy {
+export default class Enemy extends Sprite2D {
     private static _horizontally: boolean = true;
 
     private _position: Vector2;
     private _speed: Vector2;
-    private _context: CanvasRenderingContext2D;
-    private _skin: HTMLImageElement;
-    private _imageLoaded: boolean = false;
     private _dead: boolean = false;
     private _hp: number = 1;
     private _scoreToGive: number = 10;
 
     constructor(canvas: HTMLCanvasElement, position: Vector2 = Enemy.generateRandomXPosition(canvas), speed: Vector2 = new Vector2(Enemy._horizontally ? 0 : 10, Enemy._horizontally ? 10 : 0), skin: HTMLImageElement = new Image()) {
+        super(canvas, skin);
         this._position = position;
         this._speed = speed;
-        this._context = canvas.getContext("2d")!;
-        this._skin = skin;
-        this._skin.src = "/assets/skins/skin-red.png";
-        this._skin.onload = () => this._imageLoaded = true;
     }
 
     public static generateRandomXPosition(canvas: HTMLCanvasElement) : Vector2 {

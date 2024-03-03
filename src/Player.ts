@@ -1,9 +1,10 @@
+import Sprite2D from "./Sprite2D";
 import Vector2 from "./Vector2";
 
 /**
  * Class representing a player
  */
-export default class Player {
+export default class Player extends Sprite2D {
     public static maxSpeed: number = 20;
 
     private static _maxHP: number = 5;
@@ -11,28 +12,22 @@ export default class Player {
     
     private _horizontalMovement: boolean = false;
     private _verticalMovement: boolean = false;
-    private _imageLoaded: boolean = false;
     private _name: string;
     private _score: number;
     private _color: string;
     private _hp: number;
     private _position: Vector2;
     private _speed: Vector2;
-    private _context: CanvasRenderingContext2D;
-    private _skin: HTMLImageElement;
 
     constructor(name: string, color: string, canvas: HTMLCanvasElement, position: Vector2 = new Vector2(0, 0), disableControls: boolean = false, skin: HTMLImageElement = new Image()) {
+        super(canvas, skin);
         this._name = name;
         this._score = 0;
         this._color = color;
         this._hp = Player._maxHP;
         this._position = position;
         this._speed = new Vector2();
-        this._context = canvas.getContext("2d")!;
         if(!disableControls) this.addEventListener(canvas);
-        this._skin = skin;
-        this._skin.src = "/assets/skins/skin-red.png";
-        this._skin.onload = () => this._imageLoaded = true;
     }
 
     private addEventListener(canvas: HTMLCanvasElement) : void {

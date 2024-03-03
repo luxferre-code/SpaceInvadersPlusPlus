@@ -20,12 +20,12 @@ describe("Tests for Player class", () => {
         expect(player.speed.y).toEqual(0);
     });
     
-    test("should lost a HP", () => {
+    test("should lose a HP", () => {
         const player = createDummyPlayer(canvas, img);
         expect(player.hurt()).toEqual(true);
     });
     
-    test("should lost HP and die", () => {
+    test("should lose HP and die", () => {
         const player = createDummyPlayer(canvas, img);
         player.hp = 2;
         expect(player.hurt()).toEqual(true);
