@@ -132,5 +132,4 @@ export default class Vector2 {
   public toString() : string {
     return `(${this._x}, ${this._y})`;
   }
-
 }
