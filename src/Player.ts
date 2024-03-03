@@ -4,13 +4,14 @@ import Vector2 from "./Vector2";
  * Class representing a player
  */
 export default class Player {
-
-    private static maxHP: number = 5;
-    private static speedAcceleration: number = 1;
     public static maxSpeed: number = 20;
+
+    private static _maxHP: number = 5;
+    private static _speedAcceleration: number = 1;
+    
     private _horizontalMovement: boolean = false;
     private _verticalMovement: boolean = false;
-    private imageLoaded: boolean = false;
+    private _imageLoaded: boolean = false;
     private _name: string;
     private _score: number;
     private _color: string;
@@ -24,14 +25,14 @@ export default class Player {
         this._name = name;
         this._score = 0;
         this._color = color;
-        this._hp = Player.maxHP;
+        this._hp = Player._maxHP;
         this._position = position;
         this._speed = new Vector2();
         this._context = canvas.getContext("2d")!;
         if(!disableControls) this.addEventListener(canvas);
         this._skin = skin;
         this._skin.src = "/assets/skins/skin-red.png";
-        this._skin.onload = () => this.imageLoaded = true;
+        this._skin.onload = () => this._imageLoaded = true;
     }
 
     private addEventListener(canvas: HTMLCanvasElement) : void {
@@ -39,19 +40,19 @@ export default class Player {
         console.log(canvas);
         window.addEventListener("keydown", (event: KeyboardEvent) => {
             if (event.key === "ArrowUp" && -this._speed.y < Player.maxSpeed) {
-                this._speed.y -= Player.speedAcceleration;
+                this._speed.y -= Player._speedAcceleration;
                 this._verticalMovement = true;
             }
             if (event.key === "ArrowDown" && this._speed.y < Player.maxSpeed) {
-                this._speed.y += Player.speedAcceleration;
+                this._speed.y += Player._speedAcceleration;
                 this._verticalMovement = true;
             }
             if (event.key === "ArrowLeft" && -this._speed.x < Player.maxSpeed) {
-                this._speed.x -= Player.speedAcceleration;
+                this._speed.x -= Player._speedAcceleration;
                 this._horizontalMovement = true;
             }
             if (event.key === "ArrowRight" && this._speed.x < Player.maxSpeed) {
-                this._speed.x += Player.speedAcceleration;
+                this._speed.x += Player._speedAcceleration;
                 this._horizontalMovement = true;
             }
             
@@ -84,12 +85,12 @@ export default class Player {
      * Method to decrease the player's HP
      * @returns  (boolean) true if the player is alive, false otherwise
      */
-    public lostHP() : boolean {
+    public hurt() : boolean {
         return --this._hp > 0;
     }
 
     public forceImageLoaded() : void {
-        this.imageLoaded = true;
+        this._imageLoaded = true;
     }
 
     /**
@@ -104,7 +105,7 @@ export default class Player {
      * Method to move the player
      */
     public move() : void {
-        if(this.imageLoaded) {
+        if(this._imageLoaded) {
             if(Math.abs(this.speed.x) > Player.maxSpeed || Math.abs(this.speed.y) > Player.maxSpeed) {
                 const clampedSpeedX = Math.max(-Player.maxSpeed, Math.min(Player.maxSpeed, this.speed.x));
                 const clampedSpeedY = Math.max(-Player.maxSpeed, Math.min(Player.maxSpeed, this.speed.y));
@@ -134,12 +135,11 @@ export default class Player {
         this._context.fillStyle = this._color;
         this._context.beginPath();
         // Draw image if is loaded
-        if(this.imageLoaded) this._context.drawImage(this._skin, this._position.x, this._position.y, 50, 50);
+        if(this._imageLoaded) this._context.drawImage(this._skin, this._position.x, this._position.y, 50, 50);
         else {
             this._context.arc(this._position.x, this._position.y, 25, 0, 2 * Math.PI);
             this._context.fill();
         }
         this._context.fill();
     }
-
 }

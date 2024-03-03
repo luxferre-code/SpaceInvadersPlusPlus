@@ -1,7 +1,6 @@
 import Enemy from "./Enemy";
 import Player from "./Player";
 
-console.log("yo");
 const canvas: HTMLCanvasElement = document.querySelector("canvas") as HTMLCanvasElement;
 
 // Add event listener, if window is move, resize canva heigt et width

@@ -15,6 +15,7 @@ describe('Tests for Enemy class', () => {
         expect(vector.x).toBeLessThanOrEqual(canvas.height);
         expect(vector.y).toEqual(0);
     });
+
     test('should kill a enemy', () => {
         const enemy : Enemy = new Enemy(canvas, new Vector2(), new Vector2(), img);
         const player: Player = new Player("Player1", "red", canvas, undefined, true, img);
@@ -22,6 +23,7 @@ describe('Tests for Enemy class', () => {
         expect(enemy.isDead).toBeTruthy();
         expect(player.score).toEqual(10);
     });
+    
     test('should move the enemy horizontally', () => {
         Enemy.horizontally = true;
         const enemy : Enemy = new Enemy(createFakeCanvas(), new Vector2(), new Vector2(), img);

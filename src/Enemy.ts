@@ -2,6 +2,7 @@ import Player from "./Player";
 import Vector2 from "./Vector2";
 
 export default class Enemy {
+    private static _horizontally: boolean = true;
 
     private _position: Vector2;
     private _speed: Vector2;
@@ -11,7 +12,6 @@ export default class Enemy {
     private _dead: boolean = false;
     private _hp: number = 1;
     private _scoreToGive: number = 10;
-    private static _horizontally: boolean = true;
 
     constructor(canvas: HTMLCanvasElement, position: Vector2 = Enemy.generateRandomXPosition(canvas), speed: Vector2 = new Vector2(Enemy._horizontally ? 0 : 10, Enemy._horizontally ? 10 : 0), skin: HTMLImageElement = new Image()) {
         this._position = position;
@@ -59,5 +59,4 @@ export default class Enemy {
         }
         this._context.fill();
     }
-
 } 
