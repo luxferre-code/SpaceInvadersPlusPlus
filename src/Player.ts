@@ -1,3 +1,4 @@
+import { Controls } from "./Controls";
 import Sprite2D from "./Sprite2D";
 import Vector2 from "./Vector2";
 
@@ -19,7 +20,7 @@ export default class Player extends Sprite2D {
     private _position: Vector2;
     private _speed: Vector2;
 
-    constructor(name: string, color: string, canvas: HTMLCanvasElement, position: Vector2 = new Vector2(0, 0), disableControls: boolean = false, skin: HTMLImageElement = new Image()) {
+    constructor(name: string, color: string, canvas: HTMLCanvasElement, position = new Vector2(), disableControls = false, skin = new Image()) {
         super(canvas, skin);
         this._name = name;
         this._score = 0;
@@ -27,34 +28,34 @@ export default class Player extends Sprite2D {
         this._hp = Player._maxHP;
         this._position = position;
         this._speed = new Vector2();
-        if(!disableControls) this.addEventListener(canvas);
+        if(!disableControls) {
+            this.initializeMovementControls();
+        }
     }
 
-    private addEventListener(canvas: HTMLCanvasElement) : void {
-        console.log("Adding event listener to the canvas.");
-        console.log(canvas);
-        window.addEventListener("keydown", (event: KeyboardEvent) => {
-            if (event.key === "ArrowUp" && -this._speed.y < Player.maxSpeed) {
+    private initializeMovementControls() : void {
+        window.addEventListener("keydown", (e: KeyboardEvent) => {
+            if (e.key === Controls.UP && -this._speed.y < Player.maxSpeed) {
                 this._speed.y -= Player._speedAcceleration;
                 this._verticalMovement = true;
             }
-            if (event.key === "ArrowDown" && this._speed.y < Player.maxSpeed) {
+            if (e.key === Controls.DOWN && this._speed.y < Player.maxSpeed) {
                 this._speed.y += Player._speedAcceleration;
                 this._verticalMovement = true;
             }
-            if (event.key === "ArrowLeft" && -this._speed.x < Player.maxSpeed) {
+            if (e.key === Controls.LEFT && -this._speed.x < Player.maxSpeed) {
                 this._speed.x -= Player._speedAcceleration;
                 this._horizontalMovement = true;
             }
-            if (event.key === "ArrowRight" && this._speed.x < Player.maxSpeed) {
+            if (e.key === Controls.RIGHT && this._speed.x < Player.maxSpeed) {
                 this._speed.x += Player._speedAcceleration;
                 this._horizontalMovement = true;
             }
-            
         });
-        window.addEventListener("keyup", (event: KeyboardEvent) => {
-            if(event.key === "ArrowUp" || event.key === "ArrowDown") this._verticalMovement = false;
-            if(event.key === "ArrowLeft" || event.key === "ArrowRight") this._horizontalMovement = false;
+
+        window.addEventListener("keyup", (e: KeyboardEvent) => {
+            if(e.key === Controls.UP || e.key === Controls.DOWN) this._verticalMovement = false;
+            if(e.key === Controls.LEFT || e.key === Controls.RIGHT) this._horizontalMovement = false;
         });
     }
 
@@ -100,7 +101,7 @@ export default class Player extends Sprite2D {
      * Method to move the player
      */
     public move() : void {
-        if(this._imageLoaded) {
+        if(this.isSkinLoaded()) {
             if(Math.abs(this.speed.x) > Player.maxSpeed || Math.abs(this.speed.y) > Player.maxSpeed) {
                 const clampedSpeedX = Math.max(-Player.maxSpeed, Math.min(Player.maxSpeed, this.speed.x));
                 const clampedSpeedY = Math.max(-Player.maxSpeed, Math.min(Player.maxSpeed, this.speed.y));
@@ -130,7 +131,7 @@ export default class Player extends Sprite2D {
         this._context.fillStyle = this._color;
         this._context.beginPath();
         // Draw image if is loaded
-        if(this._imageLoaded) this._context.drawImage(this._skin, this._position.x, this._position.y, 50, 50);
+        if(this.isSkinLoaded()) this._context.drawImage(this._skin, this._position.x, this._position.y, 50, 50);
         else {
             this._context.arc(this._position.x, this._position.y, 25, 0, 2 * Math.PI);
             this._context.fill();
