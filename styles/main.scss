@@ -9,6 +9,7 @@
 
 @import "root.scss";
 @import "globals.scss";
+@import "modal.scss";
 
 @mixin disable-interactivity {
   user-select: none;
@@ -69,7 +70,9 @@ canvas {
   }
 }
 
-button:focus {
+button:focus,
+dialog:focus,
+input:focus {
   outline: 3px solid $primary-color;
 }
 
@@ -104,24 +107,9 @@ main button {
 
 /*
 *
-* Modal
+* Credits panel
 *
 */
-
-::backdrop {
-  background: #000;
-  opacity: .5;
-}
-
-dialog {
-  width: 60%;
-  padding: 30px 0;
-  box-sizing: border-box;
-  min-width: 300px;
-  background: $primary-shade;
-  border: 2px solid $primary-color;
-  border-radius: 10px;
-}
 
 dialog > h2 {
   color: #fff;

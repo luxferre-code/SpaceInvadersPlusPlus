@@ -86,9 +86,7 @@ export default class {
    */
   public static bindEvents() {
     if (!this.initialized) {
-      this.mainButtons.playNow.addEventListener('click', () => {
-        this.showModal();
-      });
+      this.mainButtons.credits.addEventListener('click', () => this.showModal());
       this.modal.addEventListener("mousedown", this.handleClosingModalWhenClickBackdrop.bind(this));
       this.initialized = true;
     }

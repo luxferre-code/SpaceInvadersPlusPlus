@@ -1,0 +1,58 @@
+// https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog#animating_dialogs
+
+$transition-duration: 500ms;
+
+@mixin dialog-animation-start {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+dialog {
+  width: 60%;
+  padding: 30px 0;
+  box-sizing: border-box;
+  min-width: 300px;
+  background: $primary-shade;
+  border: 2px solid $primary-color;
+  border-radius: 10px;
+
+  @include dialog-animation-start();
+  transition:
+    opacity $transition-duration ease-out,
+    transform $transition-duration ease-out,
+    overlay $transition-duration ease-out allow-discrete,
+    display $transition-duration ease-out allow-discrete;
+}
+
+dialog[open] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+// Before-open state
+// Needs to be after the previous dialog[open] rule to take effect, as the specificity is the same
+@starting-style {
+  dialog[open] {
+    @include dialog-animation-start();
+  }
+}
+
+dialog::backdrop {
+  background-color: rgb(0 0 0 / 0%);
+  transition:
+    display $transition-duration allow-discrete,
+    overlay $transition-duration allow-discrete,
+    background-color $transition-duration;
+}
+
+dialog[open]::backdrop {
+  background-color: rgb(0 0 0 / 50%);
+}
+
+/* This starting-style rule cannot be nested inside the above selector
+because the nesting selector cannot represent pseudo-elements. */
+@starting-style {
+  dialog[open]::backdrop {
+    background-color: rgb(0 0 0 / 0%);
+  }
+}
