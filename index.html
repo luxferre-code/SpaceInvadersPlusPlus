@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Space Invaders++</title>
 
     <link rel="stylesheet" href="/styles/main.scss" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -17,14 +18,14 @@
     <div id="ui">
       <h1>Space Invaders ++</h1>
       <main>
-        <button class="primary with-icon"><i class="fa-regular fa-user"></i> Jouer maintenant</button>
-        <button class="primary with-icon"><i><i class="fa-regular fa-user"></i><i class="fa-regular fa-user"></i></i> Jouer en coop</button>
-        <button class="primary with-icon"><i class="fa-solid fa-clapperboard"></i> Crédits</button>
+        <button class="primary with-icon" id="playNow"><i class="fa-regular fa-user"></i> Jouer maintenant</button>
+        <button class="primary with-icon" id="playCoop"><i><i class="fa-regular fa-user"></i><i class="fa-regular fa-user"></i></i> Jouer en coop</button>
+        <button class="primary with-icon" id="openCredits"><i class="fa-solid fa-clapperboard"></i> Crédits</button>
       </main>
 
       <div class="corner-buttons">
-        <button class="primary icon-only"><i class="fa-regular fa-chess-king"></i></button>
-        <button class="primary icon-only"><i class="fa-solid fa-gear"></i></button>
+        <button class="primary icon-only" id="openRankings"><i class="fa-regular fa-chess-king"></i></button>
+        <button class="primary icon-only" id="openPlayerSettings"><i class="fa-solid fa-gear"></i></button>
       </div>
     </div>
   </body>

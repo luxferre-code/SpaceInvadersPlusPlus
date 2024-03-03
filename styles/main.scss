@@ -41,6 +41,13 @@ body {
 }
 
 body > #ui {
+  transition: opacity 200ms ease;
+  opacity: 1;
+
+  &[aria-hidden="true"] {
+    opacity: 0;
+  }
+
   @include vertical-center();
 }
 

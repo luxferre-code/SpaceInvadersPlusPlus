@@ -1,7 +1,9 @@
 import Enemy from "./Enemy";
 import Player from "./Player";
+import UI from "./UI";
 
-const ui: HTMLDivElement = document.querySelector("#ui") as HTMLDivElement;
+UI.bindEvents();
+
 const canvas: HTMLCanvasElement = document.querySelector("canvas") as HTMLCanvasElement;
 
 // Set this varialbe to `false` to allow the UI to appear.
@@ -49,5 +51,5 @@ render();
 // The goal here is to be able to debug easily
 // without having to deal with the UI.
 if (playing) {
-    ui.style.display = "none";
+    UI.hideUI();
 }
