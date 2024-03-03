@@ -23,6 +23,12 @@
   align-items: center;
 }
 
+@mixin reset-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
 img.main-background {
   position: fixed;
   top: 0;
@@ -94,4 +100,77 @@ main button {
   position: absolute;
   top: 30px;
   right: 30px;
+}
+
+/*
+*
+* Modal
+*
+*/
+
+::backdrop {
+  background: #000;
+  opacity: .5;
+}
+
+dialog {
+  width: 60%;
+  padding: 30px 0;
+  box-sizing: border-box;
+  min-width: 300px;
+  background: $primary-shade;
+  border: 2px solid $primary-color;
+  border-radius: 10px;
+}
+
+dialog > h2 {
+  color: #fff;
+  font-size: 2em;
+  text-align: center;
+  font-family: $font;
+  margin: 0 0 50px 0;
+}
+
+dialog > div {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  place-items: center;
+  place-content: center;
+}
+
+dialog .author-card {
+  @include vertical-center();
+}
+
+dialog .author-card > img {
+  width: 150px;
+  height: 150px;
+  user-select: none;
+  pointer-events: none;
+}
+
+dialog .author-details * {
+  color: #fff;
+  font-family: $font;
+}
+
+dialog .author-details > h3 {
+  text-align: center;
+  margin: 20px 0 10px 0;
+}
+
+dialog .author-details > span {
+  display: block;
+  text-align: center;
+  font-size: 0.9em;
+  opacity: .5;
+  margin-bottom: 20px;
+}
+
+dialog .author-details ul {
+  @include reset-list();
+
+  li {
+    margin-bottom: 10px;
+  }
 }

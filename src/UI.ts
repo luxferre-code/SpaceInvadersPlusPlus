@@ -26,6 +26,12 @@ export default class {
   public static readonly ui: HTMLDivElement = document.querySelector("#ui") as HTMLDivElement;
 
   /**
+   * This element contains the modal that is used
+   * for the panels (ranking, settings, credits, etc.)
+   */
+  public static readonly modal: HTMLDialogElement = this.ui.querySelector("dialog") as HTMLDialogElement;
+
+  /**
    * Contains the three main buttons of the game (such as "Play now" etc.).
    * Control them to start a new game, or open the credits.
    */
@@ -61,6 +67,19 @@ export default class {
   }
 
   /**
+   * Handles the fact that when the user is clicking the backdrop
+   * of the modal, then it closes itself automatically.
+   * The "backdrop" is the "outside" of the dialog tag
+   * (the dark overlay behind it).
+   * @param e The event from "mousedown".
+   */
+  private static handleClosingModalWhenClickBackdrop(e: MouseEvent) {
+    if (e.target && "isSameNode" in e.target && (e.target as HTMLElement).isSameNode(this.modal)) {
+      this.closeModal();
+    }
+  }
+
+  /**
    * Binds events that are directly related to the UI,
    * but it does not handle the interaction between the game
    * and the UI.
@@ -68,12 +87,27 @@ export default class {
   public static bindEvents() {
     if (!this.initialized) {
       this.mainButtons.playNow.addEventListener('click', () => {
-        this.hideUI();
+        this.showModal();
       });
+      this.modal.addEventListener("mousedown", this.handleClosingModalWhenClickBackdrop.bind(this));
       this.initialized = true;
     }
   }
 
   public static showUI() { this.showElement(this.ui); }
   public static hideUI() { this.hideElement(this.ui); }
+
+  /**
+   * Opens the modal
+   */
+  public static showModal() {
+    this.modal.showModal();
+  }
+
+  /**
+   * Closes the modal.
+   */
+  public static closeModal() {
+    this.modal.close();
+  }
 }

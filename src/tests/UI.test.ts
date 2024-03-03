@@ -62,6 +62,7 @@ describe("Testing the UI abstraction", async () => {
 
   test("should have no undefined element", () => {
     expect(UI.ui).toBeDefined();
+    expect(UI.modal).toBeDefined();
     expect(keepUndefinedElementsOnlyFrom(UI.cornerButtons)).toHaveLength(0);
     expect(keepUndefinedElementsOnlyFrom(UI.mainButtons)).toHaveLength(0);
   });
@@ -76,6 +77,18 @@ describe("Testing the UI abstraction", async () => {
     expect(isHidden(UI.ui)).toBe(false);
     UI.showUI();
     expect(isHidden(UI.ui)).toBe(false);
+  });
+
+  test("should open or hide the modal", () => {
+    expect(UI.modal.open).toBe(false);
+    UI.showModal();
+    expect(UI.modal.open).toBe(true);
+    UI.showModal();
+    expect(UI.modal.open).toBe(true);
+    UI.closeModal();
+    expect(UI.modal.open).toBe(false);
+    UI.closeModal();
+    expect(UI.modal.open).toBe(false);
   });
 
   // Let's keep it clean :)
