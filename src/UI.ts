@@ -1,9 +1,23 @@
+/**
+ * Handles the User Interface.
+ * 
+ * It holds all the references to HTML elements in the page
+ * in static readonly properties of frozen objects (to prevent unwanted modifications).
+ * It provides helper functions that are meant to simplify our work
+ * as well as making sure everything is done consistently.
+ * 
+ * Note that it doesn't handle interactions between a game and the HUD,
+ * but only the interactions in the user interface (like the main menu,
+ * the ranking, the credits, etc.).
+ * 
+ * Basically, it just shows or hides UI elements when buttons are clicked.
+ */
 export default class {
   /**
    * Whether or not the buttons of the UI
    * received their event listeners.
    */
-  private static initialize = false;
+  private static initialized = false;
 
   /**
    * This element contains the entire UI
@@ -46,11 +60,17 @@ export default class {
     element.setAttribute("aria-hidden", "true");
   }
 
+  /**
+   * Binds events that are directly related to the UI,
+   * but it does not handle the interaction between the game
+   * and the UI.
+   */
   public static bindEvents() {
-    if (!this.initialize) {
+    if (!this.initialized) {
       this.mainButtons.playNow.addEventListener('click', () => {
         this.hideUI();
       });
+      this.initialized = true;
     }
   }
 
