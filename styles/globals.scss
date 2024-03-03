@@ -18,14 +18,22 @@ button.primary {
   &:focus {
     background-color: $primary-black;
   }
+}
 
-  &.with-icon {
-    & > i {
-      display: inline-flex;
-      width: 30px;
-    }
+button.primary.with-icon {
+  padding-left: 50px;
+  text-align: left;
 
-    padding-left: 50px;
-    text-align: left;
+  & > i {
+    display: inline-flex;
+    width: 30px;
   }
+}
+
+button.primary.icon-only {
+  width: 75px;
+  height: 70px;
+  font-size: 1.5em;
+  padding: 0;
+  margin-left: 20px;
 }

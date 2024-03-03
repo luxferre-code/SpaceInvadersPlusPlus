@@ -8,7 +8,7 @@ const canvas: HTMLCanvasElement = document.querySelector("canvas") as HTMLCanvas
 // This variable should not get modified, as it is just for debugging purposes.
 // Manually set it `false` if the UI is needed.
 // This variable will have to be removed entirely later on.
-const playing = true;
+const playing = false;
 
 // Add event listener, if window is move, resize canva height et width
 

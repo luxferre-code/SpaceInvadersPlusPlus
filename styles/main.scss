@@ -16,6 +16,13 @@
   z-index: -1;
 }
 
+@mixin vertical-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 img.main-background {
   position: fixed;
   top: 0;
@@ -29,12 +36,12 @@ body {
   margin: 0;
   height: 100vh;
   background-color: $main-background-color;
-  overflow-x: hidden;
-  overflow-y: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  overflow: hidden;
+  @include vertical-center();
+}
+
+body > #ui {
+  @include vertical-center();
 }
 
 canvas {
@@ -74,4 +81,10 @@ main button {
     position: relative;
     left: -3px;
   }
+}
+
+.corner-buttons {
+  position: absolute;
+  top: 30px;
+  right: 30px;
 }
