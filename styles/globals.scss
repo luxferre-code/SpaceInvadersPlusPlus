@@ -1,0 +1,31 @@
+// The global classes
+
+@import "root.scss";
+
+button.primary {
+  border: 2px solid $primary-color;
+  border-radius: 10px;
+  background: $primary-shade;
+  cursor: pointer;
+  padding: 25px 50px;
+  color: #fff;
+  font-family: $font;
+  font-size: 1.15em;
+  box-sizing: border-box;
+  transition: background-color 200ms ease;
+
+  &:hover,
+  &:focus {
+    background-color: $primary-black;
+  }
+
+  &.with-icon {
+    & > i {
+      display: inline-flex;
+      width: 30px;
+    }
+
+    padding-left: 50px;
+    text-align: left;
+  }
+}

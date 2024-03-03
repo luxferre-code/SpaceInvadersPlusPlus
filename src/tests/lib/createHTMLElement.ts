@@ -8,7 +8,7 @@ export default function<T = HTMLElement>(tagName: string) {
 }
 
 /**
- * Creates a fake canvas with an initial width of 100x100 pixels.
+ * Creates a fake canvas with an initial size of 100x100 pixels.
  * It has to be faked because having an actual Canvas in NodeJS
  * is quite annoying, but it should be enough for most tests.
  * @param size The size of the canvas, which defaults to 100.
