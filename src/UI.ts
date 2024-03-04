@@ -20,6 +20,13 @@ export default class {
   private static initialized = false;
 
   /**
+   * Since closing the modal takes time,
+   * we need to make sure a modal cannot get
+   * closed again or opened while it's closing.
+   */
+  private static isClosing = false;
+
+  /**
    * This element contains the entire UI
    * except the <canvas> and the background's picture.
    */
@@ -30,6 +37,13 @@ export default class {
    * for the panels (ranking, settings, credits, etc.)
    */
   public static readonly modal: HTMLDialogElement = this.ui.querySelector("dialog") as HTMLDialogElement;
+
+  /**
+   * The time it takes for the modal to
+   * be fully displayed or fully closed,
+   * in milliseconds.
+   */
+  public static readonly modalTransitionDelay = parseFloat(getComputedStyle(this.modal).transitionDuration.split(", ")[0]) * 1000;
 
   /**
    * Contains the three main buttons of the game (such as "Play now" etc.).
@@ -51,10 +65,20 @@ export default class {
   });
 
   /**
+   * The modal contains multiple pages, but only one is displayed at a time.
+   * This object holds these pages.
+   * Select a page when showing the modal ({@link showModal}).
+   */
+  public static readonly modalPages = Object.freeze({
+    credits: this.modal.querySelector("#credits-page") as HTMLDivElement,
+    ranking: this.modal.querySelector("#ranking-page") as HTMLDivElement,
+  });
+
+  /**
    * Shows an element while respecting ARIA recommendations.
    * @param element The element to show.
    */
-  public static showElement(element: HTMLElement) {
+  public static showElement(element: HTMLElement): void {
     element.setAttribute("aria-hidden", "false");
   }
 
@@ -62,8 +86,45 @@ export default class {
    * Hides an element while respecting ARIA recommendations.
    * @param element The element to hide.
    */
-  public static hideElement(element: HTMLElement) {
+  public static hideElement(element: HTMLElement): void {
     element.setAttribute("aria-hidden", "true");
+  }
+
+  /**
+   * Checks if a given HTML element is hidden.
+   * An hidden element has the attribute `aria-hidden`
+   * that is set to `"true"`.
+   * @param element The HTML element.
+   * @returns `true` if the element is hidden, `false` otherwise.
+   */
+  public static isHidden(element: HTMLElement): boolean {
+    return element.getAttribute("aria-hidden") === "true";
+  }
+
+  /**
+   * Checks if a modal page is visible.
+   */
+  public static hasModalPageVisible(): boolean {
+    return this.getVisibleModalPage() != undefined;
+  }
+
+  /**
+   * Gets the current page displayed in the modal.
+   */
+  public static getVisibleModalPage(): HTMLElement | undefined {
+    for (const page of Object.values(this.modalPages)) {
+      if (!this.isHidden(page)) {
+        return page;
+      }
+    }
+    return undefined;
+  }
+
+  /**
+   * Checks if the modal is open.
+   */
+  public static isModalOpen(): boolean {
+    return this.modal.open && !this.isClosing;
   }
 
   /**
@@ -73,10 +134,35 @@ export default class {
    * (the dark overlay behind it).
    * @param e The event from "mousedown".
    */
-  private static handleClosingModalWhenClickBackdrop(e: MouseEvent) {
+  private static handleClosingModalWhenClickBackdrop(e: MouseEvent): void {
     if (e.target && "isSameNode" in e.target && (e.target as HTMLElement).isSameNode(this.modal)) {
       this.closeModal();
     }
+  }
+
+  /**
+   * Hides the current page in the modal,
+   * which is the only one not being hidden
+   * among the elements in {@link modalPages}.
+   */
+  private static hideCurrentModalPage(): void {
+    for (const page of Object.values(this.modalPages)) {
+      if (!this.isHidden(page)) {
+        this.hideElement(page);
+        break;
+      }
+    }
+  }
+
+  /**
+   * Waits for the modal's transition to finish
+   * to hide the current modal's page.
+   */
+  private static closeModalWithDelay() {
+    setTimeout(() => {
+      this.isClosing = false;
+      this.hideCurrentModalPage();
+    }, this.modalTransitionDelay);
   }
 
   /**
@@ -84,28 +170,53 @@ export default class {
    * but it does not handle the interaction between the game
    * and the UI.
    */
-  public static bindEvents() {
+  public static bindEvents(): void {
     if (!this.initialized) {
-      this.mainButtons.credits.addEventListener('click', () => this.showModal());
-      this.modal.addEventListener("mousedown", this.handleClosingModalWhenClickBackdrop.bind(this));
+      this.mainButtons.credits.addEventListener('click', () => this.showModal(this.modalPages.credits));
+
+      // Events related to the corner buttons
+      this.cornerButtons.rankings.addEventListener('click', () => this.showModal(this.modalPages.ranking));
+
+      // Events related to the modal
+      this.modal.addEventListener('mousedown', this.handleClosingModalWhenClickBackdrop.bind(this));
+      // The modal can be closed using the escape key
+      // so we need to make sure we detect that
+      // and trigger the right behavior.
+      window.addEventListener("keydown", (e) => {
+        if ((e.key === "Esc" || e.key === "Escape") && this.isModalOpen()) {
+          this.isClosing = true;
+          this.closeModalWithDelay();
+        }
+      });
+
       this.initialized = true;
     }
   }
 
-  public static showUI() { this.showElement(this.ui); }
-  public static hideUI() { this.hideElement(this.ui); }
+  public static showUI(): void { this.showElement(this.ui); }
+  public static hideUI(): void { this.hideElement(this.ui); }
 
   /**
-   * Opens the modal
+   * Opens the modal.
+   * If it's already open, nothing will happen.
+   * @param page The modal's page to hide.
    */
-  public static showModal() {
-    this.modal.showModal();
+  public static showModal(page: HTMLElement): void {
+    if (!this.isModalOpen()) {
+      this.showElement(page);
+      this.modal.showModal();
+    }
   }
 
   /**
    * Closes the modal.
+   * If it's not already open, nothing will happen.
    */
-  public static closeModal() {
-    this.modal.close();
+  public static closeModal(): void {
+    if (this.isModalOpen()) {
+      this.modal.close();
+      this.isClosing = true;
+      this.closeModalWithDelay();
+    }
   }
 }

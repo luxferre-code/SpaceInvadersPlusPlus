@@ -1,16 +1,11 @@
 import { readFile } from "fs/promises";
 import { describe, expect, test } from "vitest";
 import { Browser } from "happy-dom";
+import createHTMLElement from "./lib/createHTMLElement";
 
 describe("Testing the UI abstraction", async () => {
-  // Helper functions:
-
   function keepUndefinedElementsOnlyFrom(o: Object) {
     return Object.values(o).filter(e => e === undefined);
-  }
-
-  function isHidden(element: HTMLElement) {
-    return element.getAttribute("aria-hidden") === "true";
   }
 
   // The goal here is to simulate a web browser.
@@ -58,6 +53,7 @@ describe("Testing the UI abstraction", async () => {
   test("should have frozen all inner objects", () => {
     expect(Object.isFrozen(UI.cornerButtons)).toBe(true);
     expect(Object.isFrozen(UI.mainButtons)).toBe(true);
+    expect(Object.isFrozen(UI.modalPages)).toBe(true);
   });
 
   test("should have no undefined element", () => {
@@ -65,30 +61,58 @@ describe("Testing the UI abstraction", async () => {
     expect(UI.modal).toBeDefined();
     expect(keepUndefinedElementsOnlyFrom(UI.cornerButtons)).toHaveLength(0);
     expect(keepUndefinedElementsOnlyFrom(UI.mainButtons)).toHaveLength(0);
+    expect(keepUndefinedElementsOnlyFrom(UI.modalPages)).toHaveLength(0);
+  });
+
+  test("should be hidden", () => {
+    const dummyElement = createHTMLElement("div");
+    expect(UI.isHidden(dummyElement)).toBe(false);
+    dummyElement.setAttribute("aria-hidden", "true");
+    expect(UI.isHidden(dummyElement)).toBe(true);
   });
 
   test("should hide or show UI", () => {
-    expect(isHidden(UI.ui)).toBe(false);
+    expect(UI.isHidden(UI.ui)).toBe(false);
     UI.hideUI();
-    expect(isHidden(UI.ui)).toBe(true);
+    expect(UI.isHidden(UI.ui)).toBe(true);
     UI.hideUI(); // hiding it whereas it's already hidden shouldn't change anything
-    expect(isHidden(UI.ui)).toBe(true);
+    expect(UI.isHidden(UI.ui)).toBe(true);
     UI.showUI();
-    expect(isHidden(UI.ui)).toBe(false);
+    expect(UI.isHidden(UI.ui)).toBe(false);
     UI.showUI();
-    expect(isHidden(UI.ui)).toBe(false);
+    expect(UI.isHidden(UI.ui)).toBe(false);
   });
 
+  test("should have no opened modal page", () => {
+    for (const page of Object.values(UI.modalPages)) {
+      expect(UI.isHidden(page)).toBe(true);
+    }
+  })
+
+  test("should have the modal closed by default", () => {
+    expect(UI.isModalOpen()).toBe(false);
+  })
+
   test("should open or hide the modal", () => {
-    expect(UI.modal.open).toBe(false);
-    UI.showModal();
-    expect(UI.modal.open).toBe(true);
-    UI.showModal();
-    expect(UI.modal.open).toBe(true);
+    expect(UI.isModalOpen()).toBe(false);
+    expect(UI.hasModalPageVisible()).toBe(false);
+    expect(UI.getVisibleModalPage()).toBeUndefined();
+    expect(UI.isHidden(UI.modalPages.credits)).toBe(true);
+
+    UI.showModal(UI.modalPages.credits);
+    expect(UI.hasModalPageVisible()).toBe(true);
+    expect(UI.getVisibleModalPage()?.isSameNode(UI.modalPages.credits)).toBe(true);
+    expect(UI.isHidden(UI.modalPages.credits)).toBe(false);
+    expect(UI.isModalOpen()).toBe(true);
+
+    UI.showModal(UI.modalPages.credits);
+    expect(UI.isModalOpen()).toBe(true);
+    expect(UI.isHidden(UI.modalPages.credits)).toBe(false);
+
     UI.closeModal();
-    expect(UI.modal.open).toBe(false);
+    expect(UI.isModalOpen()).toBe(false);
     UI.closeModal();
-    expect(UI.modal.open).toBe(false);
+    expect(UI.isModalOpen()).toBe(false);
   });
 
   // Let's keep it clean :)

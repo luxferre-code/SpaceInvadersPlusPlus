@@ -56,3 +56,11 @@ because the nesting selector cannot represent pseudo-elements. */
     background-color: rgb(0 0 0 / 0%);
   }
 }
+
+dialog > div[aria-hidden="true"] {
+  display: none;
+}
+
+dialog > div[aria-hidden="false"] {
+  display: contents;
+}

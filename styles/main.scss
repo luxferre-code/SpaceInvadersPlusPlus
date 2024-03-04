@@ -111,7 +111,8 @@ main button {
 *
 */
 
-dialog > h2 {
+#credits-page > h2,
+#ranking-page > h2 {
   color: #fff;
   font-size: 2em;
   text-align: center;
@@ -119,35 +120,35 @@ dialog > h2 {
   margin: 0 0 50px 0;
 }
 
-dialog > div {
+#credits-page > div {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   place-items: center;
   place-content: center;
 }
 
-dialog .author-card {
+#credits-page .author-card {
   @include vertical-center();
 }
 
-dialog .author-card > img {
+#credits-page .author-card > img {
   width: 150px;
   height: 150px;
   user-select: none;
   pointer-events: none;
 }
 
-dialog .author-details * {
+#credits-page .author-details * {
   color: #fff;
   font-family: $font;
 }
 
-dialog .author-details > h3 {
+#credits-page .author-details > h3 {
   text-align: center;
   margin: 20px 0 10px 0;
 }
 
-dialog .author-details > span {
+#credits-page .author-details > span {
   display: block;
   text-align: center;
   font-size: 0.9em;
@@ -155,10 +156,79 @@ dialog .author-details > span {
   margin-bottom: 20px;
 }
 
-dialog .author-details ul {
+#credits-page .author-details ul {
   @include reset-list();
 
   li {
     margin-bottom: 10px;
+  }
+}
+
+/*
+*
+* Ranking panel
+*
+*/
+
+#ranking-page > div {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+#ranking-middle-arrow {
+  width: 40px;
+  height: auto;
+  object-fit: cover;
+  margin: 0 30px;
+}
+
+#ranking-page p,
+#ranking-page span,
+#ranking-page td {
+  color: #fff;
+  font-family: $font;
+}
+
+#personal-score,
+#ranking-page > div > div:last-of-type > p {
+  text-align: center;
+  font-size: 1.2em;
+  margin: 0;
+}
+
+#personal-score + span {
+  text-align: center;
+  display: block;
+  font-size: 0.9em;
+  margin: 20px 0;
+}
+
+#worldwide-records-table img {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+}
+
+#worldwide-records-table td {
+  font-size: 1.5em;
+  padding-bottom: 20px;
+}
+
+#ranking-page > div > div:last-of-type > p {
+  margin: 0 0 20px 0;
+}
+
+#container-10-last-scores {
+  display: flex;
+  justify-content: center;
+
+  & > table {
+    margin: 0 5px;
+
+    td {
+      padding: 10px 0;
+      border-bottom: 1px solid #fff;
+    }
   }
 }

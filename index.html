@@ -20,7 +20,7 @@
       <main>
         <button class="primary with-icon" id="playNow"><i class="fa-regular fa-user"></i> Jouer maintenant</button>
         <button class="primary with-icon" id="playCoop"><i><i class="fa-regular fa-user"></i><i class="fa-regular fa-user"></i></i> Jouer en coop</button>
-        <button class="primary with-icon" id="openCredits"><i class="fa-solid fa-clapperboard"></i> Crédits</button>
+        <button class="primary with-icon" id="openCredits"><i class="fa-solid fa-clapperboard"></i> Credits</button>
       </main>
 
       <div class="corner-buttons">
@@ -29,47 +29,154 @@
       </div>
 
       <dialog>
-        <h2>Credits</h2>
-        <div>
-          <div class="author-card">
-            <img src="/assets/credits/thomas.png" alt="Photo de profile de Thomas Gysemans" />
-            <div class="author-details">
-              <h3>Thomas Gysemans</h3>
-              <span>aka ThomasG2201</span>
-              <ul>
-                <li>Groupe: S4-K</li>
-                <li>Jeu favori: Minecraft</li>
-                <li>Note: 33%</li>
-              </ul>
+        <!-- all pages should be hidden by default -->
+        <div id="credits-page" aria-hidden="true">
+          <h2>Credits</h2>
+          <div>
+            <div class="author-card">
+              <img src="/assets/credits/thomas.png" alt="Photo de profile de Thomas Gysemans" />
+              <div class="author-details">
+                <h3>Thomas Gysemans</h3>
+                <span>aka ThomasG2201</span>
+                <ul>
+                  <li>Groupe: S4-K</li>
+                  <li>Jeu favori: Minecraft</li>
+                  <li>Note: 33%</li>
+                </ul>
+              </div>
             </div>
-          </div>
 
-          <div class="author-card">
-            <img src="/assets/credits/thomas.png" alt="Photo de profile de Thomas Gysemans" />
-            <div class="author-details">
-              <h3>Thomas Gysemans</h3>
-              <span>aka ThomasG2201</span>
-              <ul>
-                <li>Groupe: S4-K</li>
-                <li>Jeu favori: Minecraft</li>
-                <li>Note: 33%</li>
-              </ul>
+            <div class="author-card">
+              <img src="/assets/credits/thomas.png" alt="Photo de profile de Thomas Gysemans" />
+              <div class="author-details">
+                <h3>Thomas Gysemans</h3>
+                <span>aka ThomasG2201</span>
+                <ul>
+                  <li>Groupe: S4-K</li>
+                  <li>Jeu favori: Minecraft</li>
+                  <li>Note: 33%</li>
+                </ul>
+              </div>
             </div>
-          </div>
 
-          <div class="author-card">
-            <img src="/assets/credits/thomas.png" alt="Photo de profile de Thomas Gysemans" />
-            <div class="author-details">
-              <h3>Thomas Gysemans</h3>
-              <span>aka ThomasG2201</span>
-              <ul>
-                <li>Groupe: S4-K</li>
-                <li>Jeu favori: Minecraft</li>
-                <li>Note: 33%</li>
-              </ul>
+            <div class="author-card">
+              <img src="/assets/credits/thomas.png" alt="Photo de profile de Thomas Gysemans" />
+              <div class="author-details">
+                <h3>Thomas Gysemans</h3>
+                <span>aka ThomasG2201</span>
+                <ul>
+                  <li>Groupe: S4-K</li>
+                  <li>Jeu favori: Minecraft</li>
+                  <li>Note: 33%</li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
+
+        <div id="ranking-page" aria-hidden="true">
+          <h2>Classement</h2>
+          <div>
+            <div>
+              <p id="personal-score">#477 Toi 341</p>
+              <span>Mondial</span>
+              <table id="worldwide-records-table">
+                <tbody>
+                  <tr>
+                    <td><img src="/assets/icons/gold-medal.svg" alt="Médaille d'or" /></td>
+                    <td>ThomasG2201</td>
+                    <td>6666</td>
+                  </tr>
+                  <tr>
+                    <td><img src="/assets/icons/silver-medal.svg" alt="Médaille d'argent" /></td>
+                    <td>SomeoneElse</td>
+                    <td>6631</td>
+                  </tr>
+                  <tr>
+                    <td><img src="/assets/icons/bronze-medal.svg" alt="Médaille de bronze" /></td>
+                    <td>SomeoneBad</td>
+                    <td>1234</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <img id="ranking-middle-arrow" src="/assets/icons/arrow.png" alt="Flèche pixelisée" />
+            <div>
+              <p>Tes 10 meilleurs scores</p>
+              <div id="container-10-last-scores">
+                <table>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <span>07/10/2028</span>
+                        <span>120</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <span>07/10/2028</span>
+                        <span>120</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <span>07/10/2028</span>
+                        <span>120</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <span>07/10/2028</span>
+                        <span>120</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <span>07/10/2028</span>
+                        <span>120</span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <table>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <span>07/10/2028</span>
+                        <span>120</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <span>07/10/2028</span>
+                        <span>120</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <span>07/10/2028</span>
+                        <span>120</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <span>07/10/2028</span>
+                        <span>120</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <span>07/10/2028</span>
+                        <span>120</span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </dialog>
     </div>
   </body>
