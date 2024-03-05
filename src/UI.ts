@@ -1,3 +1,36 @@
+class RankingTable {
+  public readonly personalScore = document.querySelector("#personal-score") as HTMLParagraphElement;
+  public readonly arrow = document.querySelector("#ranking-middle-arrow") as HTMLImageElement;
+  public readonly last10ScoresTable = document.querySelector("#container-10-last-scores") as HTMLDivElement;
+  public readonly worldWideRecordsTable = document.querySelector("#worldwide-records-table") as HTMLTableElement;
+  public readonly worldWideRecords = {
+    first: {
+      name: this.worldWideRecordsTable.querySelector("tr:nth-child(1) td:nth-child(2)") as HTMLTableCellElement,
+      highestScore: this.worldWideRecordsTable.querySelector("tr:nth-child(1) td:nth-child(3)") as HTMLTableCellElement
+    },
+    second: {
+      name: this.worldWideRecordsTable.querySelector("tr:nth-child(2) td:nth-child(2)") as HTMLTableCellElement,
+      highestScore: this.worldWideRecordsTable.querySelector("tr:nth-child(2) td:nth-child(3)") as HTMLTableCellElement
+    },
+    third: {
+      name: this.worldWideRecordsTable.querySelector("tr:nth-child(3) td:nth-child(2)") as HTMLTableCellElement,
+      highestScore: this.worldWideRecordsTable.querySelector("tr:nth-child(3) td:nth-child(3)") as HTMLTableCellElement
+    },
+  };
+
+  private removeLastScores() {
+    
+  }
+
+  private build5LastScores(scores: Score[], beginIndex: number, table: HTMLTableElement): void {
+    
+  }
+
+  public build10LastScores(scores: Score[]): void {
+    
+  }
+}
+
 /**
  * Handles the User Interface.
  * 
@@ -73,6 +106,8 @@ export default class {
     credits: this.modal.querySelector("#credits-page") as HTMLDivElement,
     ranking: this.modal.querySelector("#ranking-page") as HTMLDivElement,
   });
+
+  public static readonly rankingTable = new RankingTable();
 
   /**
    * Shows an element while respecting ARIA recommendations.

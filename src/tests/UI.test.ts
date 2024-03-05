@@ -59,9 +59,22 @@ describe("Testing the UI abstraction", async () => {
   test("should have no undefined element", () => {
     expect(UI.ui).toBeDefined();
     expect(UI.modal).toBeDefined();
+    expect(UI.rankingTable).toBeDefined();
     expect(keepUndefinedElementsOnlyFrom(UI.cornerButtons)).toHaveLength(0);
     expect(keepUndefinedElementsOnlyFrom(UI.mainButtons)).toHaveLength(0);
     expect(keepUndefinedElementsOnlyFrom(UI.modalPages)).toHaveLength(0);
+  });
+
+  test("should have a defined ranking table", () => {
+    expect(UI.rankingTable.arrow).toBeDefined();
+    expect(UI.rankingTable.last10ScoresTable).toBeDefined();
+    expect(UI.rankingTable.personalScore).toBeDefined();
+    expect(UI.rankingTable.worldWideRecords).toBeDefined();
+    expect(UI.rankingTable.worldWideRecordsTable).toBeDefined();
+    for (const key of ["first", "second", "third"]) {
+      expect(key in UI.rankingTable.worldWideRecords).toBe(true);
+      expect((UI.rankingTable.worldWideRecords as any)[key]).toBeDefined();
+    }
   });
 
   test("should be hidden", () => {
@@ -113,6 +126,46 @@ describe("Testing the UI abstraction", async () => {
     expect(UI.isModalOpen()).toBe(false);
     UI.closeModal();
     expect(UI.isModalOpen()).toBe(false);
+  });
+
+  test("should control the table of the ranking page with less than 5 scores", () => {
+    const scores = [
+      {
+        score: 55,
+        date: new Date()
+      },
+      {
+        score: 66,
+        date: new Date()
+      }
+    ];
+    UI.rankingTable.build10LastScores(scores);
+    const tables = UI.rankingTable.last10ScoresTable.querySelectorAll("table");
+    expect(tables).toHaveLength(1);
+    const trs = tables[0].querySelectorAll("tr");
+    expect(trs).toHaveLength(scores.length);
+    const td1 = trs[0].querySelectorAll("td");
+    expect(td1).toHaveLength(1);
+    const spans = td1[0].querySelectorAll("span");
+    expect(spans).toHaveLength(2);
+    expect(spans[0].textContent).toEqual(scores[0].date.toLocaleDateString());
+    expect(spans[1].textContent).toEqual(scores[0].score.toString());
+  });
+
+  test("should control the table of the ranking page with more than 5 scores", () => {
+    const scores = [
+      { score: 11, date: new Date() },
+      { score: 22, date: new Date() },
+      { score: 33, date: new Date() },
+      { score: 44, date: new Date() },
+      { score: 55, date: new Date() },
+      { score: 66, date: new Date() },
+    ];
+    UI.rankingTable.build10LastScores(scores);
+    const tables = UI.rankingTable.last10ScoresTable.querySelectorAll("table");
+    expect(tables).toHaveLength(2);
+    expect(tables[0].querySelectorAll('tr')).toHaveLength(5);
+    expect(tables[1].querySelectorAll('tr')).toHaveLength(1);
   });
 
   // Let's keep it clean :)
