@@ -19,15 +19,39 @@ class RankingTable {
   };
 
   private removeLastScores() {
-    
+    while (this.last10ScoresTable.firstChild) {
+      this.last10ScoresTable.removeChild(this.last10ScoresTable.firstChild);
+    }
   }
 
   private build5LastScores(scores: Score[], beginIndex: number, table: HTMLTableElement): void {
-    
+    for (let i = beginIndex; i < Math.min(5 + beginIndex, scores.length); i++) {
+      const tr = document.createElement("tr");
+      const td = document.createElement("td");
+      const date = document.createElement("span");
+      const highestScore = document.createElement("span");
+      highestScore.textContent = scores[i].score.toString();
+      date.textContent = scores[i].date.toLocaleDateString();
+      td.appendChild(date)
+      td.appendChild(highestScore);
+      tr.appendChild(td);
+      table.appendChild(tr);
+    }
   }
 
   public build10LastScores(scores: Score[]): void {
-    
+    this.removeLastScores();
+    if (scores.length === 0) {
+      return;
+    }
+    const table1 = document.createElement("table");
+    this.build5LastScores(scores, 0, table1);
+    this.last10ScoresTable.appendChild(table1);
+    if (scores.length > 5) {
+      const table2 = document.createElement("table");
+      this.build5LastScores(scores, 5, table2);
+      this.last10ScoresTable.appendChild(table2);
+    }
   }
 }
 
