@@ -35,4 +35,8 @@ export default class Bullet {
         this._velocity = velocity;
     }
 
+    public shoot(entity: IEntity) : void {
+        
+    }
+
 }

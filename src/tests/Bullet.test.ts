@@ -38,4 +38,12 @@ describe('Test for Bullet Class', () => {
         expect(bullet.position).toEqual(enemy.position);
         expect(bullet.velocity).toEqual(new Vector2(0, 10));
     });
+    test('should by lost hp to a player', () => {
+        const bullet: Bullet = new Bullet(new Vector2(-1, -1));
+        const player: Player = createDummyPlayer(canvas, img);
+        bullet.attachTo(createDummyEnemy(canvas, img));
+        player.hp = 5;
+        bullet.shoot(player);
+        expect(player.hp).toBe(4);
+    })
 })
