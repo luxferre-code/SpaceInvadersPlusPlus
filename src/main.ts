@@ -5,14 +5,17 @@ const canvas: HTMLCanvasElement = document.querySelector("canvas") as HTMLCanvas
 
 // Add event listener, if window is move, resize canva heigt et width
 
-function resize() : void {
+window.addEventListener("resize", () => {
     console.log("Resizing canvas.");
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-}
+});
 
-window.addEventListener("resize", resize);
-resize();
+window.addEventListener("load", () => {
+    console.log("Initializing canvas size.");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+});
 
 const context: CanvasRenderingContext2D = canvas.getContext("2d")!;
 const player: Player = new Player("Player 1", "red", canvas);
