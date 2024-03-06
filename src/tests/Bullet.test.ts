@@ -71,4 +71,22 @@ describe('Test for Bullet Class', () => {
         bullet.shoot(enemy);
         expect(enemy.isDead).toBe(false);
     });
-})
+    test('shouldn\'t kill a player if is send by a another player', () => {
+        const bullet: Bullet = new Bullet(new Vector2(-1, -1));
+        const player: Player = createDummyPlayer(canvas, img);
+        const player2: Player = createDummyPlayer(canvas, img);
+        bullet.attachTo(player);
+        player.hp = 5;
+        bullet.shoot(player2);
+        expect(player.hp).toEqual(5);
+    });
+    test('shouldn\'t kill a enemy if is send by a another enemy', () => {
+        const bullet: Bullet = new Bullet(new Vector2(-1, -1));
+        const enemy: Enemy = createDummyEnemy(canvas, img);
+        const enemy2: Enemy = createDummyEnemy(canvas, img);
+        bullet.attachTo(enemy);
+        expect(enemy.isDead).toBe(false);
+        bullet.shoot(enemy2);
+        expect(enemy.isDead).toBe(false);
+    });
+});
