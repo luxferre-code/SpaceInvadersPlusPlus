@@ -12,6 +12,7 @@
   "devDependencies": {
     "@types/node": "^20.11.24",
     "happy-dom": "^13.6.2",
+    "rollup": "^4.12.1",
     "sass": "^1.71.1",
     "typescript": "^5.2.2",
     "vite": "^5.1.4",
