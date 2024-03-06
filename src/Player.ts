@@ -1,12 +1,13 @@
 import Bullet from "./Bullet";
 import { Controls } from "./Controls";
+import IEntity from "./IEntity";
 import Sprite2D from "./Sprite2D";
 import Vector2 from "./Vector2";
 
 /**
  * Class representing a player
  */
-export default class Player extends Sprite2D {
+export default class Player extends Sprite2D implements IEntity {
     public static maxSpeed: number = 20;
 
     private static _maxHP: number = 5;
@@ -142,6 +143,10 @@ export default class Player extends Sprite2D {
 
     public shoot() : Bullet {
         return new Bullet(this._position);
+    }
+
+    public isPlayer(): boolean {
+        return true;
     }
 
 }

@@ -1,8 +1,9 @@
+import IEntity from "./IEntity";
 import Player from "./Player";
 import Sprite2D from "./Sprite2D";
 import Vector2 from "./Vector2";
 
-export default class Enemy extends Sprite2D {
+export default class Enemy extends Sprite2D implements IEntity {
     private static _horizontally: boolean = true;
 
     private _position: Vector2;
@@ -15,6 +16,10 @@ export default class Enemy extends Sprite2D {
         super(canvas, skin);
         this._position = position;
         this._speed = speed;
+    }
+
+    public isPlayer(): boolean {
+        return false;
     }
 
     public static generateRandomXPosition(canvas: HTMLCanvasElement) : Vector2 {

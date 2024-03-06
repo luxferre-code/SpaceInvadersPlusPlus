@@ -1,3 +1,4 @@
+import IEntity from "./IEntity";
 import Player from "./Player";
 import Vector2 from "./Vector2";
 
@@ -18,10 +19,20 @@ export default class Bullet {
     public get velocity() : Vector2 { return this._velocity; }
     public get owner() : any { return this._owner; }
 
-    public attachTo(player: Player) : void {
-        this._owner = player;
-        this._position = player.position;
-        this._velocity = new Vector2(!Bullet._isVertical ? Bullet._bulletSpeed : 0, Bullet._isVertical ? -Bullet._bulletSpeed : 0);
+    public attachTo(entity: IEntity) : void {
+        this._owner = entity;
+        this._position = entity.position;
+        const velocity: Vector2 = new Vector2(0, 0);
+        let xVelocity = 0;
+        let yVelocity = 0;
+        if (Bullet._isVertical) {
+            yVelocity = entity.isPlayer() ? -Bullet._bulletSpeed : Bullet._bulletSpeed;
+        } else {
+            xVelocity = entity.isPlayer() ? -Bullet._bulletSpeed : Bullet._bulletSpeed;
+        }
+        velocity.x = xVelocity;
+        velocity.y = yVelocity;
+        this._velocity = velocity;
     }
 
 }
