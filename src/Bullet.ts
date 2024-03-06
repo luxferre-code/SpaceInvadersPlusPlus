@@ -1,3 +1,4 @@
+import Enemy from "./Enemy";
 import IEntity from "./IEntity";
 import Player from "./Player";
 import Vector2 from "./Vector2";
@@ -36,10 +37,13 @@ export default class Bullet {
     }
 
     public shoot(entity: IEntity) : void {
-        if(entity.isPlayer() == this._owner.isPlayer()) return;
+        if(entity == null || this._owner == null || entity.isPlayer() == this._owner.isPlayer()) return;
         if(entity.isPlayer()) {
             const player: Player = entity as Player;
             player.hp--;
+        } else {
+            const enemy: Enemy = entity as Enemy;
+            enemy.killedBy(this._owner);
         }
     }
 
