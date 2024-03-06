@@ -5,7 +5,12 @@ import Sprite2D from "./Sprite2D";
 import Vector2 from "./Vector2";
 
 /**
- * Class representing a player
+ * Player class  -   This class represents the player entity in the game.
+ * 
+ * @author Valentin THUILLIER <valentin.thuillier.etu@univ-lille.fr>
+ * @extends Sprite2D
+ * @implements IEntity
+ * @version 1.0.0
  */
 export default class Player extends Sprite2D implements IEntity {
     public static maxSpeed: number = 20;
@@ -129,6 +134,9 @@ export default class Player extends Sprite2D implements IEntity {
         if(!this.horizontalMovement) this.speed = new Vector2(this.speed.x, this.speed.y * 0.9);
     }
 
+    /**
+     * Method to render the player
+     */
     public render() : void {
         this._context.fillStyle = this._color;
         this._context.beginPath();
@@ -141,6 +149,10 @@ export default class Player extends Sprite2D implements IEntity {
         this._context.fill();
     }
 
+    /**
+     * Method to shoot a bullet
+     * @returns     {Bullet}    The bullet shot
+     */
     public shoot() : Bullet {
         return new Bullet(this._position);
     }

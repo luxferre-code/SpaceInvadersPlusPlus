@@ -3,6 +3,12 @@ import IEntity from "./IEntity";
 import Player from "./Player";
 import Vector2 from "./Vector2";
 
+/**
+ * Bullet class  -   This class represents a bullet in the game.
+ * 
+ * @author Valentin THUILLIER <valentin.thuillier.etu@univ-lille.fr>
+ * @version 1.0.0
+ */
 export default class Bullet {
 
     private _position: Vector2;
@@ -20,6 +26,10 @@ export default class Bullet {
     public get velocity() : Vector2 { return this._velocity; }
     public get owner() : any { return this._owner; }
 
+    /**
+     * This method attach this bullet to an entity and set its position and velocity.
+     * @param entity    {IEntity}   -   The entity to attach the bullet to.
+     */
     public attachTo(entity: IEntity) : void {
         this._owner = entity;
         this._position = entity.position;
@@ -36,6 +46,11 @@ export default class Bullet {
         this._velocity = velocity;
     }
 
+    /**
+     * This method shoot an entity.
+     * @param entity    {IEntity}   -   The entity to shoot.
+     * @returns     {void}
+     */
     public shoot(entity: IEntity) : void {
         if(entity == null || this._owner == null || entity.isPlayer() == this._owner.isPlayer()) return;
         if(entity.isPlayer()) {
