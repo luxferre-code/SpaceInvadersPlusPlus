@@ -1,9 +1,10 @@
 import { describe, test, expect } from "vitest";
 import Bullet from "../Bullet";
 import Vector2 from "../Vector2";
-import { createDummyPlayer } from "./lib/createDummyObjects";
+import { createDummyEnemy, createDummyPlayer } from "./lib/createDummyObjects";
 import { createFakeCanvas, createHTMLImage } from "./lib/createHTMLElement";
 import Player from "../Player";
+import Enemy from "../Enemy";
 
 describe('Test for Bullet Class', () => {
     const canvas = createFakeCanvas();
@@ -28,5 +29,13 @@ describe('Test for Bullet Class', () => {
         Bullet._isVertical = true;
         expect(bullet.position).toEqual(player.position);
         expect(bullet.velocity).toEqual(new Vector2(0, -10));
+    });
+    test('should by attached to a enemy', () => {
+        const bullet: Bullet = new Bullet(new Vector2(-1, -1));
+        const enemy: Enemy = createDummyEnemy(canvas, img);
+        bullet.attachTo(enemy);
+        Bullet._isVertical = true;
+        expect(bullet.position).toEqual(enemy.position);
+        expect(bullet.velocity).toEqual(new Vector2(0, 10));
     });
 })
