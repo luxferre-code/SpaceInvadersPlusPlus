@@ -141,8 +141,7 @@ export default class Player extends Sprite2D {
     }
 
     public shoot() : Bullet {
-
-        return new Bullet(new Vector2(-1, -1));
+        return new Bullet(this._position);
     }
 
 }
