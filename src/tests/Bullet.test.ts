@@ -62,5 +62,13 @@ describe('Test for Bullet Class', () => {
         player.hp = 5;
         bullet.shoot(player);
         expect(player.hp).toEqual(5);
-    })
+    });
+    test('shouldn\'t kill a enemy if is send by himself', () => {
+        const bullet: Bullet = new Bullet(new Vector2(-1, -1));
+        const enemy: Enemy = createDummyEnemy(canvas, img);
+        bullet.attachTo(enemy);
+        expect(enemy.isDead).toBe(false);
+        bullet.shoot(enemy);
+        expect(enemy.isDead).toBe(false);
+    });
 })
