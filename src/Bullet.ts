@@ -7,7 +7,7 @@ export default class Bullet {
     private static _isVertical: boolean = true;
 
     constructor(position: Vector2) {
-        this._position = new Vector2(-1, -1);
+        this._position = position;
         this._velocity = new Vector2(0, 0);
     }
 
