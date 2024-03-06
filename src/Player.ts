@@ -1,3 +1,4 @@
+import Bullet from "./Bullet";
 import { Controls } from "./Controls";
 import Sprite2D from "./Sprite2D";
 import Vector2 from "./Vector2";
@@ -138,4 +139,10 @@ export default class Player extends Sprite2D {
         }
         this._context.fill();
     }
+
+    public shoot() : Bullet {
+
+        return new Bullet(new Vector2(-1, -1));
+    }
+
 }

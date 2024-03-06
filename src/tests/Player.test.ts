@@ -3,6 +3,7 @@ import { createFakeCanvas, createHTMLImage } from "./lib/createHTMLElement";
 import { createDummyPlayer } from "./lib/createDummyObjects";
 import Player from '../Player';
 import Vector2 from "../Vector2";
+import Bullet from "../Bullet";
 
 describe("Tests for Player class", () => {
     const canvas = createFakeCanvas();
@@ -111,5 +112,14 @@ describe("Tests for Player class", () => {
         player.move()
         expect(player.speed.x).toEqual(90);
         expect(player.speed.y).toEqual(90);
+    });
+    test('should can shoot', () => {
+        const player: Player = createDummyPlayer(canvas, img);
+        Bullet._isVertical = true;
+        Bullet._bulletSpeed = 10;
+        const bullet: Bullet = player.shoot();
+        expect(bullet).toBeDefined();
+        expect(bullet.position).toEqual(player.position);
+        expect(bullet.velocity).toEqual(new Vector2(0, -10));
     });
 });
