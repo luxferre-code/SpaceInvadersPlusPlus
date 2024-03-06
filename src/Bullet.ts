@@ -9,9 +9,9 @@ export default class Bullet {
     public static _isVertical: boolean = true;
     public static _bulletSpeed: number = 10;
 
-    constructor(position: Vector2) {
+    constructor(position: Vector2 = new Vector2(0, 0), velocity: Vector2 = new Vector2(!Bullet._isVertical ? Bullet._bulletSpeed : 0, Bullet._isVertical ? -Bullet._bulletSpeed : 0)) {
         this._position = position;
-        this._velocity = new Vector2(0, 0);
+        this._velocity = velocity;
     }
 
     public get position() : Vector2 { return this._position; }
