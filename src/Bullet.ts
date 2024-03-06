@@ -36,7 +36,11 @@ export default class Bullet {
     }
 
     public shoot(entity: IEntity) : void {
-        
+        if(entity.isPlayer() == this._owner.isPlayer()) return;
+        if(entity.isPlayer()) {
+            const player: Player = entity as Player;
+            player.hp--;
+        }
     }
 
 }
