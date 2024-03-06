@@ -45,5 +45,14 @@ describe('Test for Bullet Class', () => {
         player.hp = 5;
         bullet.shoot(player);
         expect(player.hp).toBe(4);
-    })
+    });
+    test('should by kill a enemy', () => {
+        const bullet: Bullet = new Bullet(new Vector2(-1, -1));
+        const player: Player = createDummyPlayer(canvas, img);
+        const enemy: Enemy = createDummyEnemy(canvas, img);
+        bullet.attachTo(player);
+        expect(enemy.isDead).toBe(false);
+        bullet.shoot(enemy);
+        expect(enemy.isDead).toBe(true);
+    });
 })
