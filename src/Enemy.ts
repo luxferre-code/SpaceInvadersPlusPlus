@@ -87,4 +87,9 @@ export default class Enemy extends Sprite2D implements IEntity {
         }
         this._context.fill();
     }
+
+    public get canvas() : HTMLCanvasElement { return this._canvas; }
+    public get context() : CanvasRenderingContext2D { return this._context; }
+    public get image() : HTMLImageElement { return this._skin; }
+    
 } 

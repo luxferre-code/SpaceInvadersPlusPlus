@@ -13,7 +13,7 @@ import Vector2 from "./Vector2";
  * @version 1.0.0
  */
 export default class Player extends Sprite2D implements IEntity {
-    public static maxSpeed: number = 20;
+    public static readonly maxSpeed: number = 20;
 
     private static _maxHP: number = 5;
     private static _speedAcceleration: number = 1;
@@ -154,11 +154,16 @@ export default class Player extends Sprite2D implements IEntity {
      * @returns     {Bullet}    The bullet shot
      */
     public shoot() : Bullet {
-        return new Bullet(this._position);
+        return new Bullet(this._canvas, this._position);
     }
 
     public isPlayer(): boolean {
         return true;
     }
+
+    public get canvas() : HTMLCanvasElement { return this._context.canvas; }
+    public get context() : CanvasRenderingContext2D { return this._context; }
+    public get image() : HTMLImageElement { return this._skin; }
+
 
 }

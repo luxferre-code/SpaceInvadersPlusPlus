@@ -10,5 +10,8 @@ export default interface IEntity {
     isPlayer() : boolean;
 
     get position() : Vector2;
+    get canvas() : HTMLCanvasElement;
+    get context() : CanvasRenderingContext2D;
+    get image() : HTMLImageElement;
 
 }
