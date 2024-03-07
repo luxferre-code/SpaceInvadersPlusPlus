@@ -1,8 +1,35 @@
+/**
+ * Controls the last 10 highest scores of the player
+ * that are shown in the ranking table (in the modal).
+ */
 class RankingTable {
+  /**
+   * The personal highest score of the player.
+   */
   public readonly personalScore = document.querySelector("#personal-score") as HTMLParagraphElement;
+
+  /**
+   * The arrow in the middle that plays the role of an indicator.
+   * It's not displayed when the screen is too small for it.
+   */
   public readonly arrow = document.querySelector("#ranking-middle-arrow") as HTMLImageElement;
+
+  /**
+   * The last 10 highest scores of a player.
+   * This div contains two tables where 5 scores
+   * are displayed in each of them.
+   */
   public readonly last10ScoresTable = document.querySelector("#container-10-last-scores") as HTMLDivElement;
+
+  /**
+   * A table for the three highest scores
+   * of the entire game and their pseudos.
+   */
   public readonly worldWideRecordsTable = document.querySelector("#worldwide-records-table") as HTMLTableElement;
+
+  /**
+   * The elements within {@link worldWideRecordsTable}
+   */
   public readonly worldWideRecords = {
     first: {
       name: this.worldWideRecordsTable.querySelector("tr:nth-child(1) td:nth-child(2)") as HTMLTableCellElement,
@@ -18,38 +45,56 @@ class RankingTable {
     },
   };
 
+  /**
+   * Removes all elements in {@link last10ScoresTable}
+   */
   private removeLastScores() {
     while (this.last10ScoresTable.firstChild) {
       this.last10ScoresTable.removeChild(this.last10ScoresTable.firstChild);
     }
   }
 
-  private build5LastScores(scores: Score[], beginIndex: number, table: HTMLTableElement): void {
-    for (let i = beginIndex; i < Math.min(5 + beginIndex, scores.length); i++) {
+  /**
+   * Adds 5 scores (at most) to a table.
+   * @param scores The 10 highest scores of a player (but not necessarily 10 elements).
+   * @param beginIndex The starting index in `scores`.
+   * @param table The table element being built.
+   */
+  private build5LastScores(scores: Score[], beginIndex: number): HTMLTableElement {
+    const table = document.createElement("table");
+    const tbody = document.createElement("tbody");
+    for (let i = beginIndex; i < 5 + beginIndex; i++) {
+      const sc = scores.at(i);
       const tr = document.createElement("tr");
       const td = document.createElement("td");
       const date = document.createElement("span");
       const highestScore = document.createElement("span");
-      highestScore.textContent = scores[i].score.toString();
-      date.textContent = scores[i].date.toLocaleDateString();
+      if (sc !== undefined) {
+        highestScore.textContent = sc.score.toString();
+        date.textContent = sc.date.toLocaleDateString();
+      }
       td.appendChild(date)
       td.appendChild(highestScore);
       tr.appendChild(td);
-      table.appendChild(tr);
+      tbody.appendChild(tr);
     }
+    table.appendChild(tbody);
+    return table;
   }
 
+  /**
+   * Build the 10 highest scores in {@link last10ScoresTable}.
+   * @param scores The 10 highest scores of a player.
+   */
   public build10LastScores(scores: Score[]): void {
     this.removeLastScores();
     if (scores.length === 0) {
       return;
     }
-    const table1 = document.createElement("table");
-    this.build5LastScores(scores, 0, table1);
+    const table1 = this.build5LastScores(scores, 0);
     this.last10ScoresTable.appendChild(table1);
     if (scores.length > 5) {
-      const table2 = document.createElement("table");
-      this.build5LastScores(scores, 5, table2);
+      const table2 = this.build5LastScores(scores, 5);
       this.last10ScoresTable.appendChild(table2);
     }
   }
@@ -131,6 +176,10 @@ export default class {
     ranking: this.modal.querySelector("#ranking-page") as HTMLDivElement,
   });
 
+  /**
+   * The 10 highest scores of a player
+   * in the ranking page of the modal.
+   */
   public static readonly rankingTable = new RankingTable();
 
   /**

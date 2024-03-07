@@ -4,6 +4,19 @@ import UI from "./UI";
 
 UI.bindEvents();
 
+const dummyScores: Score[] = [
+    { score: 1000, date: new Date() },
+    { score: 2000, date: new Date() },
+    { score: 3000, date: new Date() },
+    { score: 4000, date: new Date() },
+    { score: 5000, date: new Date() },
+    { score: 6000, date: new Date() },
+    { score: 7000, date: new Date() },
+    { score: 8000, date: new Date() },
+];
+
+UI.rankingTable.build10LastScores(dummyScores);
+
 const canvas: HTMLCanvasElement = document.querySelector("canvas") as HTMLCanvasElement;
 
 // Set this varialbe to `false` to allow the UI to appear.

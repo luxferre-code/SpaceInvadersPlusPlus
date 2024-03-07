@@ -142,8 +142,8 @@ describe("Testing the UI abstraction", async () => {
     UI.rankingTable.build10LastScores(scores);
     const tables = UI.rankingTable.last10ScoresTable.querySelectorAll("table");
     expect(tables).toHaveLength(1);
-    const trs = tables[0].querySelectorAll("tr");
-    expect(trs).toHaveLength(scores.length);
+    const trs = tables[0].querySelectorAll("tbody > tr");
+    expect(trs).toHaveLength(5);
     const td1 = trs[0].querySelectorAll("td");
     expect(td1).toHaveLength(1);
     const spans = td1[0].querySelectorAll("span");
@@ -164,8 +164,9 @@ describe("Testing the UI abstraction", async () => {
     UI.rankingTable.build10LastScores(scores);
     const tables = UI.rankingTable.last10ScoresTable.querySelectorAll("table");
     expect(tables).toHaveLength(2);
-    expect(tables[0].querySelectorAll('tr')).toHaveLength(5);
-    expect(tables[1].querySelectorAll('tr')).toHaveLength(1);
+    expect(tables[0].querySelectorAll('tbody > tr')).toHaveLength(5);
+    expect(tables[1].querySelectorAll('tbody > tr')).toHaveLength(5);
+    expect(tables[1].querySelectorAll('tbody > tr:nth-child(3) > span')).toHaveLength(0);
   });
 
   // Let's keep it clean :)

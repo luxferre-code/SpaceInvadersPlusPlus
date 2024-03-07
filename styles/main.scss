@@ -227,8 +227,12 @@ main button {
     margin: 0 5px;
 
     td {
-      padding: 10px 0;
+      padding: 8px 0;
       border-bottom: 1px solid #fff;
+
+      span:first-of-type {
+        margin-right: 10px;
+      }
     }
   }
 }
