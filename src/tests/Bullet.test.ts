@@ -89,4 +89,11 @@ describe('Test for Bullet Class', () => {
         bullet.shoot(enemy2);
         expect(enemy.isDead).toBe(false);
     });
+    test('if is attach, should by have the canvas and a image', () => {
+        const bullet: Bullet = new Bullet(new Vector2(-1, -1));
+        const player: Player = createDummyPlayer(canvas, img);
+        bullet.attachTo(player);
+        expect(bullet.canvas).toBeDefined();
+        expect(bullet.image).toBeDefined();
+    });
 });
