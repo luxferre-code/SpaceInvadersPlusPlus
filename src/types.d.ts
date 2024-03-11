@@ -1,4 +1,4 @@
-import type UI from "./ui/UI";
+import type RankingTable from "./ui/RankingPage";
 import type Ranking from "./models/Ranking";
 
 declare global {
@@ -25,7 +25,7 @@ declare global {
   // helper type to make iterating over the
   // properties of an object which has properties
   // named "first", "second" and "third" easier.
-  type RankingKey = keyof typeof UI.rankingTable.worldWideRecords;
+  type RankingKey = keyof typeof RankingTable.worldWideRecords;
 }
 
 export {};

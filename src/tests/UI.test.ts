@@ -47,6 +47,7 @@ describe("Testing the UI abstraction", async () => {
   // there would not be any way to change that.
   const UI = (await import("../ui/UI")).default;
   const SettingsPage = (await import("../ui/SettingsPage")).default;
+  const RankingPage = (await import("../ui/RankingPage")).default;
   const SettingsDB = (await import("../server/SettingsDB")).default;
 
   // The player settings shared for the entire test suite.
@@ -70,26 +71,9 @@ describe("Testing the UI abstraction", async () => {
   test("should have no undefined element", () => {
     expect(UI.ui == null).toBe(false);
     expect(UI.modal == null).toBe(false);
-    expect(UI.rankingTable == null).toBe(false);
     expect(keepUndefinedElementsOnlyFrom(UI.cornerButtons)).toHaveLength(0);
     expect(keepUndefinedElementsOnlyFrom(UI.mainButtons)).toHaveLength(0);
     expect(keepUndefinedElementsOnlyFrom(UI.modalPages)).toHaveLength(0);
-  });
-
-  test("should have a defined ranking table", () => {
-    expect(UI.rankingTable.personalScore == null).toBe(false);
-    expect(UI.rankingTable.personalScoreBtn == null).toBe(false);
-    expect(UI.rankingTable.personalRank == null).toBe(false);
-    expect(UI.rankingTable.arrow == null).toBe(false);
-    expect(UI.rankingTable.last10ScoresTable == null).toBe(false);
-    expect(UI.rankingTable.last10ScoresLabel == null).toBe(false);
-    expect(UI.rankingTable.worldWideRecordsTable == null).toBe(false);
-    expect(UI.rankingTable.worldWideRecords == null).toBe(false);
-    for (const key of (["first", "second", "third"] as RankingKey[])) {
-      expect(key in UI.rankingTable.worldWideRecords).toBe(true);
-      expect(UI.rankingTable.worldWideRecords[key].name).not.toBeNull();
-      expect(UI.rankingTable.worldWideRecords[key].highestScore == null).toBe(false);
-    }
   });
 
   test("should be hidden", () => {
@@ -143,6 +127,22 @@ describe("Testing the UI abstraction", async () => {
     expect(UI.isModalOpen()).toBe(false);
   });
 
+  test("should have a defined ranking page", () => {
+    expect(RankingPage.personalScore == null).toBe(false);
+    expect(RankingPage.personalScoreBtn == null).toBe(false);
+    expect(RankingPage.personalRank == null).toBe(false);
+    expect(RankingPage.arrow == null).toBe(false);
+    expect(RankingPage.last10ScoresTable == null).toBe(false);
+    expect(RankingPage.last10ScoresLabel == null).toBe(false);
+    expect(RankingPage.worldWideRecordsTable == null).toBe(false);
+    expect(RankingPage.worldWideRecords == null).toBe(false);
+    for (const key of (["first", "second", "third"] as RankingKey[])) {
+      expect(key in RankingPage.worldWideRecords).toBe(true);
+      expect(RankingPage.worldWideRecords[key].name).not.toBeNull();
+      expect(RankingPage.worldWideRecords[key].highestScore == null).toBe(false);
+    }
+  });
+
   test("should control the table of the ranking page with less than 5 scores", () => {
     const scores = [
       {
@@ -154,8 +154,8 @@ describe("Testing the UI abstraction", async () => {
         date: new Date()
       }
     ];
-    UI.rankingTable.build10LastScores(scores);
-    const tables = UI.rankingTable.last10ScoresTable.querySelectorAll("table");
+    RankingPage.build10LastScores(scores);
+    const tables = RankingPage.last10ScoresTable.querySelectorAll("table");
     expect(tables).toHaveLength(2);
     const trs = tables[0].querySelectorAll("tbody > tr");
     expect(trs).toHaveLength(5);
@@ -176,8 +176,8 @@ describe("Testing the UI abstraction", async () => {
       { score: 55, date: new Date() },
       { score: 66, date: new Date() },
     ];
-    UI.rankingTable.build10LastScores(scores);
-    const tables = UI.rankingTable.last10ScoresTable.querySelectorAll("table");
+    RankingPage.build10LastScores(scores);
+    const tables = RankingPage.last10ScoresTable.querySelectorAll("table");
     expect(tables).toHaveLength(2);
     expect(tables[0].querySelectorAll('tbody > tr')).toHaveLength(5);
     expect(tables[1].querySelectorAll('tbody > tr')).toHaveLength(5);

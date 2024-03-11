@@ -1,4 +1,4 @@
-import RankingTable from "./RankingTable";
+import RankingTable from "./RankingPage";
 
 /**
  * Handles the User Interface.
@@ -76,11 +76,6 @@ export default class {
     ranking: this.modal.querySelector("#ranking-page") as HTMLDivElement,
     settings: this.modal.querySelector("#settings-page") as HTMLDivElement
   });
-
-  /**
-   * The ranking page of the modal.
-   */
-  public static readonly rankingTable = new RankingTable();
 
   /**
    * Shows an element while respecting ARIA recommendations.
@@ -200,10 +195,10 @@ export default class {
 
       // Events related to the ranking table
       for (const key of ["first", "second", "third"]) {
-        const btn = this.rankingTable.worldWideRecords[key as RankingKey].name;
+        const btn = RankingTable.worldWideRecords[key as RankingKey].name;
         btn.addEventListener('click', () => this.moveArrowToElement(btn));
       }
-      this.rankingTable.personalScoreBtn.addEventListener('click', () => this.moveArrowToElement(this.rankingTable.personalScoreBtn));
+      RankingTable.personalScoreBtn.addEventListener('click', () => this.moveArrowToElement(RankingTable.personalScoreBtn));
 
       this.initialized = true;
     }
@@ -242,10 +237,10 @@ export default class {
    * displayed in the table of the last 10 highest scores.
    */
   public static moveArrowToElement(element: HTMLElement) {
-    const heightDifference = this.rankingTable.arrow.getBoundingClientRect().height / 4;
+    const heightDifference = RankingTable.arrow.getBoundingClientRect().height / 4;
     const modalY = this.modal.getBoundingClientRect().y;
     const y = element.getBoundingClientRect().y;
-    this.rankingTable.arrow.style.position = "absolute";
-    this.rankingTable.arrow.style.top = (y - modalY - heightDifference) + "px";
+    RankingTable.arrow.style.position = "absolute";
+    RankingTable.arrow.style.top = (y - modalY - heightDifference) + "px";
   }
 }

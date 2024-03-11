@@ -1,5 +1,6 @@
 import SettingsDB from "./server/SettingsDB";
 import SettingsPage from "./ui/SettingsPage";
+import RankingPage from "./ui/RankingPage";
 import RankingDB from "./server/RankingDB";
 import Player from "./Player";
 import Enemy from "./Enemy";
@@ -14,7 +15,7 @@ const rankings = RankingDB.fetchRankingsAndScores();
 // Display that into the ranking table.
 // Even if the data is empty, the initWith()
 // method has to be called.
-UI.rankingTable.initWith(rankings);
+RankingPage.initWith(rankings);
 
 SettingsPage.initWith(SettingsDB.cloned);
 SettingsPage.listenToNameChange((newName) => SettingsDB.name = newName);

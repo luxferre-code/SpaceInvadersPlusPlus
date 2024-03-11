@@ -9,47 +9,47 @@ export default class {
   /**
    * The personal highest score of the player.
    */
-  public readonly personalScore = document.querySelector("#personal-score") as HTMLSpanElement;
+  public static readonly personalScore = document.querySelector("#personal-score") as HTMLSpanElement;
 
   /**
    * The personal score button.
    * The goal of this button is to display the last 10 highest scores of the player.
    */
-  public readonly personalScoreBtn = document.querySelector("#your-scores-btn") as HTMLButtonElement;
+  public static readonly personalScoreBtn = document.querySelector("#your-scores-btn") as HTMLButtonElement;
 
   /**
    * The rank of the current player.
    */
-  public readonly personalRank = document.querySelector("#personal-rank") as HTMLSpanElement;
+  public static readonly personalRank = document.querySelector("#personal-rank") as HTMLSpanElement;
 
   /**
    * The arrow in the middle that plays the role of an indicator.
    * It's not displayed when the screen is too small for it.
    */
-  public readonly arrow = document.querySelector("#ranking-middle-arrow") as HTMLImageElement;
+  public static readonly arrow = document.querySelector("#ranking-middle-arrow") as HTMLImageElement;
 
   /**
    * The last 10 highest scores of a player.
    * This div contains two tables where 5 scores
    * are displayed in each of them.
    */
-  public readonly last10ScoresTable = document.querySelector("#container-10-last-scores") as HTMLDivElement;
+  public static readonly last10ScoresTable = document.querySelector("#container-10-last-scores") as HTMLDivElement;
 
   /**
    * The label above the last 10 highest scores table.
    */
-  public readonly last10ScoresLabel = document.querySelector("#last-scores-label") as HTMLParagraphElement;
+  public static readonly last10ScoresLabel = document.querySelector("#last-scores-label") as HTMLParagraphElement;
 
   /**
    * A table for the three highest scores
    * of the entire game and their pseudos.
    */
-  public readonly worldWideRecordsTable = document.querySelector("#worldwide-records-table") as HTMLTableElement;
+  public static readonly worldWideRecordsTable = document.querySelector("#worldwide-records-table") as HTMLTableElement;
 
   /**
    * The elements within {@link worldWideRecordsTable}
    */
-  public readonly worldWideRecords = {
+  public static readonly worldWideRecords = {
     first: {
       name: this.worldWideRecordsTable.querySelector("#records-first-player-btn") as HTMLButtonElement,
       highestScore: this.worldWideRecordsTable.querySelector("tr:nth-child(1) td:last-of-type") as HTMLTableCellElement
@@ -67,7 +67,7 @@ export default class {
   /**
    * Removes all elements in {@link last10ScoresTable}
    */
-  private removeLastScores() {
+  private static removeLastScores() {
     while (this.last10ScoresTable.firstChild) {
       this.last10ScoresTable.removeChild(this.last10ScoresTable.firstChild);
     }
@@ -79,7 +79,7 @@ export default class {
    * @param beginIndex The starting index in `scores`.
    * @param table The table element being built.
    */
-  private build5LastScores(scores: Score[], beginIndex: number): HTMLTableElement {
+  private static build5LastScores(scores: Score[], beginIndex: number): HTMLTableElement {
     const table = document.createElement("table");
     const tbody = document.createElement("tbody");
     for (let i = beginIndex; i < 5 + beginIndex; i++) {
@@ -105,7 +105,7 @@ export default class {
    * Build the 10 highest scores in {@link last10ScoresTable}.
    * @param scores The 10 highest scores of a player.
    */
-  public build10LastScores(scores: Score[]): void {
+  public static build10LastScores(scores: Score[]): void {
     this.removeLastScores();
     this.last10ScoresTable.appendChild(this.build5LastScores(scores, 0));
     this.last10ScoresTable.appendChild(this.build5LastScores(scores, 5));
@@ -117,7 +117,7 @@ export default class {
    * the scores of the current player, etc. This data is stored on the database
    * and retrieved as an object of type "Rankings" (which is a custom type).
    */
-  public initWith(rankings: Rankings) {
+  public static initWith(rankings: Rankings) {
     // First, initialize the event bindings.
     // Indeed, when the player clicks on the name
     // of the first record holder, then its 10 last
