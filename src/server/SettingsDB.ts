@@ -1,3 +1,5 @@
+import { Skin, SkinMaximum } from "../Skins";
+
 /**
  * Handles the player's settings.
  */
@@ -14,7 +16,7 @@ export default class {
       effectsVolume: 50,
       musicVolume: 50,
       name: "Anonymous",
-      skin: 0
+      skin: Skin.RED
     };
     this.saveSettings(defaults);
     return defaults;
@@ -50,7 +52,7 @@ export default class {
       parsingResult.musicVolume >= 0 && parsingResult.musicVolume <= 100 &&
       parsingResult.effectsVolume >= 0 && parsingResult.effectsVolume <= 100 &&
       parsingResult.name.length <= 20 &&
-      parsingResult.skin >= 0; // TODO: make sure it's a valid skin
+      parsingResult.skin >= 0 && parsingResult.skin <= SkinMaximum; // TODO: make sure it's a valid skin
   }
 
   /**
@@ -71,12 +73,12 @@ export default class {
 
   public static get cloned(): PlayerSettings { return structuredClone(this.settings); }
   public static get name(): string { return this.settings.name; }
-  public static get skin(): number { return this.settings.skin; }
+  public static get skin(): Skin { return this.settings.skin; }
   public static get musicVolume(): number { return this.settings.musicVolume; }
   public static get effectsVolume(): number { return this.settings.effectsVolume; }
 
   public static set name(newName: string) { this.settings.name = newName; this.saveSettings(); }
-  public static set skin(newSkin: number) { this.settings.skin = newSkin; this.saveSettings(); }
+  public static set skin(newSkin: Skin) { this.settings.skin = newSkin; this.saveSettings(); }
   public static set musicVolume(newMusicVolume: number) { this.settings.musicVolume = newMusicVolume; this.saveSettings(); }
   public static set effectsVolume(newEffectsVolume: number) { this.settings.effectsVolume = newEffectsVolume; this.saveSettings(); }
 }

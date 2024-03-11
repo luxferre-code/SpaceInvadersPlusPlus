@@ -1,10 +1,11 @@
 import type RankingTable from "./ui/RankingPage";
 import type Ranking from "./models/Ranking";
+import type { Skin } from "./Skins";
 
 declare global {
   interface PlayerSettings {
     name: string;
-    skin: number;
+    skin: Skin;
     musicVolume: number;
     effectsVolume: number;
   }

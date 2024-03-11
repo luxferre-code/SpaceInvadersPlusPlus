@@ -2,6 +2,7 @@ import { readFile } from "fs/promises";
 import { describe, expect, test } from "vitest";
 import { Browser } from "happy-dom";
 import createHTMLElement from "./lib/createHTMLElement";
+import { Skin } from "../Skins";
 
 describe("Testing the UI abstraction", async () => {
   function keepUndefinedElementsOnlyFrom(o: Object) {
@@ -232,12 +233,12 @@ describe("Testing the UI abstraction", async () => {
     SettingsDB.name = "Yoyo";
     SettingsDB.effectsVolume = 10;
     SettingsDB.musicVolume = 0;
-    SettingsDB.skin = 2;
+    SettingsDB.skin = Skin.PURPLE;
     const parsed = JSON.parse(localStorage.getItem("SpaceInvadersPlayerSettings")!) as PlayerSettings;
     expect(parsed.effectsVolume).toEqual(10);
     expect(parsed.musicVolume).toEqual(0);
     expect(parsed.name).toEqual("Yoyo");
-    expect(parsed.skin).toEqual(2);
+    expect(parsed.skin).toEqual(Skin.PURPLE);
   });
 
   // Let's keep it clean :)

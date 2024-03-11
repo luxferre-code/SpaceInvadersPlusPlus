@@ -1,3 +1,5 @@
+import type { Skin } from "../Skins";
+
 /**
  * Handles the player's settings page in the modal.
  */
@@ -79,7 +81,7 @@ export default class {
    * The callback is not triggered if the player clicks
    * on the skin he has already selected.
    */
-  public static listenToSkinChange(callback: (newSkin: number) => void) {
+  public static listenToSkinChange(callback: (newSkin: Skin) => void) {
     for (let i = 0; i < this.skinChoices.length; i++) {
       this.skinChoices[i].addEventListener('click', (e) => {
         if (e.target && !(e.target as Element).isSameNode(this.currentSkinChoice)) {
