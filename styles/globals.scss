@@ -37,3 +37,19 @@ button.primary.icon-only {
   padding: 0;
   margin-left: 20px;
 }
+
+/*
+*
+* Inputs (text, number)
+*
+*/
+
+input[type="text"] {
+  border: 2px solid $primary-color;
+  border-radius: 10px;
+  background: $input-background-color;
+  padding: 10px 10px 10px 15px;
+  color: #fff;
+  font-family: $font;
+  font-size: 1.1em;
+}

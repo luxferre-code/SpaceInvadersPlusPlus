@@ -1,0 +1,91 @@
+@import "root.scss";
+@import "mixins.scss";
+
+#settings-page > div {
+  padding: 0 20px;
+}
+
+#settings-page h2,
+#settings-page p,
+#settings-page label,
+#settings-page span {
+  color: #fff;
+  font-family: $font;
+}
+
+#settings-page h2 {
+  font-size: 1.8em;
+  margin: 0 0 20px 0;
+}
+
+#settings-page > div > h2 + div {
+  display: flex;
+  align-items: center;
+}
+
+#settings-page label {
+  display: inline-block;
+  max-width: 350px;
+  margin-right: 20px;
+}
+
+.skins-grid {
+  margin: 30px 0;
+  padding: 0 30px;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  column-gap: 30px;
+  place-items: center;
+  place-content: center;
+}
+
+.skin-choice {
+  cursor: pointer;
+  background: $primary-shade;
+  border: 2px solid $primary-color;
+  border-radius: 10px;
+  padding: 30px;
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  opacity: 0.5;
+  transition: opacity 200ms ease;
+
+  &[data-selected],
+  &:hover,
+  &:focus {
+    opacity: 1;
+  }
+
+  img {
+    width: auto;
+    height: 80px;
+  }
+}
+
+.audio-settings {
+  padding: 0 30px;
+  display: flex;
+  flex-direction: column;
+}
+
+.audio-settings > div {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  
+  &:first-of-type {
+    margin-bottom: 25px;
+  }
+
+  label {
+    min-width: 130px;
+    max-width: 150px;
+    @include text-ellipsis();
+  }
+}
+
+.audio-settings input {
+  width: 100%;
+}

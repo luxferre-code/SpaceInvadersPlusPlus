@@ -74,6 +74,7 @@ export default class {
   public static readonly modalPages = Object.freeze({
     credits: this.modal.querySelector("#credits-page") as HTMLDivElement,
     ranking: this.modal.querySelector("#ranking-page") as HTMLDivElement,
+    settings: this.modal.querySelector("#settings-page") as HTMLDivElement
   });
 
   /**
@@ -184,6 +185,7 @@ export default class {
 
       // Events related to the corner buttons
       this.cornerButtons.rankings.addEventListener('click', () => this.showModal(this.modalPages.ranking));
+      this.cornerButtons.playerSettings.addEventListener('click', () => this.showModal(this.modalPages.settings));
 
       // Events related to the modal
       this.modal.addEventListener('mousedown', this.handleClosingModalWhenClickBackdrop.bind(this));

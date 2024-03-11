@@ -115,6 +115,39 @@
           </div>
         </div>
 
+        <div id="settings-page" aria-hidden="true">
+          <div>
+            <h2>• Customisation</h2>
+            <div>
+              <label for="settings-name-input">Pseudonyme (visible dans le classement et auprès d’autres joueurs en mode Coop) :</label>
+              <input type="text" id="settings-name-input" maxlength="20" />
+            </div>
+            <p>Votre skin</p>
+            <div class="skins-grid">
+              <button type="button" class="skin-choice">
+                <img src="/assets/skins/hd/skin-red.png" alt="Skin SpaceInvaders Red" />
+              </button>
+              <button type="button" class="skin-choice">
+                <img src="/assets/skins/hd/skin-green.png" alt="Skin SpaceInvaders Green" />
+              </button>
+              <button type="button" class="skin-choice">
+                <img src="/assets/skins/hd/skin-purple.png" alt="Skin SpaceInvaders Purple" />
+              </button>
+            </div>
+            <h2>• Audio et effets sonores</h2>
+            <div class="audio-settings">
+              <div>
+                <label for="music-input">Musique (5%)</label>
+                <input type="range" id="music-input" min="0" max="100" />
+              </div>
+              <div>
+                <label for="effects-input">Effets (5%)</label>
+                <input type="range" id="effects-input" min="0" max="100" />
+              </div>
+            </div>
+          </div>
+        </div>
+
       </dialog>
     </div>
   </body>
