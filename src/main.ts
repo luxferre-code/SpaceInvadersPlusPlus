@@ -1,3 +1,5 @@
+import SettingsDB from "./server/SettingsDB";
+import SettingsPage from "./ui/SettingsPage";
 import RankingDB from "./server/RankingDB";
 import Player from "./Player";
 import Enemy from "./Enemy";
@@ -13,6 +15,10 @@ const rankings = RankingDB.fetchRankingsAndScores();
 // Even if the data is empty, the initWith()
 // method has to be called.
 UI.rankingTable.initWith(rankings);
+
+SettingsDB.fetchPlayerSettings();
+SettingsPage.initWith(SettingsDB.cloned);
+SettingsPage.listenToNameChange((newName) => SettingsDB.name = newName);
 
 const canvas: HTMLCanvasElement = document.querySelector("canvas") as HTMLCanvasElement;
 

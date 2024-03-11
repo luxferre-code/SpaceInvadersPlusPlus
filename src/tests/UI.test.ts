@@ -45,9 +45,18 @@ describe("Testing the UI abstraction", async () => {
   // and since the objects are frozen & readonly
   // there would not be any way to change that.
   const UI = (await import("../ui/UI")).default;
+  const SettingsPage = (await import("../ui/SettingsPage")).default;
+
+  // The player settings shared for the entire test suite.
+  const settings: PlayerSettings = {
+    effectsVolume: 60,
+    musicVolume: 20,
+    name: "Thomas",
+    skin: 1
+  };
 
   test("should have initialized UI correctly in this simulation", () => {
-    expect(UI).not.toEqual(null);
+    expect(UI == null).toBe(false);
   });
 
   test("should have frozen all inner objects", () => {
@@ -57,27 +66,27 @@ describe("Testing the UI abstraction", async () => {
   });
 
   test("should have no undefined element", () => {
-    expect(UI.ui).not.toEqual(null);
-    expect(UI.modal).not.toEqual(null);
-    expect(UI.rankingTable).not.toEqual(null);
+    expect(UI.ui == null).toBe(false);
+    expect(UI.modal == null).toBe(false);
+    expect(UI.rankingTable == null).toBe(false);
     expect(keepUndefinedElementsOnlyFrom(UI.cornerButtons)).toHaveLength(0);
     expect(keepUndefinedElementsOnlyFrom(UI.mainButtons)).toHaveLength(0);
     expect(keepUndefinedElementsOnlyFrom(UI.modalPages)).toHaveLength(0);
   });
 
   test("should have a defined ranking table", () => {
-    expect(UI.rankingTable.personalScore).not.toEqual(null);
-    expect(UI.rankingTable.personalScoreBtn).not.toEqual(null);
-    expect(UI.rankingTable.personalRank).not.toEqual(null);
-    expect(UI.rankingTable.arrow).not.toEqual(null);
-    expect(UI.rankingTable.last10ScoresTable).not.toEqual(null);
-    expect(UI.rankingTable.last10ScoresLabel).not.toEqual(null);
-    expect(UI.rankingTable.worldWideRecordsTable).not.toEqual(null);
-    expect(UI.rankingTable.worldWideRecords).not.toEqual(null);
+    expect(UI.rankingTable.personalScore == null).toBe(false);
+    expect(UI.rankingTable.personalScoreBtn == null).toBe(false);
+    expect(UI.rankingTable.personalRank == null).toBe(false);
+    expect(UI.rankingTable.arrow == null).toBe(false);
+    expect(UI.rankingTable.last10ScoresTable == null).toBe(false);
+    expect(UI.rankingTable.last10ScoresLabel == null).toBe(false);
+    expect(UI.rankingTable.worldWideRecordsTable == null).toBe(false);
+    expect(UI.rankingTable.worldWideRecords == null).toBe(false);
     for (const key of (["first", "second", "third"] as RankingKey[])) {
       expect(key in UI.rankingTable.worldWideRecords).toBe(true);
       expect(UI.rankingTable.worldWideRecords[key].name).not.toBeNull();
-      expect(UI.rankingTable.worldWideRecords[key].highestScore).not.toEqual(null);
+      expect(UI.rankingTable.worldWideRecords[key].highestScore == null).toBe(false);
     }
   });
 
@@ -171,6 +180,45 @@ describe("Testing the UI abstraction", async () => {
     expect(tables[0].querySelectorAll('tbody > tr')).toHaveLength(5);
     expect(tables[1].querySelectorAll('tbody > tr')).toHaveLength(5);
     expect(tables[1].querySelectorAll('tbody > tr:nth-child(3) span')).toHaveLength(2);
+  });
+
+  test("shouldn't have any undefined field in SettingsPage", () => {
+    expect(SettingsPage.inputName == null).toBe(false);
+    expect(SettingsPage.skinChoices == null).toBe(false);
+    expect(SettingsPage.skinChoices).toHaveLength(3);
+    expect(SettingsPage.musicInput == null).toBe(false);
+    expect(SettingsPage.effectsInput == null).toBe(false);
+  });
+
+  test("should initialize SettingsPage correctly with initial settings", () => {
+    SettingsPage.initWith(settings);
+    expect(SettingsPage.inputName.value).toStrictEqual(settings.name);
+    expect(SettingsPage.skinChoices[1].classList.contains("selected")).toBe(true);
+    expect(SettingsPage.musicInput.value).toEqual(settings.musicVolume.toString());
+    expect(SettingsPage.effectsInput.value).toEqual(settings.effectsVolume.toString());
+  });
+
+  test("should listen to skin changes", () => {
+    expect(SettingsPage.skinChoices[settings.skin].classList.contains("selected")).toBe(true);
+    expect(SettingsPage.skinChoices[0].classList.contains("selected")).toBe(false);
+    expect(SettingsPage.skinChoices[2].classList.contains("selected")).toBe(false);
+    SettingsPage.listenToSkinChange((newSkin) => {
+      expect(SettingsPage.skinChoices[0].classList.contains("selected")).toBe(false);
+      expect(SettingsPage.skinChoices[1].classList.contains("selected")).toBe(false);
+      expect(SettingsPage.skinChoices[newSkin].classList.contains("selected")).toBe(true);
+      console.log("clicked");
+    });
+    SettingsPage.skinChoices[2].click();
+  });
+
+  test("should force change the name and not trigger the listener", () => {
+    SettingsPage.listenToSkinChange((_) => {
+      expect(true).toBe(false);
+      console.log("godo");
+    });
+    SettingsPage.forceChangePlayerName("NewName");
+    expect(SettingsPage.inputName.value).toStrictEqual("NewName");
+    // SettingsPage.skinChoices[2].click();
   });
 
   // Let's keep it clean :)

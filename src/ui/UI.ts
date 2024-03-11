@@ -78,8 +78,7 @@ export default class {
   });
 
   /**
-   * The 10 highest scores of a player
-   * in the ranking page of the modal.
+   * The ranking page of the modal.
    */
   public static readonly rankingTable = new RankingTable();
 
