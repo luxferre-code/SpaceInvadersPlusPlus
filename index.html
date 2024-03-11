@@ -78,31 +78,33 @@
           <h2>Classement</h2>
           <div>
             <div>
-              <p id="personal-score">#477 Toi 341</p>
+              <p>#<span id="personal-rank"></span> <button type="button" id="your-scores-btn">Toi</button> <span id="personal-score"></span></p>
               <span>Mondial</span>
               <table id="worldwide-records-table">
                 <tbody>
                   <tr>
                     <td><img src="/assets/icons/gold-medal.svg" alt="Médaille d'or" /></td>
-                    <td>ThomasG2201</td>
-                    <td>6666</td>
+                    <td><button type="button" id="records-first-player-btn"></button></td>
+                    <td></td>
                   </tr>
                   <tr>
                     <td><img src="/assets/icons/silver-medal.svg" alt="Médaille d'argent" /></td>
-                    <td>SomeoneElse</td>
-                    <td>6631</td>
+                    <td><button type="button" id="records-second-player-btn"></button></td>
+                    <td></td>
                   </tr>
                   <tr>
                     <td><img src="/assets/icons/bronze-medal.svg" alt="Médaille de bronze" /></td>
-                    <td>SomeoneBad</td>
-                    <td>1234</td>
+                    <td><button type="button" id="records-third-player-btn"></button></td>
+                    <td></td>
                   </tr>
                 </tbody>
               </table>
             </div>
-            <img id="ranking-middle-arrow" src="/assets/icons/arrow.png" alt="Flèche pixelisée" />
             <div>
-              <p>Tes 10 meilleurs scores</p>
+              <img id="ranking-middle-arrow" src="/assets/icons/arrow.png" alt="Flèche pixelisée" />
+            </div>
+            <div>
+              <p id="last-scores-label">Tes 10 meilleurs scores</p>
               <div id="container-10-last-scores">
                 <!-- will get populated by JS -->
               </div>

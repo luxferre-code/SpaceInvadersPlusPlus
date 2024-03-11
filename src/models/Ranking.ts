@@ -25,6 +25,13 @@ export default class {
    * Gets the highest score (as a number).
    */
   public getBestScore(): number {
+    if (this.scores.length === 0) {
+      return 0;
+    }
     return this.scores[0].score;
+  }
+
+  public getScores(): Score[] {
+    return this.scores;
   }
 }

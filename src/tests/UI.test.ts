@@ -47,7 +47,7 @@ describe("Testing the UI abstraction", async () => {
   const UI = (await import("../UI")).default;
 
   test("should have initialized UI correctly in this simulation", () => {
-    expect(UI).toBeDefined();
+    expect(UI).not.toEqual(null);
   });
 
   test("should have frozen all inner objects", () => {
@@ -57,23 +57,27 @@ describe("Testing the UI abstraction", async () => {
   });
 
   test("should have no undefined element", () => {
-    expect(UI.ui).toBeDefined();
-    expect(UI.modal).toBeDefined();
-    expect(UI.rankingTable).toBeDefined();
+    expect(UI.ui).not.toEqual(null);
+    expect(UI.modal).not.toEqual(null);
+    expect(UI.rankingTable).not.toEqual(null);
     expect(keepUndefinedElementsOnlyFrom(UI.cornerButtons)).toHaveLength(0);
     expect(keepUndefinedElementsOnlyFrom(UI.mainButtons)).toHaveLength(0);
     expect(keepUndefinedElementsOnlyFrom(UI.modalPages)).toHaveLength(0);
   });
 
   test("should have a defined ranking table", () => {
-    expect(UI.rankingTable.arrow).toBeDefined();
-    expect(UI.rankingTable.last10ScoresTable).toBeDefined();
-    expect(UI.rankingTable.personalScore).toBeDefined();
-    expect(UI.rankingTable.worldWideRecords).toBeDefined();
-    expect(UI.rankingTable.worldWideRecordsTable).toBeDefined();
-    for (const key of ["first", "second", "third"]) {
+    expect(UI.rankingTable.personalScore).not.toEqual(null);
+    expect(UI.rankingTable.personalScoreBtn).not.toEqual(null);
+    expect(UI.rankingTable.personalRank).not.toEqual(null);
+    expect(UI.rankingTable.arrow).not.toEqual(null);
+    expect(UI.rankingTable.last10ScoresTable).not.toEqual(null);
+    expect(UI.rankingTable.last10ScoresLabel).not.toEqual(null);
+    expect(UI.rankingTable.worldWideRecordsTable).not.toEqual(null);
+    expect(UI.rankingTable.worldWideRecords).not.toEqual(null);
+    for (const key of (["first", "second", "third"] as RankingKey[])) {
       expect(key in UI.rankingTable.worldWideRecords).toBe(true);
-      expect((UI.rankingTable.worldWideRecords as any)[key]).toBeDefined();
+      expect(UI.rankingTable.worldWideRecords[key].name).not.toBeNull();
+      expect(UI.rankingTable.worldWideRecords[key].highestScore).not.toEqual(null);
     }
   });
 
@@ -141,7 +145,7 @@ describe("Testing the UI abstraction", async () => {
     ];
     UI.rankingTable.build10LastScores(scores);
     const tables = UI.rankingTable.last10ScoresTable.querySelectorAll("table");
-    expect(tables).toHaveLength(1);
+    expect(tables).toHaveLength(2);
     const trs = tables[0].querySelectorAll("tbody > tr");
     expect(trs).toHaveLength(5);
     const td1 = trs[0].querySelectorAll("td");
@@ -166,7 +170,7 @@ describe("Testing the UI abstraction", async () => {
     expect(tables).toHaveLength(2);
     expect(tables[0].querySelectorAll('tbody > tr')).toHaveLength(5);
     expect(tables[1].querySelectorAll('tbody > tr')).toHaveLength(5);
-    expect(tables[1].querySelectorAll('tbody > tr:nth-child(3) > span')).toHaveLength(0);
+    expect(tables[1].querySelectorAll('tbody > tr:nth-child(3) span')).toHaveLength(2);
   });
 
   // Let's keep it clean :)

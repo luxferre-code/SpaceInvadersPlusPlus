@@ -1,21 +1,18 @@
-import Enemy from "./Enemy";
+import RankingDB from "./server/RankingDB";
 import Player from "./Player";
+import Enemy from "./Enemy";
 import UI from "./UI";
 
+// Allow the button to be interactive.
+// Without it, the buttons wouldn't work.
 UI.bindEvents();
 
-const dummyScores: Score[] = [
-    { score: 1000, date: new Date() },
-    { score: 2000, date: new Date() },
-    { score: 3000, date: new Date() },
-    { score: 4000, date: new Date() },
-    { score: 5000, date: new Date() },
-    { score: 6000, date: new Date() },
-    { score: 7000, date: new Date() },
-    { score: 8000, date: new Date() },
-];
-
-UI.rankingTable.build10LastScores(dummyScores);
+// Fetch the rankings from the database.
+const rankings = RankingDB.fetchRankingsAndScores();
+// Display that into the ranking table.
+// Even if the data is empty, the initWith()
+// method has to be called.
+UI.rankingTable.initWith(rankings);
 
 const canvas: HTMLCanvasElement = document.querySelector("canvas") as HTMLCanvasElement;
 
@@ -25,7 +22,7 @@ const canvas: HTMLCanvasElement = document.querySelector("canvas") as HTMLCanvas
 // This variable will have to be removed entirely later on.
 const playing = false;
 
-// Add event listener, if window is move, resize canva height et width
+// Add event listener, if window is being moved, resize canva height et width
 
 function resize() : void {
     console.log("Resizing canvas.");
