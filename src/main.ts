@@ -1,7 +1,7 @@
 import RankingDB from "./server/RankingDB";
 import Player from "./Player";
 import Enemy from "./Enemy";
-import UI from "./UI";
+import UI from "./ui/UI";
 
 // Allow the button to be interactive.
 // Without it, the buttons wouldn't work.

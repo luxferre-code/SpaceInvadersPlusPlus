@@ -44,7 +44,7 @@ describe("Testing the UI abstraction", async () => {
   // then the `document` property would not be the right one,
   // and since the objects are frozen & readonly
   // there would not be any way to change that.
-  const UI = (await import("../UI")).default;
+  const UI = (await import("../ui/UI")).default;
 
   test("should have initialized UI correctly in this simulation", () => {
     expect(UI).not.toEqual(null);

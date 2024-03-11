@@ -1,4 +1,4 @@
-import type UI from "./UI";
+import type UI from "./ui/UI";
 import type Ranking from "./models/Ranking";
 
 declare global {
