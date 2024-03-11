@@ -36,6 +36,7 @@ describe("Testing the UI abstraction", async () => {
   // It basically simulates the DOM.
   const document = page.mainFrame.document;
   (globalThis as any).document = document;
+  (globalThis as any).localStorage = page.mainFrame.window.localStorage;
 
   // It has to be imported this way
   // because the static properties get evaluated 
@@ -46,6 +47,7 @@ describe("Testing the UI abstraction", async () => {
   // there would not be any way to change that.
   const UI = (await import("../ui/UI")).default;
   const SettingsPage = (await import("../ui/SettingsPage")).default;
+  const SettingsDB = (await import("../server/SettingsDB")).default;
 
   // The player settings shared for the entire test suite.
   const settings: PlayerSettings = {
@@ -211,14 +213,31 @@ describe("Testing the UI abstraction", async () => {
     SettingsPage.skinChoices[2].click();
   });
 
-  test("should force change the name and not trigger the listener", () => {
-    SettingsPage.listenToSkinChange((_) => {
-      expect(true).toBe(false);
-      console.log("godo");
-    });
+  test("should force change the name", () => {
     SettingsPage.forceChangePlayerName("NewName");
     expect(SettingsPage.inputName.value).toStrictEqual("NewName");
-    // SettingsPage.skinChoices[2].click();
+  });
+
+  test("should have default settings stored in local storage", () => {
+    expect(localStorage.getItem("SpaceInvadersPlayerSettings")).not.toEqual(null);
+    const parsed = JSON.parse(localStorage.getItem("SpaceInvadersPlayerSettings")!) as PlayerSettings;
+    expect(parsed.effectsVolume).toEqual(SettingsDB.effectsVolume);
+    expect(parsed.musicVolume).toEqual(SettingsDB.musicVolume);
+    expect(parsed.name).toEqual(SettingsDB.name);
+    expect(parsed.skin).toEqual(SettingsDB.skin);
+  });
+
+  test("should save changes to local storage", () => {
+    expect(localStorage.getItem("SpaceInvadersPlayerSettings")).not.toEqual(null);
+    SettingsDB.name = "Yoyo";
+    SettingsDB.effectsVolume = 10;
+    SettingsDB.musicVolume = 0;
+    SettingsDB.skin = 2;
+    const parsed = JSON.parse(localStorage.getItem("SpaceInvadersPlayerSettings")!) as PlayerSettings;
+    expect(parsed.effectsVolume).toEqual(10);
+    expect(parsed.musicVolume).toEqual(0);
+    expect(parsed.name).toEqual("Yoyo");
+    expect(parsed.skin).toEqual(2);
   });
 
   // Let's keep it clean :)

@@ -16,9 +16,11 @@ const rankings = RankingDB.fetchRankingsAndScores();
 // method has to be called.
 UI.rankingTable.initWith(rankings);
 
-SettingsDB.fetchPlayerSettings();
 SettingsPage.initWith(SettingsDB.cloned);
 SettingsPage.listenToNameChange((newName) => SettingsDB.name = newName);
+SettingsPage.listenToEffectsVolumeChange((newVolume) => SettingsDB.effectsVolume = newVolume);
+SettingsPage.listenToMusicVolumeChange((newVolume) => SettingsDB.musicVolume = newVolume);
+SettingsPage.listenToSkinChange((newSkin) => SettingsDB.skin = newSkin);
 
 const canvas: HTMLCanvasElement = document.querySelector("canvas") as HTMLCanvasElement;
 

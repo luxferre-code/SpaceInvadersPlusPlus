@@ -49,6 +49,9 @@ export default class {
         let newValue: number = 0;
         try {
           newValue = parseInt(input.value);
+          if (Number.isNaN(newValue)) {
+            throw new Error("");
+          }
         } catch (_) {
           console.warn("Attempting to corrupt audio slider.");
         }
