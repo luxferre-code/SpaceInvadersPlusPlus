@@ -1,6 +1,7 @@
 import Enemy from "./Enemy";
 import Game from "./Game";
 import Player from "./Player";
+import Vector2 from "./Vector2";
 
 const canvas: HTMLCanvasElement = document.querySelector("canvas") as HTMLCanvasElement;
 
@@ -16,6 +17,7 @@ window.addEventListener("load", () => {
     console.log("Initializing canvas size.");
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
+    player.position = new Vector2(canvas.width / 2 - 25, canvas.height - canvas.height / 4);
 });
 
 const context: CanvasRenderingContext2D = canvas.getContext("2d")!;
@@ -25,8 +27,6 @@ const enemy : Enemy = new Enemy(canvas);
 const game : Game = new Game(canvas);
 game.addEntity(player);
 game.addEntity(enemy);
-
-console.log(player.toString());
 
 function render() {
     context.clearRect(0, 0, canvas.width, canvas.height);
