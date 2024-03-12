@@ -8,5 +8,6 @@ export const enum Controls {
   UP = "ArrowUp",
   DOWN = "ArrowDown",
   LEFT = "ArrowLeft",
-  RIGHT = "ArrowRight"
+  RIGHT = "ArrowRight",
+  SHOOT = "Space"
 }

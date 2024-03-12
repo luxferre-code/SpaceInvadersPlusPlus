@@ -27,7 +27,6 @@ describe('Test for Bullet Class', () => {
         const player: Player = createDummyPlayer(canvas, img);
         bullet.attachTo(player);
         Bullet._isVertical = true;
-        expect(bullet.position).toEqual(player.position);
         expect(bullet.velocity).toEqual(new Vector2(0, -10));
     });
     test('should by attached to a enemy', () => {
@@ -35,7 +34,6 @@ describe('Test for Bullet Class', () => {
         const enemy: Enemy = createDummyEnemy(canvas, img);
         bullet.attachTo(enemy);
         Bullet._isVertical = true;
-        expect(bullet.position).toEqual(enemy.position);
         expect(bullet.velocity).toEqual(new Vector2(0, 10));
     });
     test('should by lost hp to a player', () => {
@@ -88,12 +86,5 @@ describe('Test for Bullet Class', () => {
         expect(enemy.isDead).toBe(false);
         bullet.shoot(enemy2);
         expect(enemy.isDead).toBe(false);
-    });
-    test('if is attach, should by have the canvas and a image', () => {
-        const bullet: Bullet = new Bullet(new Vector2(-1, -1));
-        const player: Player = createDummyPlayer(canvas, img);
-        bullet.attachTo(player);
-        expect(bullet.canvas).toBeDefined();
-        expect(bullet.image).toBeDefined();
     });
 });

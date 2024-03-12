@@ -14,12 +14,19 @@ export default class Bullet {
     private _position: Vector2;
     private _velocity: Vector2;
     private _owner : any;
+    private _image: HTMLImageElement;
+    private _imageLoaded: boolean = false;
     public static _isVertical: boolean = true;
     public static _bulletSpeed: number = 10;
 
     constructor(position: Vector2 = new Vector2(0, 0), velocity: Vector2 = new Vector2(!Bullet._isVertical ? Bullet._bulletSpeed : 0, Bullet._isVertical ? -Bullet._bulletSpeed : 0)) {
         this._position = position;
         this._velocity = velocity;
+        this._image = new Image();
+        this._image.src = "assets/bullet.png";
+        this._image.onload = () => {
+            this._imageLoaded = true;
+        }
     }
 
     public get position() : Vector2 { return this._position; }
@@ -32,7 +39,6 @@ export default class Bullet {
      */
     public attachTo(entity: IEntity) : void {
         this._owner = entity;
-        this._position = entity.position;
         const velocity: Vector2 = new Vector2(0, 0);
         let xVelocity = 0;
         let yVelocity = 0;
@@ -60,6 +66,19 @@ export default class Bullet {
             const enemy: Enemy = entity as Enemy;
             enemy.killedBy(this._owner);
         }
+    }
+
+    public render(context: CanvasRenderingContext2D) : void {
+        if(!this._imageLoaded) {
+            context.fillStyle = "white";
+            context.beginPath();
+            context.arc(this._position.add(new Vector2(5, 0)).x, this._position.y, 5, 0, 2 * Math.PI);
+            context.fill();
+            context.closePath();
+        }
+
+
+        this._position = this.position.add(this.velocity);
     }
 
 }
