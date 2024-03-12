@@ -51,11 +51,10 @@ describe("Tests for Player class", () => {
     test("should move with a speed limiter", () => {
         const player = createDummyPlayer(canvas, img);
         player.speed = new Vector2(10000, 10000);
-        Player.maxSpeed = 20;
         player.forceImageLoaded();
         player.move();
-        expect(player.position.x).toEqual(20);
-        expect(player.position.y).toEqual(20);
+        expect(player.position.x).toEqual(Player.maxSpeed);
+        expect(player.position.y).toEqual(Player.maxSpeed);
     });
     
     test("should move with a negative speed", () => {
@@ -73,7 +72,6 @@ describe("Tests for Player class", () => {
         player.speed = new Vector2(-10000, -10000);
         player.position = new Vector2(20, 20);
         player.forceImageLoaded();
-        Player.maxSpeed = 20;
         player.move();
         expect(player.position.x).toEqual(0);
         expect(player.position.y).toEqual(0);
