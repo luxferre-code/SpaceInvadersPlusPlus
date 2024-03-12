@@ -1,0 +1,56 @@
+@import "root.scss";
+@import "mixins.scss";
+
+#credits-page > h2,
+#ranking-page > h2 {
+  color: #fff;
+  font-size: 2em;
+  text-align: center;
+  font-family: $font;
+  margin: 0 0 50px 0;
+}
+
+#credits-page > div {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  place-items: center;
+  place-content: center;
+}
+
+#credits-page .author-card {
+  @include vertical-center();
+}
+
+#credits-page .author-card > img {
+  width: 150px;
+  height: 150px;
+  user-select: none;
+  pointer-events: none;
+  border-radius: 50%;
+}
+
+#credits-page .author-details * {
+  color: #fff;
+  font-family: $font;
+}
+
+#credits-page .author-details > h3 {
+  text-align: center;
+  margin: 20px 0 10px 0;
+}
+
+#credits-page .author-details > span {
+  display: block;
+  text-align: center;
+  font-size: 0.9em;
+  opacity: .5;
+  margin-bottom: 20px;
+}
+
+#credits-page .author-details ul {
+  @include reset-list();
+
+  li {
+    margin-bottom: 10px;
+  }
+}
