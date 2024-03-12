@@ -1,3 +1,5 @@
+import Bullet from "./Bullet";
+import Game from "./Game";
 import IEntity from "./IEntity";
 import Player from "./Player";
 import Sprite2D from "./Sprite2D";
@@ -19,6 +21,9 @@ export default class Enemy extends Sprite2D implements IEntity {
     private _dead: boolean = false;
     private _hp: number = 1;
     private _scoreToGive: number = 10;
+    private static _shootProbability: number = 0.05;
+    private _canShoot: boolean = true;
+    public static readonly TIMEOUT_SHOOT: number = 500;
 
     constructor(canvas: HTMLCanvasElement, position: Vector2 = Enemy.generateRandomXPosition(canvas), speed: Vector2 = new Vector2(Enemy._horizontally ? 0 : 10, Enemy._horizontally ? 10 : 0), skin: HTMLImageElement = new Image()) {
         super(canvas, skin);
@@ -70,14 +75,35 @@ export default class Enemy extends Sprite2D implements IEntity {
             console.log("Moving horizontally");
             this._position.y += this._speed.y;
         } else {
-            //TODO
+            console.log("Moving vertically");
+            this._position.x += this._speed.x;
         }
+        if(Enemy._shootProbability > Math.random()) {
+            console.log("Shooting");
+            this.shoot();
+        }
+    }
+
+    public shoot() : void {
+        if(!this._canShoot) return;
+        const bullet: Bullet = new Bullet(this._position);
+        bullet.attachTo(this);
+        this._canShoot = false;
+        setTimeout(() => {
+            this._canShoot = true;
+        }, Enemy.TIMEOUT_SHOOT);
+        Game.this.addBullet(bullet);
+    }
+
+    public move() : void {
+        this.next();
     }
 
     /**
      * This method renders the enemy on the canvas.
      */
     public render() : void {
+        if(this._dead) return;
         this._context.beginPath();
         // Draw image if is loaded
         if(this._imageLoaded) this._context.drawImage(this._skin, this._position.x, this._position.y, 50, 50);

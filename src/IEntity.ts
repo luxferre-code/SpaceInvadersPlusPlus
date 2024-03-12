@@ -11,4 +11,8 @@ export default interface IEntity {
 
     get position() : Vector2;
 
+    render() : void;
+
+    move() : void;
+
 }

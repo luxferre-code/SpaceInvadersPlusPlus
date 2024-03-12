@@ -1,5 +1,6 @@
 import Bullet from "./Bullet";
 import { Controls } from "./Controls";
+import Game from "./Game";
 import IEntity from "./IEntity";
 import Sprite2D from "./Sprite2D";
 import Vector2 from "./Vector2";
@@ -28,7 +29,7 @@ export default class Player extends Sprite2D implements IEntity {
     private _speed: Vector2;
     private _bullets: Bullet[] = [];
     private _canShoot: boolean = true;
-    public static readonly TIMEOUT_SHOOT: number = 50000;
+    public static readonly TIMEOUT_SHOOT: number = 500;
 
     constructor(name: string, color: string, canvas: HTMLCanvasElement, position = new Vector2(), disableControls = false, skin = new Image()) {
         super(canvas, skin);
@@ -177,7 +178,9 @@ export default class Player extends Sprite2D implements IEntity {
         setTimeout(() => {
             this._canShoot = true;
         }, Player.TIMEOUT_SHOOT);
-        this._bullets.push(bullet);
+        if(Game.this != null) {
+            Game.this.addBullet(bullet);
+        }
     }
 
     public isPlayer(): boolean {

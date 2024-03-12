@@ -17,7 +17,7 @@ export default class Bullet {
     private _image: HTMLImageElement;
     private _imageLoaded: boolean = false;
     public static _isVertical: boolean = true;
-    public static _bulletSpeed: number = 10;
+    public static _bulletSpeed: number = 30;
 
     constructor(position: Vector2 = new Vector2(0, 0), velocity: Vector2 = new Vector2(!Bullet._isVertical ? Bullet._bulletSpeed : 0, Bullet._isVertical ? -Bullet._bulletSpeed : 0)) {
         this._position = position;
@@ -76,8 +76,9 @@ export default class Bullet {
             context.fill();
             context.closePath();
         }
+    }
 
-
+    public move() : void {
         this._position = this.position.add(this.velocity);
     }
 
