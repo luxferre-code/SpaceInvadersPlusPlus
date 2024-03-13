@@ -30,6 +30,13 @@ export default class Player extends Sprite2D implements IEntity {
     private _bullets: Bullet[] = [];
     private _canShoot: boolean = true;
     public static readonly TIMEOUT_SHOOT: number = 500;
+    private _movement = {
+        up: false,
+        down: false,
+        left: false,
+        right: false
+    }
+    private static readonly TIMEOUT_MOVEMENT: number = 1000 / 60;
 
     constructor(name: string, color: string, canvas: HTMLCanvasElement, position = new Vector2(), disableControls = false, skin = new Image()) {
         super(canvas, skin);
@@ -44,28 +51,22 @@ export default class Player extends Sprite2D implements IEntity {
         }
     }
 
-    /**
-     * TODO: Modifier pour que quand on clique, il affecte un boolean sur la touche, puis tout les X ms, il mets à jour la variable
-     * Et quand on relache, il desactive le boolean
-     */
+    
     private initializeMovementControls() : void {
         window.addEventListener("keydown", (e: KeyboardEvent) => {
-            if (e.key === Controls.UP && -this._speed.y < Player.maxSpeed) {
-                this._speed.y -= Player._speedAcceleration;
-                this._verticalMovement = true;
+            if(e.key === Controls.UP && this._speed.y > -Player.maxSpeed) {
+                this._movement.up = true;
             }
-            if (e.key === Controls.DOWN && this._speed.y < Player.maxSpeed) {
-                this._speed.y += Player._speedAcceleration;
-                this._verticalMovement = true;
+            if(e.key === Controls.DOWN && this._speed.y < Player.maxSpeed) {
+                this._movement.down = true;
             }
-            if (e.key === Controls.LEFT && -this._speed.x < Player.maxSpeed) {
-                this._speed.x -= Player._speedAcceleration;
-                this._horizontalMovement = true;
+            if(e.key === Controls.LEFT && this._speed.x > -Player.maxSpeed) {
+                this._movement.left = true;
             }
-            if (e.key === Controls.RIGHT && this._speed.x < Player.maxSpeed) {
-                this._speed.x += Player._speedAcceleration;
-                this._horizontalMovement = true;
+            if(e.key === Controls.RIGHT && this._speed.x < Player.maxSpeed) {
+                this._movement.right = true;
             }
+
             if(e.code === Controls.SHOOT) {
                 console.log("Shoot by " + this.name);
                 this.shoot();
@@ -73,9 +74,19 @@ export default class Player extends Sprite2D implements IEntity {
         });
 
         window.addEventListener("keyup", (e: KeyboardEvent) => {
-            if(e.key === Controls.UP || e.key === Controls.DOWN) this._verticalMovement = false;
-            if(e.key === Controls.LEFT || e.key === Controls.RIGHT) this._horizontalMovement = false;
+            if(e.key === Controls.UP) this._movement.up = false;
+            if(e.key === Controls.DOWN) this._movement.down = false;
+            if(e.key === Controls.LEFT) this._movement.left = false;
+            if(e.key === Controls.RIGHT) this._movement.right = false;
         });
+
+        setInterval(() => {
+            if(this._movement.up) this.speed = new Vector2(this.speed.x, this.speed.y - Player._speedAcceleration);
+            if(this._movement.down) this.speed = new Vector2(this.speed.x, this.speed.y + Player._speedAcceleration);
+            if(this._movement.left) this.speed = new Vector2(this.speed.x - Player._speedAcceleration, this.speed.y);
+            if(this._movement.right) this.speed = new Vector2(this.speed.x + Player._speedAcceleration, this.speed.y);
+        }, Player.TIMEOUT_MOVEMENT);
+
     }
 
     public get name() : string { return this._name; }
