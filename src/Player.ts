@@ -44,6 +44,10 @@ export default class Player extends Sprite2D implements IEntity {
         }
     }
 
+    /**
+     * TODO: Modifier pour que quand on clique, il affecte un boolean sur la touche, puis tout les X ms, il mets à jour la variable
+     * Et quand on relache, il desactive le boolean
+     */
     private initializeMovementControls() : void {
         window.addEventListener("keydown", (e: KeyboardEvent) => {
             if (e.key === Controls.UP && -this._speed.y < Player.maxSpeed) {
