@@ -27,7 +27,6 @@ export default class Player extends Sprite2D implements IEntity {
     private _hp: number;
     private _position: Vector2;
     private _speed: Vector2;
-    private _bullets: Bullet[] = [];
     private _canShoot: boolean = true;
     public static readonly TIMEOUT_SHOOT: number = 500;
     private _movement = {
@@ -176,9 +175,6 @@ export default class Player extends Sprite2D implements IEntity {
         }
         this._context.fill();
         this._context.closePath();
-        this._bullets.forEach((bullet: Bullet) => {
-            bullet.render(this._context);
-        });
     }
 
     /**

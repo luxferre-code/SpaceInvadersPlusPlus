@@ -14,27 +14,27 @@ describe('Test for Bullet Class', () => {
         const bullet: Bullet = new Bullet(new Vector2(0, 0));
         expect(bullet).toBeDefined();
         expect(bullet.position).toEqual(new Vector2(0, 0));
-        expect(bullet.velocity).toEqual(new Vector2(0, -10));
+        expect(bullet.velocity).toEqual(new Vector2(0, -30));
     });
     test('should be instanciated with 0 parameters', () => {
         const bullet: Bullet = new Bullet();
         expect(bullet).toBeDefined();
         expect(bullet.position).toEqual(new Vector2(0, 0));
-        expect(bullet.velocity).toEqual(new Vector2(0, -10));
+        expect(bullet.velocity).toEqual(new Vector2(0, -30));
     });
     test('should by attached to a player', () => {
         const bullet: Bullet = new Bullet(new Vector2(-1, -1));
         const player: Player = createDummyPlayer(canvas, img);
         bullet.attachTo(player);
         Bullet._isVertical = true;
-        expect(bullet.velocity).toEqual(new Vector2(0, -10));
+        expect(bullet.velocity).toEqual(new Vector2(0, -30));
     });
     test('should by attached to a enemy', () => {
         const bullet: Bullet = new Bullet(new Vector2(-1, -1));
         const enemy: Enemy = createDummyEnemy(canvas, img);
         bullet.attachTo(enemy);
         Bullet._isVertical = true;
-        expect(bullet.velocity).toEqual(new Vector2(0, 10));
+        expect(bullet.velocity).toEqual(new Vector2(0, 30));
     });
     test('should by lost hp to a player', () => {
         const bullet: Bullet = new Bullet(new Vector2(-1, -1));
