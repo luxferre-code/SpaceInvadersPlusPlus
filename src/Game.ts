@@ -1,6 +1,7 @@
 import Bullet from "./Bullet";
 import Enemy from "./Enemy";
 import IEntity from "./IEntity";
+import Player from "./Player";
 
 export default class Game {
 
@@ -70,19 +71,33 @@ export default class Game {
     }
 
     private bulletHit() : void {
+        const toRemove : Bullet[] = [];
         this._bullets.forEach(b => {
             this._entity.forEach(e => {
                 if(b.owner == e) return;
                 if(b.isColliding(e)) {
                     b.shoot(e);
+                    toRemove.push(b);
                 }
             });
         });
+        toRemove.forEach(b => this.removeBullet(b));
     }
 
     public updateMove() : void {
         this._entity.forEach(e => e.move());
         this._bullets.forEach(b => b.move());
+    }
+
+    public getScore() : number {
+        let score = 0;
+        this._entity.forEach(e => {
+            if(e.isPlayer()) {
+                const player = e as Player;
+                score += player.score;
+            }
+        });
+        return score;
     }
 
 }

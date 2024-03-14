@@ -104,7 +104,7 @@ export default class Bullet {
     }
 
     private isCollidingWithPoint(point: Vector2, entityHitBox: HitBox) : boolean {
-        return point.x > entityHitBox.top_left.x && point.x < entityHitBox.top_right.x && point.y > entityHitBox.top_left.y && point.y < entityHitBox.bottom_left.y;
+        return point.x >= entityHitBox.top_left.x && point.x <= entityHitBox.top_right.x && point.y >= entityHitBox.top_left.y && point.y <= entityHitBox.bottom_left.y;
     }
 
 }

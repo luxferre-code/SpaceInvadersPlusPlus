@@ -31,6 +31,7 @@ game.addEntity(enemy);
 function render() {
     context.clearRect(0, 0, canvas.width, canvas.height);
     game.updateRender();
+    document.querySelector('#score')!.innerHTML = "Score: " + game.getScore();
     requestAnimationFrame(render);
 }
 
