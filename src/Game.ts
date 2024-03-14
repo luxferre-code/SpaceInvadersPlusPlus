@@ -45,12 +45,7 @@ export default class Game {
         this.purgeBullet();
         this.purgeEntity();
         this._entity.forEach(e => e.render());
-        this._bullets.forEach(b => {
-            if(b.position.x < 0 || b.position.x > this._canvas.width || b.position.y < 0 || b.position.y > this._canvas.height) {
-                this.removeBullet(b);
-            }
-            b.render(this._canvas.getContext("2d")!)
-        });
+        this._bullets.forEach(b => b.render(this._canvas.getContext("2d")!));
     }
 
     private purgeBullet() : void {
