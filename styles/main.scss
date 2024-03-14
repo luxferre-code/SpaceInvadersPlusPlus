@@ -23,7 +23,9 @@ img.main-background {
 
 body {
   margin: 0;
+  padding: 10px;
   height: 100vh;
+  box-sizing: border-box;
   background-color: $main-background-color;
   overflow: hidden;
   @include vertical-center();
@@ -80,6 +82,23 @@ main button {
   &:nth-child(2) > i > i:last-of-type {
     position: relative;
     left: -3px;
+  }
+
+  @media screen and (max-width: 400px) {
+    // the class has to be added to the specifier
+    // because the button.primary from globals.scss
+    // has higher priority than "main button"
+    &.primary {
+      width: 100%;
+      max-width: 300px;
+      font-size: 0.95em;
+      white-space: nowrap;
+
+      &.with-icon {
+        padding-right: 40px;
+        padding-left: 40px;
+      }
+    }
   }
 }
 
