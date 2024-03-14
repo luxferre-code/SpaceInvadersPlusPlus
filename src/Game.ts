@@ -42,28 +42,34 @@ export default class Game {
     }
 
     public updateRender() : void {
-        const toDelete : IEntity[] = [];
-        this._entity.forEach(e => {
-            // Vérification de la mort de l'entité
-            if(e.position.x < 0 || e.position.x > this._canvas.width || e.position.y < 0 || e.position.y > this._canvas.height) {
-                toDelete.push(e);
-            }
-            if(!e.isPlayer()) {
-                const enemy = e as Enemy;
-                if(enemy.isDead) {
-                    toDelete.push(e);
-                }
-            }
-            e.render();
-        });
-        toDelete.forEach(e => {
-            this.removeEntity(e);
-        });
+        this.purgeBullet();
+        this.purgeEntity();
+        this._entity.forEach(e => e.render());
         this._bullets.forEach(b => {
             if(b.position.x < 0 || b.position.x > this._canvas.width || b.position.y < 0 || b.position.y > this._canvas.height) {
                 this.removeBullet(b);
             }
             b.render(this._canvas.getContext("2d")!)
+        });
+    }
+
+    private purgeBullet() : void {
+        this._bullets = this._bullets.filter(b => b.position.x > 0 && b.position.x < this._canvas.width && b.position.y > 0 && b.position.y < this._canvas.height);
+    }
+
+    private purgeEntity() : void {
+        this._entity = this._entity.filter(e => {
+            if(e.position.x < 0 || e.position.x > this._canvas.width || e.position.y < 0 || e.position.y > this._canvas.height) {
+                console.log("Removing entity " + e.position.x + " " + e.position.y);
+                return false;
+            }
+            if(!e.isPlayer()) {
+                const enemy = e as Enemy;
+                if(enemy.isDead) {
+                    return false;
+                }
+            }
+            return true;
         });
     }
 
