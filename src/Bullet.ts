@@ -85,6 +85,7 @@ export default class Bullet {
 
     public isColliding(entity: IEntity) : boolean {
         if(this._owner == entity) return false;
+        if(this._owner.isPlayer() == entity.isPlayer()) return false;
         const hitBox: HitBox = this.genereHitBox();
         const entityHitBox: HitBox = entity.genereHitBox();
         return this.isCollidingWithHitBox(hitBox, entityHitBox);
