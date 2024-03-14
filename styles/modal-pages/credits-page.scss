@@ -15,6 +15,12 @@
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   place-items: center;
   place-content: center;
+  column-gap: 10px;
+  row-gap: 20px;
+
+  @media screen and (max-width: 650px) {
+    column-gap: 20px;
+  }
 }
 
 #credits-page .author-card {
