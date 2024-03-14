@@ -1,3 +1,4 @@
+import HitBox from "./HitBox";
 import Vector2 from "./Vector2";
 
 /**
@@ -14,5 +15,7 @@ export default interface IEntity {
     render() : void;
 
     move() : void;
+
+    genereHitBox() : HitBox;
 
 }

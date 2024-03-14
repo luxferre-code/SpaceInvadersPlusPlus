@@ -44,6 +44,7 @@ export default class Game {
     public updateRender() : void {
         this.purgeBullet();
         this.purgeEntity();
+        this.bulletHit();
         this._entity.forEach(e => e.render());
         this._bullets.forEach(b => b.render(this._canvas.getContext("2d")!));
     }
@@ -65,6 +66,17 @@ export default class Game {
                 }
             }
             return true;
+        });
+    }
+
+    private bulletHit() : void {
+        this._bullets.forEach(b => {
+            this._entity.forEach(e => {
+                if(b.owner == e) return;
+                if(b.isColliding(e)) {
+                    b.shoot(e);
+                }
+            });
         });
     }
 

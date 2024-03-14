@@ -1,4 +1,5 @@
 import Enemy from "./Enemy";
+import HitBox from "./HitBox";
 import IEntity from "./IEntity";
 import Player from "./Player";
 import Vector2 from "./Vector2";
@@ -80,6 +81,30 @@ export default class Bullet {
 
     public move() : void {
         this._position = this.position.add(this.velocity);
+    }
+
+    public isColliding(entity: IEntity) : boolean {
+        if(this._owner == entity) return false;
+        const hitBox: HitBox = this.genereHitBox();
+        const entityHitBox: HitBox = entity.genereHitBox();
+        return this.isCollidingWithHitBox(hitBox, entityHitBox);
+    }
+
+    private genereHitBox() : HitBox {
+        return {
+            top_left : new Vector2(this.position.x, this.position.y),
+            top_right : new Vector2(this.position.x + this._image.width, this.position.y),
+            bottom_left : new Vector2(this.position.x, this.position.y + this._image.height),
+            bottom_right : new Vector2(this.position.x + this._image.width, this.position.y + this._image.height)
+        };
+    }
+
+    private isCollidingWithHitBox(hitBox: HitBox, entityHitBox: HitBox) : boolean {
+        return this.isCollidingWithPoint(hitBox.top_left, entityHitBox) || this.isCollidingWithPoint(hitBox.top_right, entityHitBox) || this.isCollidingWithPoint(hitBox.bottom_left, entityHitBox) || this.isCollidingWithPoint(hitBox.bottom_right, entityHitBox);
+    }
+
+    private isCollidingWithPoint(point: Vector2, entityHitBox: HitBox) : boolean {
+        return point.x > entityHitBox.top_left.x && point.x < entityHitBox.top_right.x && point.y > entityHitBox.top_left.y && point.y < entityHitBox.bottom_left.y;
     }
 
 }

@@ -1,6 +1,7 @@
 import Bullet from "./Bullet";
 import { Controls } from "./Controls";
 import Game from "./Game";
+import HitBox from "./HitBox";
 import IEntity from "./IEntity";
 import Sprite2D from "./Sprite2D";
 import Vector2 from "./Vector2";
@@ -202,5 +203,8 @@ export default class Player extends Sprite2D implements IEntity {
     public get context() : CanvasRenderingContext2D { return this._context; }
     public get image() : HTMLImageElement { return this._skin; }
 
+    genereHitBox(): HitBox {
+        return new HitBox(this._position, this._skin);
+    }
 
 }

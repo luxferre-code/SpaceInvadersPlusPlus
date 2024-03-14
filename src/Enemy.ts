@@ -1,5 +1,6 @@
 import Bullet from "./Bullet";
 import Game from "./Game";
+import HitBox from "./HitBox";
 import IEntity from "./IEntity";
 import Player from "./Player";
 import Sprite2D from "./Sprite2D";
@@ -113,4 +114,9 @@ export default class Enemy extends Sprite2D implements IEntity {
         }
         this._context.fill();
     }
+
+    genereHitBox(): HitBox {
+        return new HitBox(this._position, this._skin);
+    }
+
 } 
