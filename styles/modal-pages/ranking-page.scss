@@ -13,12 +13,28 @@
   align-items: flex-start;
 }
 
+// the container of the middle arrow
 #ranking-page > div > div:nth-child(2) {
   width: 40px;
   min-width: 40px;
   max-width: 40px;
   margin: 0 30px;
   box-sizing: border-box;
+}
+
+@media screen and (max-width: 950px) {
+  #ranking-page > div {
+    flex-direction: column;
+    align-items: center;
+
+    & > div {
+      margin-bottom: 30px;
+    }
+
+    & > div:nth-child(2) {
+      display: none; // remove the middle arrow
+    }
+  }
 }
 
 #ranking-middle-arrow {
@@ -100,6 +116,7 @@
 
       span:first-of-type {
         margin-right: 10px;
+        width: 100%;
       }
     }
   }
@@ -110,4 +127,32 @@
   max-width: 50%;
   min-width: 300px;
   text-align: center;
+}
+
+@media screen and (max-width: 500px) {
+  #worldwide-records-table td {
+    font-size: 1.2em;
+    
+    &:nth-child(2) {
+      min-width: 140px;
+    }
+  }
+
+  #worldwide-records-table img {
+    width: 30px;
+    height: 30px;
+  }
+
+  #container-10-last-scores {
+    flex-direction: column;
+  }
+
+  .ranking-table-info p {
+    width: 100%;
+    max-width: unset;
+    min-width: unset;
+    font-size: .9em;
+    padding: 0 10px;
+    box-sizing: border-box;
+  }
 }
