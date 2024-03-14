@@ -145,4 +145,12 @@ export default class {
     this.personalScore.textContent = rankings.player?.getBestScore().toString() ?? "0";
     this.personalRank.textContent = rankings.playerRank?.toString() ?? "?";
   }
+
+  /**
+   * Checks if the middle arrow is hidden.
+   * It gets hidden by media queries.
+   */
+  public static isArrowHidden() {
+    return getComputedStyle(this.arrow.parentElement!).display === "none";
+  }
 }

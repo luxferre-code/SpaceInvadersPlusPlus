@@ -239,6 +239,9 @@ export default class {
    * displayed in the table of the last 10 highest scores.
    */
   public static moveArrowToElement(element: HTMLElement) {
+    if (RankingTable.isArrowHidden()) {
+      return;
+    }
     const heightDifference = RankingTable.arrow.getBoundingClientRect().height / 4;
     const modalY = this.modal.getBoundingClientRect().y;
     const y = element.getBoundingClientRect().y;
