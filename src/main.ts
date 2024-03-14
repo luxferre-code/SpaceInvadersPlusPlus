@@ -1,4 +1,5 @@
-import SettingsDB from "./server/SettingsDB";
+import GameSettingsPage from "./ui/GameSettingsPage";
+import SettingsDB from "./server/GlobalSettingsDB";
 import SettingsPage from "./ui/SettingsPage";
 import RankingPage from "./ui/RankingPage";
 import RankingDB from "./server/RankingDB";
@@ -23,6 +24,8 @@ SettingsPage.listenToEffectsVolumeChange((newVolume) => SettingsDB.effectsVolume
 SettingsPage.listenToMusicVolumeChange((newVolume) => SettingsDB.musicVolume = newVolume);
 SettingsPage.listenToSkinChange((newSkin) => SettingsDB.skin = newSkin);
 
+GameSettingsPage.initDefaultGameSettings();
+
 const canvas: HTMLCanvasElement = document.querySelector("canvas") as HTMLCanvasElement;
 
 // Set this varialbe to `false` to allow the UI to appear.
@@ -44,7 +47,7 @@ resize();
 
 const context: CanvasRenderingContext2D = canvas.getContext("2d")!;
 const player: Player = new Player("Player 1", "red", canvas);
-const enemy : Enemy = new Enemy(canvas);
+const enemy: Enemy = new Enemy(canvas);
 
 console.log(player.toString());
 

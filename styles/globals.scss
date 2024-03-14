@@ -44,12 +44,32 @@ button.primary.icon-only {
 *
 */
 
-input[type="text"] {
-  border: 2px solid $primary-color;
-  border-radius: 10px;
+select,
+input[type="text"],
+input[type="number"] {
   background: $input-background-color;
   padding: 10px 10px 10px 15px;
   color: #fff;
   font-family: $font;
   font-size: 1.1em;
+}
+
+input[type="text"],
+input[type="number"] {
+  border: 2px solid $primary-color;
+  border-radius: 10px;
+}
+
+// any label that has a disabled input directly afterwards,
+// and the disabled input itself
+label:has(+ input:disabled),
+input:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+select {
+  border: none;
+  background-color: transparent;
+  border-bottom: 2px solid $primary-color;
 }

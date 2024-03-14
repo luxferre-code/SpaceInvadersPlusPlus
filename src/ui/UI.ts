@@ -74,7 +74,8 @@ export default class {
   public static readonly modalPages = Object.freeze({
     credits: this.modal.querySelector("#credits-page") as HTMLDivElement,
     ranking: this.modal.querySelector("#ranking-page") as HTMLDivElement,
-    settings: this.modal.querySelector("#settings-page") as HTMLDivElement
+    settings: this.modal.querySelector("#settings-page") as HTMLDivElement,
+    gameSettings: this.modal.querySelector("#game-settings-page") as HTMLDivElement
   });
 
   /**
@@ -175,6 +176,7 @@ export default class {
    */
   public static bindEvents(): void {
     if (!this.initialized) {
+      this.mainButtons.playNow.addEventListener('click', () => this.showModal(this.modalPages.gameSettings));
       this.mainButtons.credits.addEventListener('click', () => this.showModal(this.modalPages.credits));
 
       // Events related to the corner buttons

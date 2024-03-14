@@ -54,7 +54,8 @@ canvas {
 
 button:focus,
 dialog:focus,
-input:focus {
+input:focus,
+select:focus {
   outline: 3px solid $primary-color;
 }
 
@@ -96,3 +97,4 @@ main button {
 @import "credits-page.scss";
 @import "ranking-page.scss";
 @import "settings-page.scss";
+@import "game-settings-page.scss";

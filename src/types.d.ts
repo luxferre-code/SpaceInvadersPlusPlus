@@ -1,6 +1,6 @@
+import type { Skin } from "./Skins";
 import type RankingTable from "./ui/RankingPage";
 import type Ranking from "./models/Ranking";
-import type { Skin } from "./Skins";
 
 declare global {
   interface PlayerSettings {
@@ -8,6 +8,12 @@ declare global {
     skin: Skin;
     musicVolume: number;
     effectsVolume: number;
+  }
+
+  interface GameSettingsInterface {
+    seed: number;
+    playerHp: number;
+    playerBasedAmmo: number;
   }
 
   interface Score {

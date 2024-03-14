@@ -49,7 +49,8 @@ describe("Testing the UI abstraction", async () => {
   const UI = (await import("../ui/UI")).default;
   const SettingsPage = (await import("../ui/SettingsPage")).default;
   const RankingPage = (await import("../ui/RankingPage")).default;
-  const SettingsDB = (await import("../server/SettingsDB")).default;
+  const GameSettingsPage = (await import("../ui/GameSettingsPage")).default;
+  const SettingsDB = (await import("../server/GlobalSettingsDB")).default;
 
   // The player settings shared for the entire test suite.
   const settings: PlayerSettings = {
@@ -209,7 +210,6 @@ describe("Testing the UI abstraction", async () => {
       expect(SettingsPage.skinChoices[0].classList.contains("selected")).toBe(false);
       expect(SettingsPage.skinChoices[1].classList.contains("selected")).toBe(false);
       expect(SettingsPage.skinChoices[newSkin].classList.contains("selected")).toBe(true);
-      console.log("clicked");
     });
     SettingsPage.skinChoices[2].click();
   });
@@ -239,6 +239,25 @@ describe("Testing the UI abstraction", async () => {
     expect(parsed.musicVolume).toEqual(0);
     expect(parsed.name).toEqual("Yoyo");
     expect(parsed.skin).toEqual(Skin.PURPLE);
+  });
+
+  test("should have disabled inputs by default in the GameSettingsPage", () => {
+    const customizableInputs = Array.from(document.querySelectorAll("#game-settings-page .game-specific-settings input:not(#game-seed)")) as any as HTMLInputElement[];
+    const disabledInputs = Array.from(document.querySelectorAll("#game-settings-page .game-specific-settings input:disabled")) as any as HTMLInputElement[];
+    expect(customizableInputs).toHaveLength(disabledInputs.length);
+    for (let i = 0; i < disabledInputs.length; i++) {
+      expect(disabledInputs[i].isSameNode(customizableInputs[i])).toBe(true);
+    }
+  });
+
+  test("shouldn't have any undefined element for the GameSettingsPage", () => {
+    // The initialize method would throw an error
+    // if they were any undefined element.
+    try {
+      GameSettingsPage.initDefaultGameSettings();
+    } catch (e) {
+      expect(true).toBe(false);
+    }
   });
 
   // Let's keep it clean :)
