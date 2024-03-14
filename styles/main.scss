@@ -7,10 +7,10 @@
     url("/fonts/MinecraftBoldItalic.otf") format("opentype");
 }
 
-@import "root.scss";
-@import "globals.scss";
-@import "modal.scss";
-@import "mixins.scss";
+@import "./root.scss";
+@import "./globals.scss";
+@import "./modal.scss";
+@import "./mixins.scss";
 
 img.main-background {
   position: fixed;
@@ -94,7 +94,7 @@ main button {
 *
 */
 
-@import "credits-page.scss";
-@import "ranking-page.scss";
-@import "settings-page.scss";
-@import "game-settings-page.scss";
+@import "modal-pageS/credits-page.scss";
+@import "modal-pageS/ranking-page.scss";
+@import "modal-pageS/settings-page.scss";
+@import "modal-pageS/game-settings-page.scss";
