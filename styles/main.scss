@@ -64,6 +64,7 @@ h1 {
   font-family: $font;
   font-size: 2.5em;
   margin: 0 0 50px 0;
+  text-align: center;
 }
 
 main button {
@@ -94,7 +95,7 @@ main button {
 *
 */
 
-@import "modal-pageS/credits-page.scss";
-@import "modal-pageS/ranking-page.scss";
-@import "modal-pageS/settings-page.scss";
-@import "modal-pageS/game-settings-page.scss";
+@import "modal-pages/credits-page.scss";
+@import "modal-pages/ranking-page.scss";
+@import "modal-pages/settings-page.scss";
+@import "modal-pages/game-settings-page.scss";

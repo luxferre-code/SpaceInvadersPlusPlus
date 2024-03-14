@@ -3,6 +3,10 @@
 
 #settings-page > div {
   padding: 0 20px;
+
+  @media screen and (max-width: 400px) {
+    padding: 0 15px;
+  }
 }
 
 #settings-page h2,
@@ -21,6 +25,15 @@
 #settings-page > div > h2 + div {
   display: flex;
   align-items: center;
+
+  @media screen and (max-width: 800px) {
+    flex-direction: column;
+    align-items: flex-start;
+
+    label {
+      margin: 0 0 20px 0;
+    }
+  }
 }
 
 #settings-page label {
@@ -61,6 +74,25 @@
   img {
     width: auto;
     height: 80px;
+    object-fit: contain;
+  }
+}
+
+@media screen and (max-width: 900px) {
+  .skins-grid {
+    padding: 0 20px;
+    column-gap: 20px;
+    row-gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  }
+
+  .skin-choice img {
+    width: 60px;
+    height: 60px;
+  }
+
+  .skin-choice {
+    padding: 15px;
   }
 }
 
@@ -88,4 +120,27 @@
 
 .audio-settings input {
   width: 100%;
+}
+
+@media screen and (max-width: 600px) {
+  #settings-page h2 {
+    font-size: 1.4em;
+  }
+
+  #settings-page label,
+  #settings-page p {
+    font-size: 0.85em;
+  }
+
+  .audio-settings {
+    padding: 0 15px;
+  }
+
+  .audio-settings > div {
+    flex-direction: column;
+
+    label {
+      width: 100%;
+    }
+  }
 }

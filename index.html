@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="fr">
   <head>
-    <meta charset="UTF-8" >
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" >
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Space Invaders++</title>
 
-    <link rel="stylesheet" href="/styles/main.scss" >
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" >
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="/styles/main.scss">
 
     <script type="module" src="/src/main.ts"></script>
   </head>
   <body>
-    <img class="main-background" src="/assets/pictures/main-background-2k.jpg" alt="Main background with stars" >
+    <img class="main-background" src="/assets/pictures/main-background-2k.jpg" alt="Main background with stars">
 
     <canvas class="disabled" aria-disabled="true" height="400" width="600"></canvas>
 
@@ -34,7 +34,7 @@
           <h2>Credits</h2>
           <div>
             <div class="author-card">
-              <img src="/assets/credits/thomas.png" alt="Photo de profile de Thomas Gysemans" >
+              <img src="/assets/credits/thomas.png" alt="Photo de profile de Thomas Gysemans">
               <div class="author-details">
                 <h3>Thomas Gysemans</h3>
                 <span>aka ThomasG2201</span>
@@ -47,7 +47,7 @@
             </div>
 
             <div class="author-card">
-              <img src="/assets/credits/valentin.png" alt="Photo de profile de Valentin THUILLIER" >
+              <img src="/assets/credits/valentin.png" alt="Photo de profile de Valentin THUILLIER">
               <div class="author-details">
                 <h3>Valentin THUILLIER</h3>
                 <span>aka LuxFerre</span>
@@ -60,7 +60,7 @@
             </div>
 
             <div class="author-card">
-              <img src="/assets/credits/thomas.png" alt="Photo de profile de Thomas Gysemans" >
+              <img src="/assets/credits/thomas.png" alt="Photo de profile de Thomas Gysemans">
               <div class="author-details">
                 <h3>Thomas Gysemans</h3>
                 <span>aka ThomasG2201</span>
@@ -83,17 +83,17 @@
               <table id="worldwide-records-table">
                 <tbody>
                   <tr>
-                    <td><img src="/assets/icons/gold-medal.svg" alt="Médaille d'or" ></td>
+                    <td><img src="/assets/icons/gold-medal.svg" alt="Médaille d'or"></td>
                     <td><button type="button" id="records-first-player-btn"></button></td>
                     <td></td>
                   </tr>
                   <tr>
-                    <td><img src="/assets/icons/silver-medal.svg" alt="Médaille d'argent" ></td>
+                    <td><img src="/assets/icons/silver-medal.svg" alt="Médaille d'argent"></td>
                     <td><button type="button" id="records-second-player-btn"></button></td>
                     <td></td>
                   </tr>
                   <tr>
-                    <td><img src="/assets/icons/bronze-medal.svg" alt="Médaille de bronze" ></td>
+                    <td><img src="/assets/icons/bronze-medal.svg" alt="Médaille de bronze"></td>
                     <td><button type="button" id="records-third-player-btn"></button></td>
                     <td></td>
                   </tr>
@@ -101,7 +101,7 @@
               </table>
             </div>
             <div>
-              <img id="ranking-middle-arrow" src="/assets/icons/arrow.png" alt="Flèche pixelisée" >
+              <img id="ranking-middle-arrow" src="/assets/icons/arrow.png" alt="Flèche pixelisée">
             </div>
             <div>
               <p id="last-scores-label">Tes 10 meilleurs scores</p>
@@ -120,29 +120,29 @@
             <h2>• Customisation</h2>
             <div>
               <label for="settings-name-input">Pseudonyme (visible dans le classement et auprès d’autres joueurs en mode Coop) :</label>
-              <input type="text" id="settings-name-input" maxlength="20" >
+              <input type="text" id="settings-name-input" maxlength="20">
             </div>
             <p>Votre skin</p>
             <div class="skins-grid">
               <button type="button" class="skin-choice">
-                <img src="/assets/skins/hd/skin-red.png" alt="Skin SpaceInvaders Red" >
+                <img src="/assets/skins/hd/skin-red.png" alt="Skin SpaceInvaders Red">
               </button>
               <button type="button" class="skin-choice">
-                <img src="/assets/skins/hd/skin-green.png" alt="Skin SpaceInvaders Green" >
+                <img src="/assets/skins/hd/skin-green.png" alt="Skin SpaceInvaders Green">
               </button>
               <button type="button" class="skin-choice">
-                <img src="/assets/skins/hd/skin-purple.png" alt="Skin SpaceInvaders Purple" >
+                <img src="/assets/skins/hd/skin-purple.png" alt="Skin SpaceInvaders Purple">
               </button>
             </div>
             <h2>• Audio et effets sonores</h2>
             <div class="audio-settings">
               <div>
                 <label for="music-input">Musique (5%)</label>
-                <input type="range" id="music-input" min="0" max="100" >
+                <input type="range" id="music-input" min="0" max="100">
               </div>
               <div>
                 <label for="effects-input">Effets (5%)</label>
-                <input type="range" id="effects-input" min="0" max="100" >
+                <input type="range" id="effects-input" min="0" max="100">
               </div>
             </div>
           </div>

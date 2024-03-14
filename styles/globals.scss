@@ -52,6 +52,10 @@ input[type="number"] {
   color: #fff;
   font-family: $font;
   font-size: 1.1em;
+
+  @media screen and (max-width: 600px) {
+    font-size: 0.9em;
+  }
 }
 
 input[type="text"],
