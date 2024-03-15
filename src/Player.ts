@@ -8,9 +8,7 @@ import Vector2 from "./Vector2";
  * This class represents the player entity in the game.
  */
 export default class Player extends Sprite2D implements IEntity {
-    public static readonly maxSpeed: number = 30;
-
-    private static _maxHP: number = 5;
+    private static readonly MAX_HP: number = 5;
     
     private _hp: number;
     private _score: number;
@@ -62,7 +60,7 @@ export default class Player extends Sprite2D implements IEntity {
     constructor(canvas: HTMLCanvasElement, position = new Vector2(), skin = new Image()) {
         super(canvas, skin);
         this._score = 0;
-        this._hp = Player._maxHP;
+        this._hp = Player.MAX_HP;
         this._position = position;
         this.initializeMovementControls();
     }
@@ -90,18 +88,19 @@ export default class Player extends Sprite2D implements IEntity {
         window.addEventListener("keyup", e => this.handleKeyPressed(e, false));
     }
 
-    // public get score() : number { return this._score; }
-    // public set score(score: number) { this._score = score; }
-    // public get hp() : number { return this._hp; }
-    // public set hp(hp: number) { this._hp = hp; }
-    // public get skin() : HTMLImageElement { return this._skin; }
-
     /**
      * Method to decrease the player's HP
-     * @returns  (boolean) true if the player is alive, false otherwise
+     * @returns true if the player is alive, false otherwise
      */
     public hurt() : boolean {
         return --this._hp > 0;
+    }
+
+    /**
+     * Gets the player's health points.
+     */
+    public getHp(): number {
+        return this._hp;
     }
 
     public forceImageLoaded() : void {
@@ -150,7 +149,7 @@ export default class Player extends Sprite2D implements IEntity {
      * Moves the player.
      * Call this method on every frame.
      */
-    public movePlayer() {
+    public move() {
         this.mX *= 0.95; // the movement on the X-axis get reduced by 5% on every frame
         this.mY *= 0.95; // the movement on the y-axis get reduced by 5% on every frame
 
@@ -182,12 +181,16 @@ export default class Player extends Sprite2D implements IEntity {
         if (!this.isXOutOfBounds(nextX)) {
             this._position.x += this.mX;
         } else {
+            // The player reached an horizontal border of the screen.
+            // Apply a repulsive force to keep it away.
             this.mX *= this.REPULSIVE_STRENGTH;
         }
 
         if (!this.isYOutOfBounds(nextY)) {
             this._position.y += this.mY;
         } else {
+            // The player reached a vertical border of the screen.
+            // Apply a repulsive force to keep it away.
             this.mY *= this.REPULSIVE_STRENGTH;
         }
     }
@@ -211,20 +214,38 @@ export default class Player extends Sprite2D implements IEntity {
     }
 
     /**
-     * Method to shoot a bullet
-     * @returns     {Bullet}    The bullet shot
+     * Shoots a bullet.
+     * @returs The bullet that was created.
      */
     public shoot() : Bullet {
         return new Bullet(this._canvas, this._position);
     }
 
+    /**
+     * Is this entity a player?
+     */
     public isPlayer(): boolean {
         return true;
     }
 
-    public get position() : Vector2 { return this._position; }
-    public set position(n: Vector2) { this._position = n; }
+    /**
+     * Sets the position of the player.
+     */
+    public setPosition(newPosition: Vector2) {
+        this._position = newPosition;
+    }
+
+    /**
+     * Gets the player's current position.
+     */
+    public getPosition(): Vector2 {
+        return this._position;
+    }
+
     public get canvas() : HTMLCanvasElement { return this._context.canvas; }
     public get context() : CanvasRenderingContext2D { return this._context; }
     public get image() : HTMLImageElement { return this._skin; }
+    public get score() : number { return this._score; }
+
+    public set score(score: number) { this._score = score; }
 }

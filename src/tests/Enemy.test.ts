@@ -19,7 +19,7 @@ describe('Tests for Enemy class', () => {
     test('should kill a enemy', () => {
         const enemy = createDummyEnemy(canvas, img);
         const player = createDummyPlayer(canvas, img);
-        expect(enemy.killedBy(player)).toBeTruthy();
+        expect(enemy.die(player)).toBeTruthy();
         expect(enemy.isDead).toBeTruthy();
         expect(player.score).toEqual(10);
     });

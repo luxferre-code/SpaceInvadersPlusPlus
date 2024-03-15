@@ -51,7 +51,8 @@ window.addEventListener("load", () => {
     console.log("Initializing canvas size.");
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    player.position = new Vector2(50, 50);
+    // player.position = new Vector2(50, 50);
+    player.setPosition(new Vector2(50, 50));
     // player.position = new Vector2(canvas.width / 2 - player.image.width, canvas.height - canvas.height / 4 - player.image.height);
     
 });
@@ -67,8 +68,7 @@ function render() {
 
 setInterval(() => {
     if (playing) {
-        // player.move()
-        player.movePlayer();
+        player.move();
         enemy.next();
     }
 }, 1000 / 60);
