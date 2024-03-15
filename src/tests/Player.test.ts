@@ -3,6 +3,7 @@ import { createFakeCanvas, createHTMLImage } from "./lib/createHTMLElement";
 import { createDummyPlayer } from "./lib/createDummyObjects";
 import Player from '../Player';
 import Vector2 from "../Vector2";
+import Bullet from "../Bullet";
 
 describe("Tests for Player class", () => {
     const canvas = createFakeCanvas();
@@ -50,11 +51,10 @@ describe("Tests for Player class", () => {
     test("should move with a speed limiter", () => {
         const player = createDummyPlayer(canvas, img);
         player.speed = new Vector2(10000, 10000);
-        Player.maxSpeed = 20;
         player.forceImageLoaded();
         player.move();
-        expect(player.position.x).toEqual(20);
-        expect(player.position.y).toEqual(20);
+        expect(player.position.x).toEqual(Player.maxSpeed);
+        expect(player.position.y).toEqual(Player.maxSpeed);
     });
     
     test("should move with a negative speed", () => {
@@ -72,7 +72,6 @@ describe("Tests for Player class", () => {
         player.speed = new Vector2(-10000, -10000);
         player.position = new Vector2(20, 20);
         player.forceImageLoaded();
-        Player.maxSpeed = 20;
         player.move();
         expect(player.position.x).toEqual(0);
         expect(player.position.y).toEqual(0);
@@ -111,5 +110,14 @@ describe("Tests for Player class", () => {
         player.move()
         expect(player.speed.x).toEqual(90);
         expect(player.speed.y).toEqual(90);
+    });
+    test('should can shoot', () => {
+        const player: Player = createDummyPlayer(canvas, img);
+        Bullet._isVertical = true;
+        Bullet._bulletSpeed = 10;
+        const bullet: Bullet = player.shoot();
+        expect(bullet).toBeDefined();
+        expect(bullet.position).toEqual(player.position);
+        expect(bullet.velocity).toEqual(new Vector2(0, -10));
     });
 });

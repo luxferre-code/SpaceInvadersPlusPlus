@@ -1,15 +1,22 @@
+import Bullet from "./Bullet";
 import { Controls } from "./Controls";
+import IEntity from "./IEntity";
 import Sprite2D from "./Sprite2D";
 import Vector2 from "./Vector2";
 
 /**
- * Class representing a player
+ * Player class  -   This class represents the player entity in the game.
+ * 
+ * @author Valentin THUILLIER <valentin.thuillier.etu@univ-lille.fr>
+ * @extends Sprite2D
+ * @implements IEntity
+ * @version 1.0.0
  */
-export default class Player extends Sprite2D {
-    public static maxSpeed: number = 20;
+export default class Player extends Sprite2D implements IEntity {
+    public static readonly maxSpeed: number = 30;
 
     private static _maxHP: number = 5;
-    private static _speedAcceleration: number = 1;
+    private static _speedAcceleration: number = 2;
     
     private _horizontalMovement: boolean = false;
     private _verticalMovement: boolean = false;
@@ -108,7 +115,10 @@ export default class Player extends Sprite2D {
                 this.speed = new Vector2(clampedSpeedX, clampedSpeedY);
             }
             let next = this.position.add(this.speed);
-            if(next.x < 0 || next.y < 0) next = new Vector2(Math.max(0, next.x), Math.max(0, next.y));
+            if(next.x < 0 || next.y < 0) {
+                next = new Vector2(Math.max(0, next.x), Math.max(0, next.y));
+                this.speed = new Vector2(-this.speed.x, -this.speed.y); // Add opposition effect
+            }
             const canvasWidth = this._context.canvas.clientWidth;
             const canvasHeight = this._context.canvas.clientHeight;
             const skinWidth = this.skin.width;
@@ -116,10 +126,12 @@ export default class Player extends Sprite2D {
             if(next.x + skinWidth > canvasWidth) {
                 const offsetX = next.x + skinWidth - canvasWidth;
                 next = next.sub(new Vector2(offsetX, 0));
+                this.speed = new Vector2(-this.speed.x, this.speed.y); // Add opposition effect
             }
             if(next.y + skinHeight > canvasHeight) {
                 const offsetY = next.y + skinHeight - canvasHeight;
                 next = next.sub(new Vector2(0, offsetY));
+                this.speed = new Vector2(this.speed.x, -this.speed.y); // Add opposition effect
             }
             this.position = next;
         }
@@ -127,6 +139,9 @@ export default class Player extends Sprite2D {
         if(!this.horizontalMovement) this.speed = new Vector2(this.speed.x, this.speed.y * 0.9);
     }
 
+    /**
+     * Method to render the player
+     */
     public render() : void {
         this._context.fillStyle = this._color;
         this._context.beginPath();
@@ -138,4 +153,22 @@ export default class Player extends Sprite2D {
         }
         this._context.fill();
     }
+
+    /**
+     * Method to shoot a bullet
+     * @returns     {Bullet}    The bullet shot
+     */
+    public shoot() : Bullet {
+        return new Bullet(this._canvas, this._position);
+    }
+
+    public isPlayer(): boolean {
+        return true;
+    }
+
+    public get canvas() : HTMLCanvasElement { return this._context.canvas; }
+    public get context() : CanvasRenderingContext2D { return this._context; }
+    public get image() : HTMLImageElement { return this._skin; }
+
+
 }

@@ -4,6 +4,7 @@ import SettingsPage from "./ui/SettingsPage";
 import RankingPage from "./ui/RankingPage";
 import RankingDB from "./server/RankingDB";
 import Player from "./Player";
+import Vector2 from "./Vector2";
 import Enemy from "./Enemy";
 import UI from "./ui/UI";
 
@@ -36,20 +37,23 @@ const playing = false;
 
 // Add event listener, if window is being moved, resize canva height et width
 
-function resize() : void {
+window.addEventListener("resize", () => {
     console.log("Resizing canvas.");
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-}
-
-window.addEventListener("resize", resize);
-resize();
+});
 
 const context: CanvasRenderingContext2D = canvas.getContext("2d")!;
 const player: Player = new Player("Player 1", "red", canvas);
 const enemy: Enemy = new Enemy(canvas);
 
-console.log(player.toString());
+window.addEventListener("load", () => {
+    console.log("Initializing canvas size.");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    player.position = new Vector2(canvas.width / 2 - player.image.width, canvas.height - canvas.height / 4 - player.image.height);
+    
+});
 
 function render() {
     if (playing) {
