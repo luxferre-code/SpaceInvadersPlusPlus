@@ -1,3 +1,4 @@
+import { ACCEPTABLE_CONTROLS, Controls } from "./Controls";
 import Bullet from "./Bullet";
 import IEntity from "./IEntity";
 import Sprite2D from "./Sprite2D";
@@ -18,8 +19,8 @@ export default class Player extends Sprite2D implements IEntity {
     private readonly MOVEMENT_STRENGTH = 0.2;
     private readonly MAX_VELOCITY = 3;
 
-    private mx = 0; // movement on the X-axis
-    private my = 0; // movement on the Y-axis
+    private mX = 0; // movement on the X-axis
+    private mY = 0; // movement on the Y-axis
 
     /**
      * This will register any key that is being pressed.
@@ -35,13 +36,27 @@ export default class Player extends Sprite2D implements IEntity {
         this.initializeMovementControls();
     }
 
+    /**
+     * Handles a key that is being pressed.
+     * It checks if it's a control key (a key in the {@link Controls} enum).
+     * If it is, it assigns the given `value` in {@link controls}.
+     * @param e The keyboard event.
+     * @param value The value to assign to {@link this.controls} if the key is a valid key.
+     */
+    private handleKeyPressed(e: KeyboardEvent, value: boolean) {
+        const key = e.key.toLocaleLowerCase();
+        if (key in this.controls || ACCEPTABLE_CONTROLS.includes(key)) {
+            this.controls[key] = value;
+        }
+    }
+
+    /**
+     * Initializes the event listeners for controlling
+     * the player's movement with the keyboard.
+     */
     private initializeMovementControls() : void {
-        window.addEventListener("keydown", e => {
-            this.controls[e.key.toLowerCase()] = true;
-        });
-        window.addEventListener("keyup", e => {
-            this.controls[e.key.toLowerCase()] = false;
-        });
+        window.addEventListener("keydown", e => this.handleKeyPressed(e, true));
+        window.addEventListener("keyup", e => this.handleKeyPressed(e, false));
     }
 
     // public get score() : number { return this._score; }
@@ -111,15 +126,15 @@ export default class Player extends Sprite2D implements IEntity {
     }
 
     public handleMovementControls() {
-        if (this.controls["arrowup"])    this.my -= this.MOVEMENT_STRENGTH;
-        if (this.controls["arrowright"]) this.mx += this.MOVEMENT_STRENGTH;
-        if (this.controls["arrowdown"])  this.my += this.MOVEMENT_STRENGTH;
-        if (this.controls["arrowleft"])  this.mx -= this.MOVEMENT_STRENGTH;
+        if (this.controls[Controls.UP])    this.mY -= this.MOVEMENT_STRENGTH;
+        if (this.controls[Controls.RIGHT]) this.mX += this.MOVEMENT_STRENGTH;
+        if (this.controls[Controls.DOWN])  this.mY += this.MOVEMENT_STRENGTH;
+        if (this.controls[Controls.LEFT])  this.mX -= this.MOVEMENT_STRENGTH;
     }
 
     public movePlayer() {
-        this.mx *= 0.95; // the movement on the X-axis get reduced by 5% on every frame
-        this.my *= 0.95; // the movement on the y-axis get reduced by 5% on every frame
+        this.mX *= 0.95; // the movement on the X-axis get reduced by 5% on every frame
+        this.mY *= 0.95; // the movement on the y-axis get reduced by 5% on every frame
 
         // By default, if we keep reducing by 5%
         // then the movements will never reach 0.
@@ -129,27 +144,27 @@ export default class Player extends Sprite2D implements IEntity {
         // then it gets set to 0 manually.
         // It's not a problem when starting the movement,
         // as long as the threshold is less than `this.MOVEMENT_STRENGTH`.
-        if (Math.abs(this.mx) < 0.005) this.mx = 0;
-        if (Math.abs(this.my) < 0.005) this.my = 0;
+        if (Math.abs(this.mX) < 0.005) this.mX = 0;
+        if (Math.abs(this.mY) < 0.005) this.mY = 0;
 
         // Here, we make sure that the velocity doesn't exceed `this.MAX_VELOCITY`.
         // This check works for both negative and positive numbers.
         // Note that "Math.sign" returns -1 for a negative number, or 1 for positive.
-        if (Math.abs(this.mx) > this.MAX_VELOCITY) this.mx = Math.sign(this.mx) * this.MAX_VELOCITY;
-        if (Math.abs(this.my) > this.MAX_VELOCITY) this.my = Math.sign(this.my) * this.MAX_VELOCITY;
+        if (Math.abs(this.mX) > this.MAX_VELOCITY) this.mX = Math.sign(this.mX) * this.MAX_VELOCITY;
+        if (Math.abs(this.mY) > this.MAX_VELOCITY) this.mY = Math.sign(this.mY) * this.MAX_VELOCITY;
 
         // This will check on every frame if keys are pressed,
         // and increment the speed accordingly by a constant amount.
         this.handleMovementControls();
 
         // This makes sure that the player doesn't get out of the canvas.
-        const nextX = this._position.x + this.mx;
-        const nextY = this._position.y + this.my;
+        const nextX = this._position.x + this.mX;
+        const nextY = this._position.y + this.mY;
         if (!this.isXOutOfBounds(nextX)) {
-            this._position.x += this.mx;
+            this._position.x += this.mX;
         }
         if (!this.isYOutOfBounds(nextY)) {
-            this._position.y += this.my;
+            this._position.y += this.mY;
         }
     }
 
