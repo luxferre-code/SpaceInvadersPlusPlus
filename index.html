@@ -1,14 +1,188 @@
 <!DOCTYPE html>
 <html lang="fr">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/styles/main.scss" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space Invaders++</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="/styles/main.scss">
+
+    <script type="module" src="/src/main.ts"></script>
   </head>
   <body>
-    <img class="main-background" src="/assets/pictures/main-background-2k.jpg" alt="Main background with stars" />
+    <img class="main-background" src="/assets/pictures/main-background-2k.jpg" alt="Main background with stars">
 
-    <canvas height="400" width="600"></canvas>
-    <script type="module" src="/src/main.ts"></script>
+    <canvas class="disabled" aria-disabled="true" height="400" width="600"></canvas>
+
+    <div id="ui">
+      <h1>Space Invaders ++</h1>
+      <main>
+        <button class="primary with-icon" id="playNow"><i class="fa-regular fa-user"></i> Jouer maintenant</button>
+        <button class="primary with-icon" id="playCoop"><i><i class="fa-regular fa-user"></i><i class="fa-regular fa-user"></i></i> Jouer en coop</button>
+        <button class="primary with-icon" id="openCredits"><i class="fa-solid fa-clapperboard"></i> Credits</button>
+      </main>
+
+      <div class="corner-buttons">
+        <button class="primary icon-only" id="openRankings"><i class="fa-regular fa-chess-king"></i></button>
+        <button class="primary icon-only" id="openPlayerSettings"><i class="fa-solid fa-gear"></i></button>
+      </div>
+
+      <dialog>
+        <!-- all pages should be hidden by default -->
+        <div id="credits-page" aria-hidden="true">
+          <h2>Credits</h2>
+          <div>
+            <div class="author-card">
+              <img src="/assets/credits/thomas.png" alt="Photo de profile de Thomas Gysemans">
+              <div class="author-details">
+                <h3>Thomas Gysemans</h3>
+                <span>aka ThomasG2201</span>
+                <ul>
+                  <li>Groupe: S4-K</li>
+                  <li>Jeu favori: Minecraft</li>
+                  <li>Note: 33%</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="author-card">
+              <img src="/assets/credits/valentin.png" alt="Photo de profile de Valentin THUILLIER">
+              <div class="author-details">
+                <h3>Valentin THUILLIER</h3>
+                <span>aka LuxFerre</span>
+                <ul>
+                  <li>Groupe: S4-K</li>
+                  <li>Jeu favori: Age Of Mythology</li>
+                  <li>Note: 33%</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="author-card">
+              <img src="/assets/credits/thomas.png" alt="Photo de profile de Thomas Gysemans">
+              <div class="author-details">
+                <h3>Thomas Gysemans</h3>
+                <span>aka ThomasG2201</span>
+                <ul>
+                  <li>Groupe: S4-K</li>
+                  <li>Jeu favori: Minecraft</li>
+                  <li>Note: 33%</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="ranking-page" aria-hidden="true">
+          <h2>Classement</h2>
+          <div>
+            <div>
+              <p>#<span id="personal-rank"></span> <button type="button" id="your-scores-btn">Toi</button> <span id="personal-score"></span></p>
+              <span>Mondial</span>
+              <table id="worldwide-records-table">
+                <tbody>
+                  <tr>
+                    <td><img src="/assets/icons/gold-medal.svg" alt="Médaille d'or"></td>
+                    <td><button type="button" id="records-first-player-btn"></button></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><img src="/assets/icons/silver-medal.svg" alt="Médaille d'argent"></td>
+                    <td><button type="button" id="records-second-player-btn"></button></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><img src="/assets/icons/bronze-medal.svg" alt="Médaille de bronze"></td>
+                    <td><button type="button" id="records-third-player-btn"></button></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div>
+              <img id="ranking-middle-arrow" src="/assets/icons/arrow.png" alt="Flèche pixelisée">
+            </div>
+            <div>
+              <p id="last-scores-label">Tes 10 meilleurs scores</p>
+              <div id="container-10-last-scores">
+                <!-- will get populated by JS -->
+              </div>
+            </div>
+          </div>
+          <div class="ranking-table-info">
+            <p>Note: les parties ne sont prises en compte dans le classement que si le niveau “Difficile” est choisi</p>
+          </div>
+        </div>
+
+        <div id="settings-page" aria-hidden="true">
+          <div>
+            <h2>• Customisation</h2>
+            <div>
+              <label for="settings-name-input">Pseudonyme (visible dans le classement et auprès d’autres joueurs en mode Coop) :</label>
+              <input type="text" id="settings-name-input" maxlength="20">
+            </div>
+            <p>Votre skin</p>
+            <div class="skins-grid">
+              <button type="button" class="skin-choice">
+                <img src="/assets/skins/hd/skin-red.png" alt="Skin SpaceInvaders Red">
+              </button>
+              <button type="button" class="skin-choice">
+                <img src="/assets/skins/hd/skin-green.png" alt="Skin SpaceInvaders Green">
+              </button>
+              <button type="button" class="skin-choice">
+                <img src="/assets/skins/hd/skin-purple.png" alt="Skin SpaceInvaders Purple">
+              </button>
+            </div>
+            <h2>• Audio et effets sonores</h2>
+            <div class="audio-settings">
+              <div>
+                <label for="music-input">Musique (5%)</label>
+                <input type="range" id="music-input" min="0" max="100">
+              </div>
+              <div>
+                <label for="effects-input">Effets (5%)</label>
+                <input type="range" id="effects-input" min="0" max="100">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="game-settings-page" aria-hidden="true">
+          <div>
+            <button type="button" class="primary with-icon" id="confirm-game-settings">
+              <i class="fa-solid fa-play"></i>
+              Jouer
+            </button>
+            <h2>Options de votre partie&nbsp;:</h2>
+            <h3>
+              <span>• <label for="game-level">Niveau</label> :</span>
+              <select id="game-level">
+                <option value="easy" selected>Facile</option>
+                <option value="medium">Moyen</option>
+                <option value="hard">Difficile</option>
+                <option value="custom">Custom</option>
+              </select>
+            </h3>
+            <div class="game-specific-settings">
+              <!-- all fields except the seed input must be disabled by default -->
+              <div>
+                <label for="game-seed">Seed :</label>
+                <input type="number" id="game-seed" placeholder="Automatique" min="1" step="1000">
+              </div>
+              <div>
+                <label for="game-player-hp">HP du joueur :</label>
+                <input type="number" id="game-player-hp" min="1" max="5" disabled>
+              </div>
+              <div>
+                <label for="game-player-based-ammo">Munitions de base :</label>
+                <input type="number" id="game-player-based-ammo" min="1" max="100" disabled>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </dialog>
+    </div>
   </body>
 </html>

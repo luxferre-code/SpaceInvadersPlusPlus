@@ -1,0 +1,79 @@
+// The global classes
+
+@import "root.scss";
+
+button.primary {
+  border: 2px solid $primary-color;
+  border-radius: 10px;
+  background: $primary-shade;
+  cursor: pointer;
+  padding: 25px 50px;
+  color: #fff;
+  font-family: $font;
+  font-size: 1.15em;
+  box-sizing: border-box;
+  transition: background-color 200ms ease;
+
+  &:hover,
+  &:focus {
+    background-color: $primary-black;
+  }
+}
+
+button.primary.with-icon {
+  padding-left: 50px;
+  text-align: left;
+
+  & > i {
+    display: inline-flex;
+    width: 30px;
+  }
+}
+
+button.primary.icon-only {
+  width: 75px;
+  height: 70px;
+  font-size: 1.5em;
+  padding: 0;
+  margin-left: 20px;
+}
+
+/*
+*
+* Inputs (text, number)
+*
+*/
+
+select,
+input[type="text"],
+input[type="number"] {
+  background: $input-background-color;
+  padding: 10px 10px 10px 15px;
+  color: #fff;
+  font-family: $font;
+  font-size: 1.1em;
+
+  @media screen and (max-width: 600px) {
+    font-size: 0.9em;
+  }
+}
+
+input[type="text"],
+input[type="number"] {
+  border: 2px solid $primary-color;
+  border-radius: 10px;
+}
+
+// any label that has a disabled input directly afterwards,
+// and the disabled input itself
+label:has(+ input:disabled),
+input:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+select {
+  border: none;
+  background-color: transparent;
+  border-bottom: 2px solid $primary-color;
+}

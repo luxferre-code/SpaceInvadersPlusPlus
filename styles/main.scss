@@ -1,4 +1,16 @@
-@import "root.scss";
+@font-face {
+  font-family: "SpaceInvadersFont";
+  src:
+    url("/fonts/MinecraftRegular.otf") format("opentype"),
+    url("/fonts/MinecraftBold.otf") format("opentype"),
+    url("/fonts/MinecraftItalic.otf") format("opentype"),
+    url("/fonts/MinecraftBoldItalic.otf") format("opentype");
+}
+
+@import "./root.scss";
+@import "./globals.scss";
+@import "./modal.scss";
+@import "./mixins.scss";
 
 img.main-background {
   position: fixed;
@@ -6,13 +18,28 @@ img.main-background {
   left: 0;
   width: 100%;
   height: 100vh;
-  user-select: none;
-  pointer-events: none;
+  @include disable-interactivity();
 }
 
 body {
   margin: 0;
+  padding: 10px;
+  height: 100vh;
+  box-sizing: border-box;
   background-color: $main-background-color;
+  overflow: hidden;
+  @include vertical-center();
+}
+
+body > #ui {
+  transition: opacity 200ms ease;
+  opacity: 1;
+
+  &[aria-hidden="true"] {
+    opacity: 0;
+  }
+
+  @include vertical-center();
 }
 
 canvas {
@@ -21,4 +48,73 @@ canvas {
   position: absolute;
   top: 0;
   left: 0;
+
+  &.disabled {
+    @include disable-interactivity();
+  }
 }
+
+button:focus,
+dialog:focus,
+input:focus,
+select:focus {
+  outline: 3px solid $primary-color;
+}
+
+h1 {
+  color: #fff;
+  font-family: $font;
+  font-size: 2.5em;
+  margin: 0 0 50px 0;
+  text-align: center;
+}
+
+main button {
+  display: block;
+  margin-bottom: 20px;
+  width: 300px;
+
+  &:nth-child(2) > i {
+    position: relative;
+    left: -5px;
+  }
+
+  &:nth-child(2) > i > i:last-of-type {
+    position: relative;
+    left: -3px;
+  }
+
+  @media screen and (max-width: 400px) {
+    // the class has to be added to the specifier
+    // because the button.primary from globals.scss
+    // has higher priority than "main button"
+    &.primary {
+      width: 100%;
+      max-width: 300px;
+      font-size: 0.95em;
+      white-space: nowrap;
+
+      &.with-icon {
+        padding-right: 40px;
+        padding-left: 40px;
+      }
+    }
+  }
+}
+
+.corner-buttons {
+  position: absolute;
+  top: 30px;
+  right: 30px;
+}
+
+/*
+*
+* Credits panel
+*
+*/
+
+@import "modal-pages/credits-page.scss";
+@import "modal-pages/ranking-page.scss";
+@import "modal-pages/settings-page.scss";
+@import "modal-pages/game-settings-page.scss";
