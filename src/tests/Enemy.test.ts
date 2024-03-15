@@ -29,7 +29,7 @@ describe('Tests for Enemy class', () => {
         const enemy = createDummyEnemy(canvas, img);
         enemy.speed = new Vector2(0, 10);
         enemy.next();
-        expect(enemy.position.x).toEqual(0);
-        expect(enemy.position.y).toEqual(10);
+        expect(enemy.getPosition().x).toEqual(0);
+        expect(enemy.getPosition().y).toEqual(10);
     });
 });

@@ -15,7 +15,7 @@ export default class Bullet extends Sprite2D {
     private _velocity: Vector2;
     private _owner : any;
 
-    constructor(canvas: HTMLCanvasElement, position: Vector2 = new Vector2(0, 0), velocity: Vector2 = new Vector2(!Bullet._isVertical ? Bullet._bulletSpeed : 0, Bullet._isVertical ? -Bullet._bulletSpeed : 0)) {
+    constructor(canvas: HTMLCanvasElement, position: Vector2 = new Vector2(), velocity: Vector2 = new Vector2(!Bullet._isVertical ? Bullet._bulletSpeed : 0, Bullet._isVertical ? -Bullet._bulletSpeed : 0)) {
         super(canvas, new Image()); //TODO: Add the image of the bullet
         this._position = position;
         this._velocity = velocity;
@@ -34,7 +34,7 @@ export default class Bullet extends Sprite2D {
         if(entity == null) return;
         this._owner = entity;
         this._position = entity.getPosition();
-        const velocity: Vector2 = new Vector2(0, 0);
+        const velocity: Vector2 = new Vector2();
         let xVelocity = 0;
         let yVelocity = 0;
         if (Bullet._isVertical) {

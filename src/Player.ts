@@ -8,7 +8,7 @@ import Vector2 from "./Vector2";
  * This class represents the player entity in the game.
  */
 export default class Player extends Sprite2D implements IEntity {
-    private static readonly MAX_HP: number = 5;
+    public static readonly MAX_HP: number = 5;
     
     private _hp: number;
     private _score: number;
@@ -99,8 +99,15 @@ export default class Player extends Sprite2D implements IEntity {
     /**
      * Gets the player's health points.
      */
-    public getHp(): number {
+    public getHealth(): number {
         return this._hp;
+    }
+
+    /**
+     * Sets the health points of the player dynamically.
+     */
+    public setHealth(hp: number) {
+        this._hp = hp;
     }
 
     public forceImageLoaded() : void {
