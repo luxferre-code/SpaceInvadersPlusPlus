@@ -16,11 +16,42 @@ export default class Player extends Sprite2D implements IEntity {
     private _score: number;
     private _position: Vector2;
 
+    /**
+     * It describes by how many pixels pressing a control key moves the player on each frame.
+     * The higher this value, the higher the player's acceleration towards {@link MAX_VELOCITY}.
+     */
     private readonly MOVEMENT_STRENGTH = 0.2;
+
+    /**
+     * The coefficient that is applied to a movement (either {@link mX} or {@link mY})
+     * that is meant to make the player bounce against a wall.
+     * 
+     * A value too high won't change a thing since the movements are limited to {@link MAX_VELOCITY}.
+     * Note that it must be NEGATIVE.
+     */
+    private readonly REPULSIVE_STRENGTH = -2;
+
+    /**
+     * The maximum amount of pixels the player is allowed to move on every frame.
+     * This describes the maximum value that the movement variables
+     * ({@link mX} and {@link mY}) can reach.
+     * 
+     * Note that this max velocity isn't necessarily reached.
+     * The maximum speed of the player can exceed it by the amount described by {@link MOVEMENT_STRENGTH}.
+     */
     private readonly MAX_VELOCITY = 3;
 
-    private mX = 0; // movement on the X-axis
-    private mY = 0; // movement on the Y-axis
+    /**
+     * Describes the player's current movement on the X-axis.
+     * A value of 0 means the player isn't moving horizontally.
+     */
+    private mX = 0;
+
+    /**
+     * Describes the player's current movement on the Y-axis.
+     * A value of 0 means the player isn't moving vertically.
+     */
+    private mY = 0;
 
     /**
      * This will register any key that is being pressed.
@@ -79,52 +110,35 @@ export default class Player extends Sprite2D implements IEntity {
 
     /**
      * Method to increase the player's score
-     * @param scoreAdded    (number)    The score to add
+     * @param scoreAdded The score to add
      */
     public incrementScore(scoreAdded: number) : void {
         this._score += scoreAdded;
     }
 
-    // public move() : void {
-        // if(this.isSkinLoaded()) {
-        //     if(Math.abs(this.speed.x) > Player.maxSpeed || Math.abs(this.speed.y) > Player.maxSpeed) {
-        //         const clampedSpeedX = Math.max(-Player.maxSpeed, Math.min(Player.maxSpeed, this.speed.x));
-        //         const clampedSpeedY = Math.max(-Player.maxSpeed, Math.min(Player.maxSpeed, this.speed.y));
-        //         this.speed = new Vector2(clampedSpeedX, clampedSpeedY);
-        //     }
-        //     let next = this.position.add(this.speed);
-        //     if(next.x < 0 || next.y < 0) {
-        //         next = new Vector2(Math.max(0, next.x), Math.max(0, next.y));
-        //         this.speed = new Vector2(-this.speed.x, -this.speed.y); // Add opposition effect
-        //     }
-        //     const canvasWidth = this._context.canvas.clientWidth;
-        //     const canvasHeight = this._context.canvas.clientHeight;
-        //     const skinWidth = this.skin.width;
-        //     const skinHeight = this.skin.height;
-        //     if(next.x + skinWidth > canvasWidth) {
-        //         const offsetX = next.x + skinWidth - canvasWidth;
-        //         next = next.sub(new Vector2(offsetX, 0));
-        //         this.speed = new Vector2(-this.speed.x, this.speed.y); // Add opposition effect
-        //     }
-        //     if(next.y + skinHeight > canvasHeight) {
-        //         const offsetY = next.y + skinHeight - canvasHeight;
-        //         next = next.sub(new Vector2(0, offsetY));
-        //         this.speed = new Vector2(this.speed.x, -this.speed.y); // Add opposition effect
-        //     }
-        //     this.position = next;
-        // }
-        // if(!this.verticalMovement) this.speed = new Vector2(this.speed.x * 0.9, this.speed.y);
-        // if(!this.horizontalMovement) this.speed = new Vector2(this.speed.x, this.speed.y * 0.9);
-    // }
-
+    /**
+     * Returns `true` if the player's future horizontal
+     * position does not exceed the limits of the screen
+     * @param nextX The next value of {@link mX}.
+     */
     public isXOutOfBounds(nextX: number) {
         return nextX <= 0 || nextX + this.image.width >= this.canvas.width;
     }
     
+    /**
+     * Returns `true` if the player's future vertical
+     * position does not exceed the limits of the screen
+     * @param nextY The next value of {@link mY}.
+     */
     public isYOutOfBounds(nextY: number) {
         return nextY <= 0 || nextY + this.image.height >= this.canvas.height;
     }
 
+    /**
+     * Depending on what keys are currently being pressed,
+     * this function will increment or decrement the movement
+     * variables accordingly (see {@link mX} and {@link mY}).
+     */
     public handleMovementControls() {
         if (this.controls[Controls.UP])    this.mY -= this.MOVEMENT_STRENGTH;
         if (this.controls[Controls.RIGHT]) this.mX += this.MOVEMENT_STRENGTH;
@@ -132,6 +146,10 @@ export default class Player extends Sprite2D implements IEntity {
         if (this.controls[Controls.LEFT])  this.mX -= this.MOVEMENT_STRENGTH;
     }
 
+    /**
+     * Moves the player.
+     * Call this method on every frame.
+     */
     public movePlayer() {
         this.mX *= 0.95; // the movement on the X-axis get reduced by 5% on every frame
         this.mY *= 0.95; // the movement on the y-axis get reduced by 5% on every frame
@@ -160,16 +178,23 @@ export default class Player extends Sprite2D implements IEntity {
         // This makes sure that the player doesn't get out of the canvas.
         const nextX = this._position.x + this.mX;
         const nextY = this._position.y + this.mY;
+
         if (!this.isXOutOfBounds(nextX)) {
             this._position.x += this.mX;
+        } else {
+            this.mX *= this.REPULSIVE_STRENGTH;
         }
+
         if (!this.isYOutOfBounds(nextY)) {
             this._position.y += this.mY;
+        } else {
+            this.mY *= this.REPULSIVE_STRENGTH;
         }
     }
 
     /**
-     * Method to render the player
+     * Renders the player using the canvas API.
+     * If the image isn't loaded, a red circle gets drawn instead.
      */
     public render() : void {
         this._context.beginPath();
