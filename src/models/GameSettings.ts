@@ -30,6 +30,11 @@ export default class {
   public static playerHp: number = -1;
 
   /**
+   * The minimum delay between two shots.
+   */
+  public static playerShootDelay: number = -1;
+
+  /**
    * The ammunition the player starts with.
    */
   public static playerBasedAmmo: number = -1;
@@ -47,15 +52,18 @@ export default class {
       case Difficulty.HARD:
         this.playerHp = 1;
         this.playerBasedAmmo = 1;
+        this.playerShootDelay = 300;
         break;
       case Difficulty.MEDIUM:
         this.playerHp = 3;
         this.playerBasedAmmo = 3;
+        this.playerShootDelay = 300;
         break;
       default:
         // Difficulty.EASY
         this.playerHp = 5;
         this.playerBasedAmmo = 5;
+        this.playerShootDelay = 300;
     }
   }
 }

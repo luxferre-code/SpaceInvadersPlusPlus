@@ -8,6 +8,7 @@ import Player from "./Player";
 import Enemy from "./Enemy";
 import Game from "./Game";
 import UI from "./ui/UI";
+import GameSettings from "./models/GameSettings";
 
 const canvas: HTMLCanvasElement = document.querySelector("canvas") as HTMLCanvasElement;
 const context: CanvasRenderingContext2D = canvas.getContext("2d")!;
@@ -37,7 +38,7 @@ SettingsPage.listenToSkinChange((newSkin) => SettingsDB.skin = newSkin);
 GameSettingsPage.initDefaultGameSettings();
 GameSettingsPage.onGameStarted(() => {
     if (!loadingAssets) {
-        const player = new Player(canvas, SettingsDB.skin);
+        const player = new Player(canvas, GameSettings.playerHp, GameSettings.playerShootDelay, SettingsDB.skin);
         const enemy: Enemy = new Enemy(canvas);
         game.addEntity(player);
         game.addEntity(enemy);

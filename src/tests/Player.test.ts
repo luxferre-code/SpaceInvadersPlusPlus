@@ -1,6 +1,6 @@
 import { describe, test, expect } from "vitest";
 import { createFakeCanvas } from "./lib/createHTMLElement";
-import { createDummyPlayer } from "./lib/createDummyObjects";
+import { createDummyPlayer } from "./lib/createDummyEntties";
 import Player from '../Player';
 
 describe("Tests for Player class", () => {
@@ -8,7 +8,6 @@ describe("Tests for Player class", () => {
     
     test("should be instantiated with default parameters", () => {
         const player = createDummyPlayer(canvas);
-        expect(player.getHealth()).toEqual(Player.MAX_HP);
         expect(player.getPosition().x).toEqual(0);
         expect(player.getPosition().y).toEqual(0);
     });

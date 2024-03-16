@@ -10,12 +10,9 @@ import Vector2 from "./Vector2";
  * This class represents the player entity in the game.
  */
 export default class Player extends Sprite2D implements IEntity {
-    public static readonly TIMEOUT_SHOOT: number = 500;
-    public static readonly MAX_HP: number = 5;
-    
-    private _hp: number;
-
     private _canShoot: boolean = true;
+    private shootDelay: number;
+    private _hp: number;
 
     /**
      * It describes by how many pixels pressing a control key moves the player on each frame.
@@ -64,9 +61,10 @@ export default class Player extends Sprite2D implements IEntity {
      * Creates a new player and places it at the center of the screen
      * and a short distance away from the bottom.
      */
-    constructor(canvas: HTMLCanvasElement, skin = Skin.RED) {
+    constructor(canvas: HTMLCanvasElement, based_health: number, shoot_delay: number, skin = Skin.RED) {
         super(canvas, skin);
-        this._hp = Player.MAX_HP;
+        this._hp = based_health;
+        this.shootDelay = shoot_delay;
         if (this._skinImg) {
             this._position = new Vector2(canvas.width / 2 - this._skinImg?.width, canvas.height - this._skinImg?.height * 2);
         } else {
@@ -226,7 +224,7 @@ export default class Player extends Sprite2D implements IEntity {
         this._canShoot = false;
         setTimeout(() => {
             this._canShoot = true;
-        }, Player.TIMEOUT_SHOOT);
+        }, this.shootDelay);
         Game.getInstance().addBullet(bullet);
     }
 

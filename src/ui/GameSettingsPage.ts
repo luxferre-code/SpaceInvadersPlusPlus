@@ -13,6 +13,7 @@ export default class {
   private static readonly gameSeedInput = document.querySelector("#game-seed") as HTMLInputElement;
   private static readonly gamePlayerHpInput = document.querySelector("#game-player-hp") as HTMLInputElement;
   private static readonly gamePlayerBasedAmmoInput = document.querySelector("#game-player-based-ammo") as HTMLInputElement;
+  private static readonly gamePlayerShootDelayInput = document.querySelector("#game-shoot-delay") as HTMLInputElement;
 
   /**
    * The inputs that can only be edited when the difficulty is set to {@link Difficulty.CUSTOM}.
@@ -62,6 +63,7 @@ export default class {
 
     this.handleNumberInputForSetting("seed", this.gameSeedInput);
     this.handleNumberInputForSetting("playerHp", this.gamePlayerHpInput);
+    this.handleNumberInputForSetting("playerShootDelay", this.gamePlayerShootDelayInput);
     this.handleNumberInputForSetting("playerBasedAmmo", this.gamePlayerBasedAmmoInput);
 
     this.init = true;
@@ -74,6 +76,7 @@ export default class {
   private static displayGameSettingsValues() {
     this.setInput(this.gamePlayerHpInput, "playerHp");
     this.setInput(this.gamePlayerBasedAmmoInput, "playerBasedAmmo");
+    this.setInput(this.gamePlayerShootDelayInput, "playerShootDelay");
   }
 
   /**
