@@ -9,7 +9,6 @@ import Vector2 from "./Vector2";
 import Enemy from "./Enemy";
 import UI from "./ui/UI";
 
-const scoreElement = document.querySelector('#score') as HTMLElement;
 const canvas: HTMLCanvasElement = document.querySelector("canvas") as HTMLCanvasElement;
 const context: CanvasRenderingContext2D = canvas.getContext("2d")!;
 const game = new Game(canvas);
@@ -57,7 +56,7 @@ function render() {
     if (playing) {
         context.clearRect(0, 0, canvas.width, canvas.height);
         game.updateRender();
-        scoreElement.innerHTML = "Score: " + game.getScore();
+        UI.setScore(game.getScore());
     }
     requestAnimationFrame(render);
 }

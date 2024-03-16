@@ -79,6 +79,16 @@ export default class {
   });
 
   /**
+   * The paragraph element that contains the text for telling the user its score during a game.
+   */
+  public static readonly containerScore = document.querySelector("#container-score") as HTMLElement;
+
+  /**
+   * The actual element span that holds the score.
+   */
+  public static readonly scoreElement = this.containerScore.querySelector("#score") as HTMLElement;
+
+  /**
    * Shows an element while respecting ARIA recommendations.
    * @param element The element to show.
    */
@@ -206,7 +216,14 @@ export default class {
     }
   }
 
-  public static showUI(): void { this.showElement(this.ui); }
+  /**
+   * Shows the UI, makes it interactive
+   * and hides the score.
+   */
+  public static showUI(): void {
+    this.showElement(this.ui);
+    this.hideElement(this.containerScore);
+  }
 
   /**
    * Hides the UI,
@@ -217,6 +234,7 @@ export default class {
    */
   public static hideUI(): void {
     this.hideElement(this.ui);
+    this.showElement(this.containerScore);
     this.closeModal();
     const focusedElement = this.getFocusedElement();
     if (focusedElement) {
@@ -230,6 +248,14 @@ export default class {
    */
   private static getFocusedElement(): HTMLElement | null {
     return (document.activeElement as HTMLElement) || document.querySelector(":focus");
+  }
+
+  /**
+   * Changes the score.
+   * @param score The new score.
+   */
+  public static setScore(score: number) {
+    this.scoreElement.textContent = score.toString();
   }
 
   /**
