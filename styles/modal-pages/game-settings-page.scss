@@ -1,0 +1,111 @@
+@import "../root.scss";
+@import "../mixins.scss";
+
+#game-settings-page > div {
+  padding: 0 30px;
+  position: relative;
+  min-height: 400px; // TODO: might need to remove that eventually when the number of inputs allow it
+}
+
+#game-settings-page h2,
+#game-settings-page h3,
+#game-settings-page option,
+#game-settings-page label,
+#game-settings-page span {
+  color: #fff;
+  font-family: $font;
+}
+
+#game-settings-page h2 {
+  font-size: 1.9em;
+  margin: 0;
+  max-width: 60%;
+}
+
+#game-settings-page h3 {
+  display: flex;
+  align-items: center;
+  margin: 40px 0;
+  
+  span {
+    font-size: 1.7em;
+  }
+}
+
+#game-settings-page .game-specific-settings {
+  display: flex;
+  flex-wrap: wrap;
+
+  div {
+    margin-right: 20px;
+    margin-bottom: 20px;
+    max-width: 200px;
+    width: 100%;
+  }
+}
+
+#game-settings-page .game-specific-settings label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+#game-settings-page select {
+  margin-left: 20px;
+  min-width: 250px;
+}
+
+#game-settings-page .game-specific-settings input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#confirm-game-settings {
+  position: absolute;
+  top: 0;
+  right: 20px;
+  font-size: 1.6em;
+  padding: 20px 30px;
+}
+
+@media screen and (max-width: 700px) {
+  #confirm-game-settings {
+    font-size: 1.2em;
+    padding: 15px 25px;
+  }
+}
+
+@media screen and (max-width: 650px) {
+  #game-settings-page h2 {
+    font-size: 1.5em;
+  }
+
+  #game-settings-page h3 span {
+    font-size: 1.3em;
+  }
+
+  #game-settings-page select {
+    min-width: unset;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  #game-settings-page h2 {
+    max-width: 100%;
+  }
+
+  #confirm-game-settings {
+    position: static;
+    margin-bottom: 25px;
+  }
+
+  #game-settings-page h3 {
+    flex-direction: column;
+    align-items: flex-start;
+
+    select {
+      margin-top: 15px;
+      margin-left: 0;
+      width: 100%;
+    }
+  }
+}

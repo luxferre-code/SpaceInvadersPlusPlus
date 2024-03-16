@@ -7,12 +7,7 @@ import Sprite2D from "./Sprite2D";
 import Vector2 from "./Vector2";
 
 /**
- * Enemy class  -   This class represents the enemy entity in the game.
- * 
- * @author Valentin THUILLIER <valentin.thuillier.etu@univ-lille.fr>
- * @extends Sprite2D
- * @implements IEntity
- * @version 1.0.0
+ *  This class represents the enemy entity in the game.
  */
 export default class Enemy extends Sprite2D implements IEntity {
     private static _horizontally: boolean = true;
@@ -34,7 +29,7 @@ export default class Enemy extends Sprite2D implements IEntity {
 
     /**
      * This method checks if the entity is a player.
-     * @returns     {boolean}   -   True if the entity is a player, false otherwise.
+     * @returns True if the entity is a player, false otherwise.
      */
     public isPlayer(): boolean {
         return false;
@@ -42,8 +37,8 @@ export default class Enemy extends Sprite2D implements IEntity {
 
     /**
      * This method generates a random position on the x-axis of the canvas.
-     * @param canvas    {HTMLCanvasElement}    -   The canvas where the game is rendered.
-     * @returns     {Vector2}               -   The random position.
+     * @param canvas The canvas where the game is rendered.
+     * @returns The random position.
      */
     public static generateRandomXPosition(canvas: HTMLCanvasElement) : Vector2 {
         return new Vector2(Math.random() * canvas.width, 0);
@@ -51,29 +46,26 @@ export default class Enemy extends Sprite2D implements IEntity {
 
     /**
      * This method kill the enemy and give the score to the player who killed it.
-     * @param player    {Player}    -   The player who killed the enemy.
-     * @returns     {boolean}   -   True if the enemy is dead, false otherwise.
+     * @param player The player who killed the enemy.
+     * @returns True if the enemy is dead, false otherwise.
      */
-    public killedBy(player: Player) : boolean {
+    public die(player: Player) : boolean {
         this._hp--;
-        if(this._hp > 0) return false;
-        this._dead = true;
-        player.score += this._scoreToGive;
-        return true;
+        if (this._hp > 0) {
+            return false;
+        } else {
+            this._dead = true;
+            player.score += this._scoreToGive;
+            return true;
+        }
     }
-
-    public get isDead() : boolean { return this._dead; }
-    public static get horizontally() { return Enemy._horizontally; }
-    public static set horizontally(value: boolean) { Enemy._horizontally = value; }
-    public get position() : Vector2 { return this._position; }
-    public set speed(speed: Vector2) { this._speed = speed; }
 
     /**
      * This method moves the enemy to the next position.
      */
     public next() : void {
         if(Enemy.horizontally) {
-            console.log("Moving horizontally");
+            // console.log("Moving enemy horizontally");
             this._position.y += this._speed.y;
         } else {
             console.log("Moving vertically");
@@ -119,4 +111,17 @@ export default class Enemy extends Sprite2D implements IEntity {
         return new HitBox(this._position, this._skin);
     }
 
+    public getPosition(): Vector2 {
+        return this._position;
+    }
+
+    public static get horizontally() { return Enemy._horizontally; }
+    public static set horizontally(value: boolean) { Enemy._horizontally = value; }
+
+    public set speed(speed: Vector2) { this._speed = speed; }
+    
+    public get isDead() : boolean { return this._dead; }
+    public get canvas() : HTMLCanvasElement { return this._canvas; }
+    public get context() : CanvasRenderingContext2D { return this._context; }
+    public get image() : HTMLImageElement { return this._skin; }
 } 

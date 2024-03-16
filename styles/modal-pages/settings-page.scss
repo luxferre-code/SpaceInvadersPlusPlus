@@ -1,0 +1,146 @@
+@import "../root.scss";
+@import "../mixins.scss";
+
+#settings-page > div {
+  padding: 0 20px;
+
+  @media screen and (max-width: 400px) {
+    padding: 0 15px;
+  }
+}
+
+#settings-page h2,
+#settings-page p,
+#settings-page label,
+#settings-page span {
+  color: #fff;
+  font-family: $font;
+}
+
+#settings-page h2 {
+  font-size: 1.8em;
+  margin: 0 0 20px 0;
+}
+
+#settings-page > div > h2 + div {
+  display: flex;
+  align-items: center;
+
+  @media screen and (max-width: 800px) {
+    flex-direction: column;
+    align-items: flex-start;
+
+    label {
+      margin: 0 0 20px 0;
+    }
+  }
+}
+
+#settings-page label {
+  display: inline-block;
+  max-width: 350px;
+  margin-right: 20px;
+}
+
+.skins-grid {
+  margin: 30px 0;
+  padding: 0 30px;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  column-gap: 30px;
+  place-items: center;
+  place-content: center;
+}
+
+.skin-choice {
+  cursor: pointer;
+  background: $primary-shade;
+  border: 2px solid $primary-color;
+  border-radius: 10px;
+  padding: 30px;
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  opacity: 0.5;
+  transition: opacity 200ms ease;
+
+  &.selected,
+  &:hover,
+  &:focus {
+    opacity: 1;
+  }
+
+  img {
+    width: auto;
+    height: 80px;
+    object-fit: contain;
+  }
+}
+
+@media screen and (max-width: 900px) {
+  .skins-grid {
+    padding: 0 20px;
+    column-gap: 20px;
+    row-gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  }
+
+  .skin-choice img {
+    width: 60px;
+    height: 60px;
+  }
+
+  .skin-choice {
+    padding: 15px;
+  }
+}
+
+.audio-settings {
+  padding: 0 30px;
+  display: flex;
+  flex-direction: column;
+}
+
+.audio-settings > div {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  
+  &:first-of-type {
+    margin-bottom: 25px;
+  }
+
+  label {
+    min-width: 130px;
+    max-width: 150px;
+    @include text-ellipsis();
+  }
+}
+
+.audio-settings input {
+  width: 100%;
+}
+
+@media screen and (max-width: 600px) {
+  #settings-page h2 {
+    font-size: 1.4em;
+  }
+
+  #settings-page label,
+  #settings-page p {
+    font-size: 0.85em;
+  }
+
+  .audio-settings {
+    padding: 0 15px;
+  }
+
+  .audio-settings > div {
+    flex-direction: column;
+
+    label {
+      width: 100%;
+    }
+  }
+}

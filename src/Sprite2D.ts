@@ -8,8 +8,10 @@ export default class {
   protected _context: CanvasRenderingContext2D;
   protected _skin: HTMLImageElement;
   protected _imageLoaded: boolean = false;
+  protected _canvas: HTMLCanvasElement;
 
   constructor(canvas: HTMLCanvasElement, skin: HTMLImageElement) {
+    this._canvas = canvas;
     this._context = canvas.getContext('2d')!;
     this._skin = skin;
     this._skin.src = "/assets/skins/skin-red.png";

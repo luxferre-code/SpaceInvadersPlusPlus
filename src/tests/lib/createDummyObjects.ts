@@ -8,7 +8,7 @@ import Vector2 from "../../Vector2";
  * @param img A dummy image used for the skin of the player.
  */
 export function createDummyPlayer(canvas: HTMLCanvasElement, img: HTMLImageElement): Player {
-  return new Player("Player1", "red", canvas, undefined, true, img);
+  return new Player(canvas, undefined, img);
 }
 
 /**

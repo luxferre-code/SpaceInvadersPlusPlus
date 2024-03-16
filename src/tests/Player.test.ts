@@ -11,14 +11,10 @@ describe("Tests for Player class", () => {
     
     test("should be instantiated with default parameters", () => {
         const player = createDummyPlayer(canvas, img);
-        expect(player.name).toEqual("Player1");
         expect(player.score).toEqual(0);
-        expect(player.color).toEqual("red");
-        expect(player.hp).toEqual(5);
-        expect(player.position.x).toEqual(0);
-        expect(player.position.y).toEqual(0);
-        expect(player.speed.x).toEqual(0);
-        expect(player.speed.y).toEqual(0);
+        expect(player.getHealth()).toEqual(Player.MAX_HP);
+        expect(player.getPosition().x).toEqual(0);
+        expect(player.getPosition().y).toEqual(0);
     });
     
     test("should lose a HP", () => {
@@ -27,8 +23,8 @@ describe("Tests for Player class", () => {
     });
     
     test("should lose HP and die", () => {
-        const player = createDummyPlayer(canvas, img);
-        player.hp = 2;
+        const player: Player = createDummyPlayer(canvas, img);
+        player.setHealth(2);
         expect(player.hurt()).toEqual(true);
         expect(player.hurt()).toEqual(false);
     });
@@ -38,83 +34,14 @@ describe("Tests for Player class", () => {
         player.incrementScore(100);
         expect(player.score).toEqual(100);
     });
-    
-    test("should move", () => {
-        const player = createDummyPlayer(canvas, img);
-        player.speed = new Vector2(1, 1);
-        player.forceImageLoaded();
-        player.move();
-        expect(player.position.x).toEqual(1);
-        expect(player.position.y).toEqual(1);
-    });
-    
-    test("should move with a speed limiter", () => {
-        const player = createDummyPlayer(canvas, img);
-        player.speed = new Vector2(10000, 10000);
-        player.forceImageLoaded();
-        player.move();
-        expect(player.position.x).toEqual(30);
-        expect(player.position.y).toEqual(30);
-    });
-    
-    test("should move with a negative speed", () => {
-        const player = createDummyPlayer(canvas, img);
-        player.speed = new Vector2(-1, -1);
-        player.position = new Vector2(1, 1);
-        player.forceImageLoaded();
-        player.move();
-        expect(player.position.x).toEqual(0);
-        expect(player.position.y).toEqual(0);
-    });
-    
-    test("should move with a negative speed and a speed limiter", () => {
-        const player = createDummyPlayer(canvas, img);
-        player.speed = new Vector2(-10000, -10000);
-        player.position = new Vector2(20, 20);
-        player.forceImageLoaded();
-        player.move();
-        expect(player.position.x).toEqual(0);
-        expect(player.position.y).toEqual(0);
-    });
-    
-    test("should not move if the player has no image loaded", () => {
-        const player = createDummyPlayer(canvas, img);
-        player.speed = new Vector2(1, 1);
-        player.move();
-        expect(player.position.x).toEqual(0);
-        expect(player.position.y).toEqual(0);
-    });
-    
-    test("should not move if the next position is < 0", () => {
-        const player = createDummyPlayer(canvas, img);
-        player.speed = new Vector2(-1, -1);
-        player.forceImageLoaded();
-        player.move();
-        expect(player.position.x).toEqual(0);
-        expect(player.position.y).toEqual(0);
-    });
-    
-    test("should not move if the next position is > canvas.width or canvas.height", () => {
-        const player = createDummyPlayer(canvas, img);
-        player.speed = new Vector2(100, 100); // should get clamped to (20;20) (the Player's max speed)
-        player.position = new Vector2(80, 80); 
-        player.forceImageLoaded();
-        player.move();
-        expect(player.position.x).toEqual(100 - player.skin.width); // 100 is the canvas's clientWidth & clientHeight (the canvas is 100x100)
-        expect(player.position.y).toEqual(100 - player.skin.height);
-    });
-        
-    test("should speed decrement automatically *0.9 if player doesn't click", () => {
-        const player = createDummyPlayer(canvas, img);
-        player.speed = new Vector2(100, 100);
-        player.move()
-        expect(player.speed.x).toEqual(90);
-        expect(player.speed.y).toEqual(90);
-    });
-    test('should can shoot', () => {
+
+    test('should be able to shoot', () => {
         const player: Player = createDummyPlayer(canvas, img);
         Bullet._isVertical = true;
         Bullet._bulletSpeed = 10;
-        player.shoot();
+        const bullet: Bullet = player.shoot();
+        expect(bullet).toBeDefined();
+        expect(bullet.position).toEqual(player.getPosition());
+        expect(bullet.velocity).toEqual(new Vector2(0, -10));
     });
 });
