@@ -1,3 +1,4 @@
+import { Skin } from "./Skins";
 import Bullet from "./Bullet";
 import Game from "./Game";
 import IEntity from "./IEntity";
@@ -19,8 +20,8 @@ export default class Enemy extends Sprite2D implements IEntity {
     private _scoreToGive: number = 10;
     private _canShoot: boolean = true;
 
-    constructor(canvas: HTMLCanvasElement, position: Vector2 = Enemy.generateRandomXPosition(canvas), speed: Vector2 = new Vector2(Enemy._horizontally ? 0 : 10, Enemy._horizontally ? 10 : 0), skin: HTMLImageElement = new Image()) {
-        super(canvas, skin);
+    constructor(canvas: HTMLCanvasElement, position = Enemy.generateRandomXPosition(canvas), speed = new Vector2(Enemy._horizontally ? 0 : 10, Enemy._horizontally ? 10 : 0)) {
+        super(canvas, Skin.GREEN);
         this._position = position;
         this._speed = speed;
     }

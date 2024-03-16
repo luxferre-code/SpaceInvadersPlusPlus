@@ -9,6 +9,11 @@ import Vector2 from "./Vector2";
 import Enemy from "./Enemy";
 import UI from "./ui/UI";
 
+const scoreElement = document.querySelector('#score') as HTMLElement;
+const canvas: HTMLCanvasElement = document.querySelector("canvas") as HTMLCanvasElement;
+const context: CanvasRenderingContext2D = canvas.getContext("2d")!;
+const game = new Game(canvas);
+
 let playing = false;
 
 // Allow the button to be interactive.
@@ -17,6 +22,7 @@ UI.bindEvents();
 
 // Fetch the rankings from the database.
 const rankings = RankingDB.fetchRankingsAndScores();
+
 // Display that into the ranking table.
 // Even if the data is empty, the initWith()
 // method has to be called.
@@ -30,43 +36,28 @@ SettingsPage.listenToSkinChange((newSkin) => SettingsDB.skin = newSkin);
 
 GameSettingsPage.initDefaultGameSettings();
 GameSettingsPage.onGameStarted(() => {
-    console.log("playing = true");
+    const player = new Player(canvas, new Vector2(50, 50), SettingsDB.skin);
+    const enemy: Enemy = new Enemy(canvas);
+    game.addEntity(player);
+    game.addEntity(enemy);
     playing = true;
     UI.hideUI();
 });
 
-const canvas: HTMLCanvasElement = document.querySelector("canvas") as HTMLCanvasElement;
+function fillScreen() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
 
 // Add event listener, if window is being moved, resize canva height et width
-
-window.addEventListener("resize", () => {
-    console.log("Resizing canvas.");
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-});
-
-const context: CanvasRenderingContext2D = canvas.getContext("2d")!;
-const player: Player = new Player(canvas);
-const enemy: Enemy = new Enemy(canvas);
-
-window.addEventListener("load", () => {
-    console.log("Initializing canvas size.");
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    player.setPosition(new Vector2(50, 50));
-});
-
-const game : Game = new Game(canvas);
-game.addEntity(player);
-game.addEntity(enemy);
+window.addEventListener("resize", () => fillScreen());
+window.addEventListener("load", () => fillScreen());
 
 function render() {
     if (playing) {
         context.clearRect(0, 0, canvas.width, canvas.height);
         game.updateRender();
-        player.render();
-        enemy.render();
-        document.querySelector('#score')!.innerHTML = "Score: " + game.getScore();
+        scoreElement.innerHTML = "Score: " + game.getScore();
     }
     requestAnimationFrame(render);
 }

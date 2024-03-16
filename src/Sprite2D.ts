@@ -1,3 +1,4 @@
+import { Skin, getSkinURL } from "./Skins";
 import HitBox from "./HitBox";
 import Node2D from "./Node2D";
 
@@ -8,14 +9,16 @@ import Node2D from "./Node2D";
  * and a skin (which is an HTMLImageElement).
  */
 export default abstract class Sprite2D extends Node2D {
-  protected _skin: HTMLImageElement;
+  protected _skin: Skin;
+  protected _skinImg: HTMLImageElement;
   protected _imageLoaded: boolean = false;
 
-  constructor(canvas: HTMLCanvasElement, skin: HTMLImageElement) {
+  constructor(canvas: HTMLCanvasElement, skin: Skin) {
     super(canvas);
     this._skin = skin;
-    this._skin.src = "/assets/skins/skin-red.png";
-    this._skin.onload = () => this._imageLoaded = true;
+    this._skinImg = new Image();
+    this._skinImg.src = getSkinURL(skin);
+    this._skinImg.onload = () => this._imageLoaded = true;
   }
 
   public abstract fallbackRender(): void;
@@ -29,7 +32,7 @@ export default abstract class Sprite2D extends Node2D {
   public render(): void {
     if (this.isSkinLoaded()) {
       this._context.beginPath();
-      this._context.drawImage(this._skin, this._position.x, this._position.y, this._skin.width, this._skin.height);
+      this._context.drawImage(this._skinImg, this._position.x, this._position.y, this._skinImg.width, this._skinImg.height);
       this._context.fill();
       this._context.closePath();
     } else {
@@ -41,7 +44,7 @@ export default abstract class Sprite2D extends Node2D {
    * Generates a basic hitbox.
    */
   public generateHitBox(): HitBox {
-    return new HitBox(this._position, this._skin);
+    return new HitBox(this._position, this._skinImg);
   }
 
   /**
@@ -53,5 +56,5 @@ export default abstract class Sprite2D extends Node2D {
     return this._imageLoaded;
   }
   
-  public getSkin(): HTMLImageElement { return this._skin; }
+  public getSkin(): HTMLImageElement { return this._skinImg; }
 }

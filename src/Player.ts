@@ -4,6 +4,7 @@ import Game from "./Game";
 import IEntity from "./IEntity";
 import Sprite2D from "./Sprite2D";
 import Vector2 from "./Vector2";
+import { Skin } from "./Skins";
 
 /**
  * This class represents the player entity in the game.
@@ -61,7 +62,7 @@ export default class Player extends Sprite2D implements IEntity {
      */
     private controls: {[key: string]: boolean} = {};
 
-    constructor(canvas: HTMLCanvasElement, position = new Vector2(), skin = new Image()) {
+    constructor(canvas: HTMLCanvasElement, position = new Vector2(), skin = Skin.RED) {
         super(canvas, skin);
         this._score = 0;
         this._hp = Player.MAX_HP;
@@ -227,7 +228,7 @@ export default class Player extends Sprite2D implements IEntity {
      */
     public shoot() : void {
         if(!this._canShoot) return;
-        const bullet: Bullet = new Bullet(this._canvas, this._position.add(new Vector2(this._skin.width / 2, 0)));
+        const bullet: Bullet = new Bullet(this._canvas, this._position.add(new Vector2(this._skinImg.width / 2, 0)));
         bullet.attachTo(this);
         this._canShoot = false;
         setTimeout(() => {
