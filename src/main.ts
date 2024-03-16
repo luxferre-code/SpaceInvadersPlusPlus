@@ -52,6 +52,7 @@ function fillScreen() {
 window.addEventListener("resize", () => fillScreen());
 window.addEventListener("load", () => fillScreen());
 
+// _process
 function render() {
     if (playing) {
         context.clearRect(0, 0, canvas.width, canvas.height);
@@ -61,6 +62,7 @@ function render() {
     requestAnimationFrame(render);
 }
 
+// _physics_process
 setInterval(() => {
     if (playing) {
         game.updateMove();

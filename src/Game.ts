@@ -1,11 +1,11 @@
 import Bullet from "./Bullet";
 import Enemy from "./Enemy";
 import IEntity from "./IEntity";
-import Player from "./Player";
 
 export default class Game {
     private static instance : Game;
 
+    private _score: number = 0;
     private _bullets : Bullet[] = [];
     private _entities : IEntity[] = [];
     private _canvas : HTMLCanvasElement;
@@ -60,11 +60,11 @@ export default class Game {
         this._entities = this._entities.filter(e => {
             const eX = e.getPosition().x;
             const eY = e.getPosition().y;
-            if(eX < 0 || eX > this._canvas.width || eY < 0 || eY > this._canvas.height) {
+            if (eX < 0 || eX > this._canvas.width || eY < 0 || eY > this._canvas.height) {
                 console.log("Removing entity " + eX + " " + eY);
                 return false;
             }
-            if(!e.isPlayer()) {
+            if (!e.isPlayer()) {
                 const enemy = e as Enemy;
                 if(enemy.isDead()) {
                     return false;
@@ -95,14 +95,15 @@ export default class Game {
         });
     }
 
+    /**
+     * Method to increase the player's score
+     * @param scoreAdded The score to add
+     */
+    public incrementScore(scoreAdded: number) : void {
+        this._score += scoreAdded;
+    }
+
     public getScore() : number {
-        let score = 0;
-        this._entities.forEach(e => {
-            if(e.isPlayer()) {
-                const player = e as Player;
-                score += player.getScore();
-            }
-        });
-        return score;
+        return this._score;
     }
 }

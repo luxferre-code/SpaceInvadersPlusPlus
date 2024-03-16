@@ -13,7 +13,6 @@ export default class Player extends Sprite2D implements IEntity {
     public static readonly MAX_HP: number = 5;
     
     private _hp: number;
-    private _score: number;
 
     private _canShoot: boolean = true;
 
@@ -64,7 +63,6 @@ export default class Player extends Sprite2D implements IEntity {
 
     constructor(canvas: HTMLCanvasElement, position = new Vector2(), skin = Skin.RED) {
         super(canvas, skin);
-        this._score = 0;
         this._hp = Player.MAX_HP;
         this._position = position;
         this.initializeMovementControls();
@@ -124,14 +122,6 @@ export default class Player extends Sprite2D implements IEntity {
 
     public forceImageLoaded() : void {
         this._imageLoaded = true;
-    }
-
-    /**
-     * Method to increase the player's score
-     * @param scoreAdded The score to add
-     */
-    public incrementScore(scoreAdded: number) : void {
-        this._score += scoreAdded;
     }
 
     /**
@@ -242,9 +232,5 @@ export default class Player extends Sprite2D implements IEntity {
      */
     public isPlayer(): this is Player {
         return true;
-    }
-
-    public getScore(): number {
-        return this._score;
     }
 }

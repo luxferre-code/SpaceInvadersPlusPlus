@@ -221,6 +221,7 @@ export default class {
    * and hides the score.
    */
   public static showUI(): void {
+    this.ui.removeAttribute("inert");
     this.showElement(this.ui);
     this.hideElement(this.containerScore);
   }
@@ -233,6 +234,12 @@ export default class {
    * the menus etc. when the game starts.
    */
   public static hideUI(): void {
+    // The "inert" HTML attribute hides the element
+    // and its childen from assistive technologies.
+    // Therefore, pressing "Tab" won't raise focus
+    // on hidden elements of the UI thanks to this.
+    // More info here: https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/inert
+    this.ui.setAttribute("inert", "inert");
     this.hideElement(this.ui);
     this.showElement(this.containerScore);
     this.closeModal();

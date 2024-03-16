@@ -44,17 +44,16 @@ export default class Enemy extends Sprite2D implements IEntity {
     }
 
     /**
-     * This method kill the enemy and give the score to the player who killed it.
-     * @param player The player who killed the enemy.
+     * This method kills the enemy and increments the general score of the game.
      * @returns True if the enemy is dead, false otherwise.
      */
-    public die(player: Player) : boolean {
+    public die() : boolean {
         this._hp--;
         if (this._hp > 0) {
             return false;
         } else {
             this._dead = true;
-            player.incrementScore(this._scoreToGive);
+            Game.getInstance().incrementScore(this._scoreToGive);
             return true;
         }
     }
