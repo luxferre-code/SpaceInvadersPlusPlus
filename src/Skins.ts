@@ -12,7 +12,7 @@ export enum Skin {
   RED,
   GREEN,
   PURPLE,
-  // Do not change the order in which the skins are declared.s
+  // Do not change the order in which the skins are declared.
 }
 
 /**

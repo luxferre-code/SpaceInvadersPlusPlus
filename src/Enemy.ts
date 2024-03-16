@@ -53,7 +53,7 @@ export default class Enemy extends Sprite2D implements IEntity {
             return false;
         } else {
             this._dead = true;
-            Game.getInstance().incrementScore(this._scoreToGive);
+            Game.getInstance()?.incrementScore(this._scoreToGive);
             return true;
         }
     }

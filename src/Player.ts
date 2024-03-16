@@ -67,7 +67,11 @@ export default class Player extends Sprite2D implements IEntity {
     constructor(canvas: HTMLCanvasElement, skin = Skin.RED) {
         super(canvas, skin);
         this._hp = Player.MAX_HP;
-        this._position = new Vector2(canvas.width / 2 - this._skinImg.width, canvas.height - this._skinImg.height * 2);
+        if (this._skinImg) {
+            this._position = new Vector2(canvas.width / 2 - this._skinImg?.width, canvas.height - this._skinImg?.height * 2);
+        } else {
+            this._position = new Vector2();
+        }
         this.initializeMovementControls();
     }
 

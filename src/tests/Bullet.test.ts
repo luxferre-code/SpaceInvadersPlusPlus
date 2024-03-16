@@ -1,6 +1,6 @@
 import { describe, test, expect } from "vitest";
 import { createDummyEnemy, createDummyPlayer } from "./lib/createDummyObjects";
-import { createFakeCanvas, createHTMLImage } from "./lib/createHTMLElement";
+import { createFakeCanvas } from "./lib/createHTMLElement";
 import Bullet from "../Bullet";
 import Vector2 from "../Vector2";
 import Player from "../Player";
@@ -8,7 +8,6 @@ import Enemy from "../Enemy";
 
 describe('Test for Bullet Class', () => {
     const canvas = createFakeCanvas();
-    const img = createHTMLImage();
 
     test('should be created', () => {
         const bullet = new Bullet(createFakeCanvas(), new Vector2());
@@ -25,7 +24,7 @@ describe('Test for Bullet Class', () => {
 
     test('should by attached to a player', () => {
         const bullet = new Bullet(createFakeCanvas(), new Vector2(-1, -1));
-        const player: Player = createDummyPlayer(canvas, img);
+        const player: Player = createDummyPlayer(canvas);
         bullet.attachTo(player);
         Bullet._isVertical = true;
         expect(bullet.getPosition()).toEqual(player.getPosition());
@@ -34,7 +33,7 @@ describe('Test for Bullet Class', () => {
 
     test('should by attached to a enemy', () => {
         const bullet = new Bullet(createFakeCanvas(), new Vector2(-1, -1));
-        const enemy: Enemy = createDummyEnemy(canvas, img);
+        const enemy: Enemy = createDummyEnemy(canvas);
         bullet.attachTo(enemy);
         Bullet._isVertical = true;
         expect(bullet.getPosition()).toEqual(enemy.getPosition());
@@ -43,16 +42,16 @@ describe('Test for Bullet Class', () => {
 
     test('should by lost hp to a player', () => {
         const bullet = new Bullet(createFakeCanvas(), new Vector2(-1, -1));
-        const player: Player = createDummyPlayer(canvas, img);
-        bullet.attachTo(createDummyEnemy(canvas, img));
+        const player: Player = createDummyPlayer(canvas);
+        bullet.attachTo(createDummyEnemy(canvas));
         bullet.shoot(player);
         expect(player.getHealth()).toBe(Player.MAX_HP - 1);
     });
 
     test('should by kill a enemy', () => {
         const bullet = new Bullet(createFakeCanvas(), new Vector2(-1, -1));
-        const player: Player = createDummyPlayer(canvas, img);
-        const enemy: Enemy = createDummyEnemy(canvas, img);
+        const player: Player = createDummyPlayer(canvas);
+        const enemy: Enemy = createDummyEnemy(canvas);
         bullet.attachTo(player);
         expect(enemy.isDead()).toBe(false);
         bullet.shoot(enemy);
@@ -61,7 +60,7 @@ describe('Test for Bullet Class', () => {
 
     test('shouldn\'t kill a player if sent by himself', () => {
         const bullet = new Bullet(createFakeCanvas(), new Vector2(-1, -1));
-        const player: Player = createDummyPlayer(canvas, img);
+        const player: Player = createDummyPlayer(canvas);
         const initial_health = player.getHealth();
         bullet.attachTo(player);
         bullet.shoot(player);
@@ -70,7 +69,7 @@ describe('Test for Bullet Class', () => {
 
     test('shouldn\'t kill a enemy if sent by himself', () => {
         const bullet = new Bullet(createFakeCanvas(), new Vector2(-1, -1));
-        const enemy: Enemy = createDummyEnemy(canvas, img);
+        const enemy: Enemy = createDummyEnemy(canvas);
         bullet.attachTo(enemy);
         expect(enemy.isDead()).toBe(false);
         bullet.shoot(enemy);
@@ -79,8 +78,8 @@ describe('Test for Bullet Class', () => {
 
     test('shouldn\'t kill a player if sent by a another player', () => {
         const bullet = new Bullet(createFakeCanvas(), new Vector2(-1, -1));
-        const player: Player = createDummyPlayer(canvas, img);
-        const player2: Player = createDummyPlayer(canvas, img);
+        const player: Player = createDummyPlayer(canvas);
+        const player2: Player = createDummyPlayer(canvas);
         const initial_health = player.getHealth();
         bullet.attachTo(player);
         bullet.shoot(player2);
@@ -89,8 +88,8 @@ describe('Test for Bullet Class', () => {
 
     test('shouldn\'t kill a enemy if sent by a another enemy', () => {
         const bullet = new Bullet(createFakeCanvas(), new Vector2(-1, -1));
-        const enemy: Enemy = createDummyEnemy(canvas, img);
-        const enemy2: Enemy = createDummyEnemy(canvas, img);
+        const enemy: Enemy = createDummyEnemy(canvas);
+        const enemy2: Enemy = createDummyEnemy(canvas);
         bullet.attachTo(enemy);
         expect(enemy.isDead()).toBe(false);
         bullet.shoot(enemy2);
@@ -99,7 +98,7 @@ describe('Test for Bullet Class', () => {
 
     test('if is attach, should by have the canvas and a image', () => {
         const bullet = new Bullet(createFakeCanvas(), new Vector2(-1, -1));
-        const player: Player = createDummyPlayer(canvas, img);
+        const player: Player = createDummyPlayer(canvas);
         bullet.attachTo(player);
         expect(bullet.getOwner()).toEqual(player);
     });
