@@ -1,4 +1,4 @@
-import { ACCEPTABLE_CONTROLS, Controls } from "./Controls";
+import { MOVEMENT_CONTROLS, Controls } from "./Controls";
 import Bullet from "./Bullet";
 import Game from "./Game";
 import HitBox from "./HitBox";
@@ -17,14 +17,8 @@ export default class Player extends Sprite2D implements IEntity {
     private _position: Vector2;
 
     private _canShoot: boolean = true;
+
     public static readonly TIMEOUT_SHOOT: number = 500;
-    private _movement = {
-        up: false,
-        down: false,
-        left: false,
-        right: false
-    }
-    private static readonly TIMEOUT_MOVEMENT: number = 1000 / 60;
 
     /**
      * It describes by how many pixels pressing a control key moves the player on each frame.
@@ -86,7 +80,7 @@ export default class Player extends Sprite2D implements IEntity {
      */
     private handleKeyPressed(e: KeyboardEvent, value: boolean) {
         const key = e.key.toLocaleLowerCase();
-        if (key in this.controls || ACCEPTABLE_CONTROLS.includes(key)) {
+        if (key in this.controls || MOVEMENT_CONTROLS.includes(key)) {
             this.controls[key] = value;
         }
     }
@@ -97,10 +91,10 @@ export default class Player extends Sprite2D implements IEntity {
      */
     private initializeMovementControls() : void {
         window.addEventListener("keydown", e => {
-            this.handleKeyPressed(e, true);
-            if(e.code === Controls.SHOOT) {
-                console.log("Shoot by player");
+            if (e.code === "Space") {
                 this.shoot();
+            } else {
+                this.handleKeyPressed(e, true);
             }
         });
 
@@ -245,15 +239,13 @@ export default class Player extends Sprite2D implements IEntity {
      */
     public shoot() : void {
         if(!this._canShoot) return;
-        const bullet: Bullet = new Bullet(this._position.add(new Vector2(this._skin.width / 2, 0)));
+        const bullet: Bullet = new Bullet(this._canvas, this._position.add(new Vector2(this._skin.width / 2, 0)));
         bullet.attachTo(this);
         this._canShoot = false;
         setTimeout(() => {
             this._canShoot = true;
         }, Player.TIMEOUT_SHOOT);
-        if(Game.this != null) {
-            Game.this.addBullet(bullet);
-        }
+        Game.getInstance().addBullet(bullet);
     }
 
     /**

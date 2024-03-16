@@ -15,4 +15,9 @@ export enum Controls {
  * The goal of this array is to improve performance, because without it
  * any key that gets pressed would be stored in the "controls" map of the Player.
  */
-export const ACCEPTABLE_CONTROLS: string[] = Object.values(Controls);
+export const MOVEMENT_CONTROLS: string[] = [
+  Controls.UP,
+  Controls.RIGHT,
+  Controls.DOWN,
+  Controls.LEFT
+]

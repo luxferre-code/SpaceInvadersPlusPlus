@@ -16,9 +16,6 @@ export default class Bullet extends Sprite2D {
     private _velocity: Vector2;
     private _owner : any;
     private _image: HTMLImageElement;
-    private _imageLoaded: boolean = false;
-    public static _isVertical: boolean = true;
-    public static _bulletSpeed: number = 30;
 
     constructor(canvas: HTMLCanvasElement, position: Vector2 = new Vector2(), velocity: Vector2 = new Vector2(!Bullet._isVertical ? Bullet._bulletSpeed : 0, Bullet._isVertical ? -Bullet._bulletSpeed : 0)) {
         super(canvas, new Image()); //TODO: Add the image of the bullet
@@ -72,14 +69,12 @@ export default class Bullet extends Sprite2D {
         }
     }
 
-    public render(context: CanvasRenderingContext2D) : void {
-        if(!this._imageLoaded) {
-            context.fillStyle = "white";
-            context.beginPath();
-            context.arc(this._position.add(new Vector2(5, 0)).x, this._position.y, 5, 0, 2 * Math.PI);
-            context.fill();
-            context.closePath();
-        }
+    public render() : void {
+        this._context.fillStyle = "white";
+        this._context.beginPath();
+        this._context.arc(this._position.add(new Vector2(5, 0)).x, this._position.y, 5, 0, 2 * Math.PI);
+        this._context.fill();
+        this._context.closePath();
     }
 
     public move() : void {
@@ -110,5 +105,4 @@ export default class Bullet extends Sprite2D {
     private isCollidingWithPoint(point: Vector2, entityHitBox: HitBox) : boolean {
         return point.x >= entityHitBox.top_left.x && point.x <= entityHitBox.top_right.x && point.y >= entityHitBox.top_left.y && point.y <= entityHitBox.bottom_left.y;
     }
-
 }
