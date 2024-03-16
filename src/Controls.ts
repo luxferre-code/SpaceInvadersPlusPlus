@@ -1,12 +1,17 @@
 /**
  * An enum that holds the names of the key used for controlling the player's movements.
- * It's a constant enum, and as a consequence, TypeScript will take care of
- * replacing all occurrences of this enum by the value that is used.
- * In the final JavaScript output, this enum will vanish.
  */
-export const enum Controls {
-  UP = "ArrowUp",
-  DOWN = "ArrowDown",
-  LEFT = "ArrowLeft",
-  RIGHT = "ArrowRight"
+export enum Controls {
+  UP = "arrowup",
+  DOWN = "arrowdown",
+  LEFT = "arrowleft",
+  RIGHT = "arrowright"
 }
+
+/**
+ * Contains the values of the Controls enum.
+ * The keys stored in this array are the keys allowed to be monitored.
+ * The goal of this array is to improve performance, because without it
+ * any key that gets pressed would be stored in the "controls" map of the Player.
+ */
+export const ACCEPTABLE_CONTROLS: string[] = Object.values(Controls);

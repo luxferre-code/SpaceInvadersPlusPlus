@@ -33,7 +33,7 @@ const canvas: HTMLCanvasElement = document.querySelector("canvas") as HTMLCanvas
 // This variable should not get modified, as it is just for debugging purposes.
 // Manually set it `false` if the UI is needed.
 // This variable will have to be removed entirely later on.
-const playing = false;
+const playing = true;
 
 // Add event listener, if window is being moved, resize canva height et width
 
@@ -44,14 +44,16 @@ window.addEventListener("resize", () => {
 });
 
 const context: CanvasRenderingContext2D = canvas.getContext("2d")!;
-const player: Player = new Player("Player 1", "red", canvas);
+const player: Player = new Player(canvas);
 const enemy: Enemy = new Enemy(canvas);
 
 window.addEventListener("load", () => {
     console.log("Initializing canvas size.");
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    player.position = new Vector2(canvas.width / 2 - player.image.width, canvas.height - canvas.height / 4 - player.image.height);
+    // player.position = new Vector2(50, 50);
+    player.setPosition(new Vector2(50, 50));
+    // player.position = new Vector2(canvas.width / 2 - player.image.width, canvas.height - canvas.height / 4 - player.image.height);
     
 });
 
@@ -66,10 +68,10 @@ function render() {
 
 setInterval(() => {
     if (playing) {
-        player.move()
+        player.move();
         enemy.next();
     }
-}, 1000 / 20);
+}, 1000 / 60);
 
 render();
 
