@@ -207,7 +207,30 @@ export default class {
   }
 
   public static showUI(): void { this.showElement(this.ui); }
-  public static hideUI(): void { this.hideElement(this.ui); }
+
+  /**
+   * Hides the UI,
+   * closed the modal,
+   * blurs the active element.
+   * The goal of this function is to hide
+   * the menus etc. when the game starts.
+   */
+  public static hideUI(): void {
+    this.hideElement(this.ui);
+    this.closeModal();
+    const focusedElement = this.getFocusedElement();
+    if (focusedElement) {
+      focusedElement.blur();
+    }
+  }
+
+  /**
+   * Gets the element that has focus.
+   * If there is no focused element, it returns `null`.
+   */
+  private static getFocusedElement(): HTMLElement | null {
+    return (document.activeElement as HTMLElement) || document.querySelector(":focus");
+  }
 
   /**
    * Opens the modal.

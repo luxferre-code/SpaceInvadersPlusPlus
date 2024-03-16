@@ -8,6 +8,8 @@ import Vector2 from "./Vector2";
 import Enemy from "./Enemy";
 import UI from "./ui/UI";
 
+let playing = false;
+
 // Allow the button to be interactive.
 // Without it, the buttons wouldn't work.
 UI.bindEvents();
@@ -26,14 +28,13 @@ SettingsPage.listenToMusicVolumeChange((newVolume) => SettingsDB.musicVolume = n
 SettingsPage.listenToSkinChange((newSkin) => SettingsDB.skin = newSkin);
 
 GameSettingsPage.initDefaultGameSettings();
+GameSettingsPage.onGameStarted(() => {
+    console.log("playing = true");
+    playing = true;
+    UI.hideUI();
+});
 
 const canvas: HTMLCanvasElement = document.querySelector("canvas") as HTMLCanvasElement;
-
-// Set this varialbe to `false` to allow the UI to appear.
-// This variable should not get modified, as it is just for debugging purposes.
-// Manually set it `false` if the UI is needed.
-// This variable will have to be removed entirely later on.
-const playing = true;
 
 // Add event listener, if window is being moved, resize canva height et width
 
@@ -61,8 +62,8 @@ function render() {
         context.clearRect(0, 0, canvas.width, canvas.height);
         player.render();
         enemy.render();
-        requestAnimationFrame(render);
     }
+    requestAnimationFrame(render);
 }
 
 setInterval(() => {
@@ -73,10 +74,3 @@ setInterval(() => {
 }, 1000 / 60);
 
 render();
-
-// This is temporary.
-// The goal here is to be able to debug easily
-// without having to deal with the UI.
-if (playing) {
-    UI.hideUI();
-}

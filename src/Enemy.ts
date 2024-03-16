@@ -59,7 +59,7 @@ export default class Enemy extends Sprite2D implements IEntity {
      */
     public next() : void {
         if(Enemy.horizontally) {
-            console.log("Moving enemy horizontally");
+            // console.log("Moving enemy horizontally");
             this._position.y += this._speed.y;
         } else {
             //TODO
