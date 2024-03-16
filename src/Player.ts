@@ -1,22 +1,21 @@
 import { MOVEMENT_CONTROLS, Controls } from "./Controls";
+import { Skin } from "./Skins";
 import Bullet from "./Bullet";
 import Game from "./Game";
 import IEntity from "./IEntity";
 import Sprite2D from "./Sprite2D";
 import Vector2 from "./Vector2";
-import { Skin } from "./Skins";
 
 /**
  * This class represents the player entity in the game.
  */
 export default class Player extends Sprite2D implements IEntity {
+    public static readonly TIMEOUT_SHOOT: number = 500;
     public static readonly MAX_HP: number = 5;
     
     private _hp: number;
 
     private _canShoot: boolean = true;
-
-    public static readonly TIMEOUT_SHOOT: number = 500;
 
     /**
      * It describes by how many pixels pressing a control key moves the player on each frame.
@@ -61,10 +60,14 @@ export default class Player extends Sprite2D implements IEntity {
      */
     private controls: {[key: string]: boolean} = {};
 
-    constructor(canvas: HTMLCanvasElement, position = new Vector2(), skin = Skin.RED) {
+    /**
+     * Creates a new player and places it at the center of the screen
+     * and a short distance away from the bottom.
+     */
+    constructor(canvas: HTMLCanvasElement, skin = Skin.RED) {
         super(canvas, skin);
         this._hp = Player.MAX_HP;
-        this._position = position;
+        this._position = new Vector2(canvas.width / 2 - this._skinImg.width, canvas.height - this._skinImg.height * 2);
         this.initializeMovementControls();
     }
 
@@ -118,10 +121,6 @@ export default class Player extends Sprite2D implements IEntity {
      */
     public setHealth(hp: number) {
         this._hp = hp;
-    }
-
-    public forceImageLoaded() : void {
-        this._imageLoaded = true;
     }
 
     /**

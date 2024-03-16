@@ -1,12 +1,12 @@
-import Game from "./Game";
+import { preloadSkins } from "./Skins";
 import GameSettingsPage from "./ui/GameSettingsPage";
 import SettingsDB from "./server/GlobalSettingsDB";
 import SettingsPage from "./ui/SettingsPage";
 import RankingPage from "./ui/RankingPage";
 import RankingDB from "./server/RankingDB";
 import Player from "./Player";
-import Vector2 from "./Vector2";
 import Enemy from "./Enemy";
+import Game from "./Game";
 import UI from "./ui/UI";
 
 const canvas: HTMLCanvasElement = document.querySelector("canvas") as HTMLCanvasElement;
@@ -14,6 +14,7 @@ const context: CanvasRenderingContext2D = canvas.getContext("2d")!;
 const game = new Game(canvas);
 
 let playing = false;
+let loadingAssets = true;
 
 // Allow the button to be interactive.
 // Without it, the buttons wouldn't work.
@@ -35,13 +36,24 @@ SettingsPage.listenToSkinChange((newSkin) => SettingsDB.skin = newSkin);
 
 GameSettingsPage.initDefaultGameSettings();
 GameSettingsPage.onGameStarted(() => {
-    const player = new Player(canvas, new Vector2(50, 50), SettingsDB.skin);
-    const enemy: Enemy = new Enemy(canvas);
-    game.addEntity(player);
-    game.addEntity(enemy);
-    playing = true;
-    UI.hideUI();
+    if (!loadingAssets) {
+        const player = new Player(canvas, SettingsDB.skin);
+        const enemy: Enemy = new Enemy(canvas);
+        game.addEntity(player);
+        game.addEntity(enemy);
+        playing = true;
+        UI.hideUI();
+    }
 });
+
+async function preloadAssets() {
+    try {
+        await preloadSkins();
+    } catch (e) {
+        alert("Quelques skins n'ont pas pu être chargés correctement.");
+    }
+    loadingAssets = false;
+}
 
 function fillScreen() {
     canvas.width = window.innerWidth;
@@ -69,4 +81,7 @@ setInterval(() => {
     }
 }, 1000 / 60);
 
+// The order in which those two
+// functions are called do not matter.
+preloadAssets();
 render();

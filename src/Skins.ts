@@ -3,30 +3,33 @@
  * It has to be attached to a number that
  * matches it description in the HTML settings page.
  * 
- * It's a "const" enum, so the individual properties
- * are replaced by their value in the JavaScript output.
- * 
  * Do not change the values under any circumstances,
- * as it might break the game for people
- * who have already played it.
- * 
- * The properties have explicit values to make sure
- * that the order in which they are declared don't matter.
+ * as it might break the game for people who have
+ * already saved their own custom settings
+ * into local storage.
  */
-export const enum Skin {
-  RED = 0,
-  GREEN = 1,
-  PURPLE = 2
+export enum Skin {
+  RED,
+  GREEN,
+  PURPLE,
+  // Do not change the order in which the skins are declared.s
 }
 
 /**
- * Since the Skin enum is constant,
+ * The pre-loaded HTML elements for each skin.
+ */
+export const SkinImages: HTMLImageElement[] = [];
+
+/**
+ * Since the Skin enum is not meant to change,
  * we define a global property whose value
  * is the highest value a skin can have.
  * 
- * If skins are added, this must be changed to the last skin.
+ * Note that the `Object.values()` on an TypeScript non-const enum also include the keys,
+ * but the very last element in the generated array is the value of the last member,
+ * and that's what we want here.
  */
-export const SkinMaximum = Skin.PURPLE;
+export const SkinMaximum: number = Object.values(Skin).at(-1) as number;
 
 /**
  * Gets the image URL that matches the given skin.
@@ -41,4 +44,28 @@ export function getSkinURL(skin: number): string {
     default:
       return "/assets/skins/skin-red.png";
   }
+}
+
+/**
+ * Gets the pre-loaded Image element for a given skin.
+ */
+export function getSkinImage(skin: Skin): HTMLImageElement {
+  return SkinImages[skin];
+}
+
+/**
+ * Pre-loads the Image element for each image.
+ */
+export async function preloadSkins(): Promise<void> {
+  const promises: Promise<void>[] = [];
+  for (let skin = 0; skin <= SkinMaximum; skin++) {
+    const image = new Image();
+    image.src = getSkinURL(skin);
+    SkinImages.push(image);
+    promises.push(new Promise((resolve, reject) => {
+      image.onerror = () => reject(`The image for the skin ${Skin[skin]} wasn't properly loaded.`);
+      image.onload = () => resolve();
+    }));
+  }
+  await Promise.all(promises);
 }
