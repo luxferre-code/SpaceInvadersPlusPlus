@@ -1,36 +1,28 @@
 import Enemy from "./Enemy";
 import HitBox from "./HitBox";
 import IEntity from "./IEntity";
-import Player from "./Player";
-import Sprite2D from "./Sprite2D";
+import Node2D from "./Node2D";
 import Vector2 from "./Vector2";
 
 /**
  * This class represents a bullet in the game.
  */
-export default class Bullet extends Sprite2D {
+export default class Bullet extends Node2D {
     public static _isVertical: boolean = true;
     public static _bulletSpeed: number = 10;
 
-    private _position: Vector2;
     private _velocity: Vector2;
-    private _owner : any;
-    private _image: HTMLImageElement;
+    private _owner : IEntity | null = null;
+    private size: number = 10;
 
     constructor(canvas: HTMLCanvasElement, position: Vector2 = new Vector2(), velocity: Vector2 = new Vector2(!Bullet._isVertical ? Bullet._bulletSpeed : 0, Bullet._isVertical ? -Bullet._bulletSpeed : 0)) {
-        super(canvas, new Image()); //TODO: Add the image of the bullet
+        super(canvas);
         this._position = position;
         this._velocity = velocity;
-        this._image = new Image();
-        this._image.src = "assets/bullet.png";
-        this._image.onload = () => {
-            this._imageLoaded = true;
-        }
     }
 
-    public get position() : Vector2 { return this._position; }
-    public get velocity() : Vector2 { return this._velocity; }
-    public get owner() : any { return this._owner; }
+    public getVelocity(): Vector2 { return this._velocity; }
+    public getOwner(): IEntity | null { return this._owner; }
 
     /**
      * This method attach this bullet to an entity and set its position and velocity.
@@ -56,16 +48,17 @@ export default class Bullet extends Sprite2D {
     /**
      * This method shoot an entity.
      * @param entity The entity to shoot.
-     * @returns
      */
     public shoot(entity: IEntity) : void {
         if(entity == null || this._owner == null || entity.isPlayer() == this._owner.isPlayer()) return;
         if(entity.isPlayer()) {
-            const player: Player = entity as Player;
-            player.hurt();
+            entity.hurt();
         } else {
-            const enemy: Enemy = entity as Enemy;
-            enemy.die(this._owner);
+            if (this._owner.isPlayer()) {
+                (entity as Enemy).die(this._owner);
+            } else {
+                console.warn("hummmm, wtf...."); // TODO: is this possible that this gets triggered???
+            }
         }
     }
 
@@ -78,31 +71,39 @@ export default class Bullet extends Sprite2D {
     }
 
     public move() : void {
-        this._position = this.position.add(this.velocity);
+        this._position = this._position.add(this._velocity);
     }
 
     public isColliding(entity: IEntity) : boolean {
         if(this._owner == entity) return false;
-        if(this._owner.isPlayer() == entity.isPlayer()) return false;
+        if(this._owner?.isPlayer() == entity.isPlayer()) return false;
         const hitBox: HitBox = this.genereHitBox();
-        const entityHitBox: HitBox = entity.genereHitBox();
+        const entityHitBox: HitBox = entity.generateHitBox();
         return this.isCollidingWithHitBox(hitBox, entityHitBox);
     }
 
     private genereHitBox() : HitBox {
+        const x = this._position.x;
+        const y = this._position.y;
         return {
-            top_left : new Vector2(this.position.x, this.position.y),
-            top_right : new Vector2(this.position.x + this._image.width, this.position.y),
-            bottom_left : new Vector2(this.position.x, this.position.y + this._image.height),
-            bottom_right : new Vector2(this.position.x + this._image.width, this.position.y + this._image.height)
+            top_left : new Vector2(x, y),
+            top_right : new Vector2(x + this.size, y),
+            bottom_left : new Vector2(x, y + this.size),
+            bottom_right : new Vector2(x + this.size, y + this.size)
         };
     }
 
     private isCollidingWithHitBox(hitBox: HitBox, entityHitBox: HitBox) : boolean {
-        return this.isCollidingWithPoint(hitBox.top_left, entityHitBox) || this.isCollidingWithPoint(hitBox.top_right, entityHitBox) || this.isCollidingWithPoint(hitBox.bottom_left, entityHitBox) || this.isCollidingWithPoint(hitBox.bottom_right, entityHitBox);
+        return this.isCollidingWithPoint(hitBox.top_left, entityHitBox) ||
+            this.isCollidingWithPoint(hitBox.top_right, entityHitBox) ||
+            this.isCollidingWithPoint(hitBox.bottom_left, entityHitBox) ||
+            this.isCollidingWithPoint(hitBox.bottom_right, entityHitBox);
     }
 
     private isCollidingWithPoint(point: Vector2, entityHitBox: HitBox) : boolean {
-        return point.x >= entityHitBox.top_left.x && point.x <= entityHitBox.top_right.x && point.y >= entityHitBox.top_left.y && point.y <= entityHitBox.bottom_left.y;
+        return point.x >= entityHitBox.top_left.x &&
+        point.x <= entityHitBox.top_right.x &&
+        point.y >= entityHitBox.top_left.y &&
+        point.y <= entityHitBox.bottom_left.y;
     }
 }

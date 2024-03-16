@@ -15,8 +15,8 @@ export default class Game {
         Game.instance = this;
     }
 
-    public get bullets() : Bullet[] { return this._bullets; }
-    public get entities() : IEntity[] { return this._entities; }
+    public getBullets(): Bullet[] { return this._bullets; }
+    public getEntities(): IEntity[] { return this._entities; }
     public static getInstance(): Game { return this.instance; }
 
     public addBullet(bullet: Bullet) : void {
@@ -49,7 +49,11 @@ export default class Game {
     }
 
     private purgeBullet() : void {
-        this._bullets = this._bullets.filter(b => b.position.x > 0 && b.position.x < this._canvas.width && b.position.y > 0 && b.position.y < this._canvas.height);
+        this._bullets = this._bullets.filter(b => {
+            const bX = b.getPosition().x;
+            const bY = b.getPosition().y;
+            return bX > 0 && bX < this._canvas.width && bY > 0 && bY < this._canvas.height;
+        });
     }
 
     private purgeEntity() : void {
@@ -62,7 +66,7 @@ export default class Game {
             }
             if(!e.isPlayer()) {
                 const enemy = e as Enemy;
-                if(enemy.isDead) {
+                if(enemy.isDead()) {
                     return false;
                 }
             }
@@ -74,7 +78,7 @@ export default class Game {
         const toRemove : Bullet[] = [];
         this._bullets.forEach(b => {
             this._entities.forEach(e => {
-                if(b.owner == e) return;
+                if(b.getOwner() == e) return;
                 if(b.isColliding(e)) {
                     b.shoot(e);
                     toRemove.push(b);
@@ -96,7 +100,7 @@ export default class Game {
         this._entities.forEach(e => {
             if(e.isPlayer()) {
                 const player = e as Player;
-                score += player.score;
+                score += player.getScore();
             }
         });
         return score;

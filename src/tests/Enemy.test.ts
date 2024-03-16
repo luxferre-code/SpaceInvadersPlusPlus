@@ -20,14 +20,14 @@ describe('Tests for Enemy class', () => {
         const enemy = createDummyEnemy(canvas, img);
         const player = createDummyPlayer(canvas, img);
         expect(enemy.die(player)).toBeTruthy();
-        expect(enemy.isDead).toBeTruthy();
-        expect(player.score).toEqual(10);
+        expect(enemy.isDead()).toBeTruthy();
+        expect(player.getScore()).toEqual(10);
     });
     
     test('should move the enemy horizontally', () => {
         Enemy.horizontally = true;
         const enemy = createDummyEnemy(canvas, img);
-        enemy.speed = new Vector2(0, 10);
+        enemy.setSpeed(new Vector2(0, 10));
         enemy.move();
         expect(enemy.getPosition().x).toEqual(0);
         expect(enemy.getPosition().y).toEqual(10);

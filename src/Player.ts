@@ -1,7 +1,6 @@
 import { MOVEMENT_CONTROLS, Controls } from "./Controls";
 import Bullet from "./Bullet";
 import Game from "./Game";
-import HitBox from "./HitBox";
 import IEntity from "./IEntity";
 import Sprite2D from "./Sprite2D";
 import Vector2 from "./Vector2";
@@ -14,7 +13,6 @@ export default class Player extends Sprite2D implements IEntity {
     
     private _hp: number;
     private _score: number;
-    private _position: Vector2;
 
     private _canShoot: boolean = true;
 
@@ -141,7 +139,7 @@ export default class Player extends Sprite2D implements IEntity {
      * @param nextX The next value of {@link mX}.
      */
     private isXOutOfBounds(nextX: number) {
-        return nextX <= 0 || nextX + this.image.width >= this.canvas.width;
+        return nextX <= 0 || nextX + this.getSkin().width >= this._canvas.width;
     }
     
     /**
@@ -150,7 +148,7 @@ export default class Player extends Sprite2D implements IEntity {
      * @param nextY The next value of {@link mY}.
      */
     private isYOutOfBounds(nextY: number) {
-        return nextY <= 0 || nextY + this.image.height >= this.canvas.height;
+        return nextY <= 0 || nextY + this.getSkin().height >= this._canvas.height;
     }
 
     /**
@@ -215,21 +213,11 @@ export default class Player extends Sprite2D implements IEntity {
         }
     }
 
-    /**
-     * Renders the player using the canvas API.
-     * If the image isn't loaded, a red circle gets drawn instead.
-     */
-    public render() : void {
+    public fallbackRender(): void {
         this._context.beginPath();
-        // Draw image if is loaded
-        if (this.isSkinLoaded()) {
-            this._context.drawImage(this._skin, this._position.x, this._position.y, this._skin.width, this._skin.height);
-            this._context.fill();
-        } else {
-            this._context.fillStyle = "red";
-            this._context.arc(this._position.x, this._position.y, 25, 0, 2 * Math.PI);
-            this._context.fill();
-        }
+        this._context.fillStyle = "red";
+        this._context.arc(this._position.x, this._position.y, 25, 0, 2 * Math.PI);
+        this._context.fill();
         this._context.closePath();
     }
 
@@ -251,32 +239,11 @@ export default class Player extends Sprite2D implements IEntity {
     /**
      * Is this entity a player?
      */
-    public isPlayer(): boolean {
+    public isPlayer(): this is Player {
         return true;
     }
 
-    public genereHitBox(): HitBox {
-        return new HitBox(this._position, this._skin);
+    public getScore(): number {
+        return this._score;
     }
-
-    /**
-     * Sets the position of the player.
-     */
-    public setPosition(newPosition: Vector2) {
-        this._position = newPosition;
-    }
-
-    /**
-     * Gets the player's current position.
-     */
-    public getPosition(): Vector2 {
-        return this._position;
-    }
-
-    public get canvas() : HTMLCanvasElement { return this._context.canvas; }
-    public get context() : CanvasRenderingContext2D { return this._context; }
-    public get image() : HTMLImageElement { return this._skin; }
-    public get score() : number { return this._score; }
-
-    public set score(score: number) { this._score = score; }
 }

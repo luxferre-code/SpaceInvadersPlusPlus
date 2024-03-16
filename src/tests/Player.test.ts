@@ -9,7 +9,7 @@ describe("Tests for Player class", () => {
     
     test("should be instantiated with default parameters", () => {
         const player = createDummyPlayer(canvas, img);
-        expect(player.score).toEqual(0);
+        expect(player.getScore()).toEqual(0);
         expect(player.getHealth()).toEqual(Player.MAX_HP);
         expect(player.getPosition().x).toEqual(0);
         expect(player.getPosition().y).toEqual(0);
@@ -30,6 +30,6 @@ describe("Tests for Player class", () => {
     test("should increment score of the player", () => {
         const player = createDummyPlayer(canvas, img);
         player.incrementScore(100);
-        expect(player.score).toEqual(100);
+        expect(player.getScore()).toEqual(100);
     });
 });

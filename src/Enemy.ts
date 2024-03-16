@@ -1,6 +1,5 @@
 import Bullet from "./Bullet";
 import Game from "./Game";
-import HitBox from "./HitBox";
 import IEntity from "./IEntity";
 import Player from "./Player";
 import Sprite2D from "./Sprite2D";
@@ -10,11 +9,10 @@ import Vector2 from "./Vector2";
  *  This class represents the enemy entity in the game.
  */
 export default class Enemy extends Sprite2D implements IEntity {
-    private static _horizontally: boolean = true;
-    private static _shootProbability: number = 0.05;
     public static readonly TIMEOUT_SHOOT: number = 500;
+    private static _shootProbability: number = 0.05;
+    private static _horizontally: boolean = true;
 
-    private _position: Vector2;
     private _speed: Vector2;
     private _dead: boolean = false;
     private _hp: number = 1;
@@ -31,7 +29,7 @@ export default class Enemy extends Sprite2D implements IEntity {
      * This method checks if the entity is a player.
      * @returns True if the entity is a player, false otherwise.
      */
-    public isPlayer(): boolean {
+    public isPlayer(): this is Player {
         return false;
     }
 
@@ -55,7 +53,7 @@ export default class Enemy extends Sprite2D implements IEntity {
             return false;
         } else {
             this._dead = true;
-            player.score += this._scoreToGive;
+            player.incrementScore(this._scoreToGive);
             return true;
         }
     }
@@ -85,37 +83,24 @@ export default class Enemy extends Sprite2D implements IEntity {
         }
     }
 
+    public fallbackRender(): void {
+        this._context.beginPath();
+        this._context.arc(this._position.x, this._position.y, 25, 0, 2 * Math.PI);
+        this._context.fill();
+        this._context.closePath();
+    }
+
     /**
      * This method renders the enemy on the canvas.
      */
     public render() : void {
         if(this._dead) return;
-        this._context.beginPath();
-        if(this._imageLoaded) {
-            this._context.drawImage(this._skin, this._position.x, this._position.y, this._skin.width, this._skin.height);
-            this._context.fill();
-        } else {
-            this._context.arc(this._position.x, this._position.y, 25, 0, 2 * Math.PI);
-            this._context.fill();
-        }
-        this._context.closePath();
-    }
-
-    genereHitBox(): HitBox {
-        return new HitBox(this._position, this._skin);
-    }
-
-    public getPosition(): Vector2 {
-        return this._position;
+        super.render();
     }
 
     public static get horizontally() { return Enemy._horizontally; }
     public static set horizontally(value: boolean) { Enemy._horizontally = value; }
 
-    public set speed(speed: Vector2) { this._speed = speed; }
-    
-    public get isDead() : boolean { return this._dead; }
-    public get canvas() : HTMLCanvasElement { return this._canvas; }
-    public get context() : CanvasRenderingContext2D { return this._context; }
-    public get image() : HTMLImageElement { return this._skin; }
+    public setSpeed(speed: Vector2) { this._speed = speed; }
+    public isDead(): boolean { return this._dead; }
 } 
