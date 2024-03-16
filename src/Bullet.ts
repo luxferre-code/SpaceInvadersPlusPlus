@@ -1,4 +1,5 @@
 import Enemy from "./Enemy";
+import HitBox from "./HitBox";
 import IEntity from "./IEntity";
 import Player from "./Player";
 import Sprite2D from "./Sprite2D";
@@ -14,12 +15,17 @@ export default class Bullet extends Sprite2D {
     private _position: Vector2;
     private _velocity: Vector2;
     private _owner : any;
+    private _image: HTMLImageElement;
 
     constructor(canvas: HTMLCanvasElement, position: Vector2 = new Vector2(), velocity: Vector2 = new Vector2(!Bullet._isVertical ? Bullet._bulletSpeed : 0, Bullet._isVertical ? -Bullet._bulletSpeed : 0)) {
         super(canvas, new Image()); //TODO: Add the image of the bullet
         this._position = position;
         this._velocity = velocity;
-        this._owner = null;
+        this._image = new Image();
+        this._image.src = "assets/bullet.png";
+        this._image.onload = () => {
+            this._imageLoaded = true;
+        }
     }
 
     public get position() : Vector2 { return this._position; }
@@ -63,7 +69,40 @@ export default class Bullet extends Sprite2D {
         }
     }
 
-    public get canvas() : HTMLCanvasElement { return this._canvas; }
-    public get image() : HTMLImageElement { return this._skin; }
+    public render() : void {
+        this._context.fillStyle = "white";
+        this._context.beginPath();
+        this._context.arc(this._position.add(new Vector2(5, 0)).x, this._position.y, 5, 0, 2 * Math.PI);
+        this._context.fill();
+        this._context.closePath();
+    }
 
+    public move() : void {
+        this._position = this.position.add(this.velocity);
+    }
+
+    public isColliding(entity: IEntity) : boolean {
+        if(this._owner == entity) return false;
+        if(this._owner.isPlayer() == entity.isPlayer()) return false;
+        const hitBox: HitBox = this.genereHitBox();
+        const entityHitBox: HitBox = entity.genereHitBox();
+        return this.isCollidingWithHitBox(hitBox, entityHitBox);
+    }
+
+    private genereHitBox() : HitBox {
+        return {
+            top_left : new Vector2(this.position.x, this.position.y),
+            top_right : new Vector2(this.position.x + this._image.width, this.position.y),
+            bottom_left : new Vector2(this.position.x, this.position.y + this._image.height),
+            bottom_right : new Vector2(this.position.x + this._image.width, this.position.y + this._image.height)
+        };
+    }
+
+    private isCollidingWithHitBox(hitBox: HitBox, entityHitBox: HitBox) : boolean {
+        return this.isCollidingWithPoint(hitBox.top_left, entityHitBox) || this.isCollidingWithPoint(hitBox.top_right, entityHitBox) || this.isCollidingWithPoint(hitBox.bottom_left, entityHitBox) || this.isCollidingWithPoint(hitBox.bottom_right, entityHitBox);
+    }
+
+    private isCollidingWithPoint(point: Vector2, entityHitBox: HitBox) : boolean {
+        return point.x >= entityHitBox.top_left.x && point.x <= entityHitBox.top_right.x && point.y >= entityHitBox.top_left.y && point.y <= entityHitBox.bottom_left.y;
+    }
 }

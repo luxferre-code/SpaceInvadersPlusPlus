@@ -1,5 +1,7 @@
-import { ACCEPTABLE_CONTROLS, Controls } from "./Controls";
+import { MOVEMENT_CONTROLS, Controls } from "./Controls";
 import Bullet from "./Bullet";
+import Game from "./Game";
+import HitBox from "./HitBox";
 import IEntity from "./IEntity";
 import Sprite2D from "./Sprite2D";
 import Vector2 from "./Vector2";
@@ -13,6 +15,10 @@ export default class Player extends Sprite2D implements IEntity {
     private _hp: number;
     private _score: number;
     private _position: Vector2;
+
+    private _canShoot: boolean = true;
+
+    public static readonly TIMEOUT_SHOOT: number = 500;
 
     /**
      * It describes by how many pixels pressing a control key moves the player on each frame.
@@ -74,7 +80,7 @@ export default class Player extends Sprite2D implements IEntity {
      */
     private handleKeyPressed(e: KeyboardEvent, value: boolean) {
         const key = e.key.toLocaleLowerCase();
-        if (key in this.controls || ACCEPTABLE_CONTROLS.includes(key)) {
+        if (key in this.controls || MOVEMENT_CONTROLS.includes(key)) {
             this.controls[key] = value;
         }
     }
@@ -84,7 +90,14 @@ export default class Player extends Sprite2D implements IEntity {
      * the player's movement with the keyboard.
      */
     private initializeMovementControls() : void {
-        window.addEventListener("keydown", e => this.handleKeyPressed(e, true));
+        window.addEventListener("keydown", e => {
+            if (e.code === "Space") {
+                this.shoot();
+            } else {
+                this.handleKeyPressed(e, true);
+            }
+        });
+
         window.addEventListener("keyup", e => this.handleKeyPressed(e, false));
     }
 
@@ -224,8 +237,15 @@ export default class Player extends Sprite2D implements IEntity {
      * Shoots a bullet.
      * @returs The bullet that was created.
      */
-    public shoot() : Bullet {
-        return new Bullet(this._canvas, this._position);
+    public shoot() : void {
+        if(!this._canShoot) return;
+        const bullet: Bullet = new Bullet(this._canvas, this._position.add(new Vector2(this._skin.width / 2, 0)));
+        bullet.attachTo(this);
+        this._canShoot = false;
+        setTimeout(() => {
+            this._canShoot = true;
+        }, Player.TIMEOUT_SHOOT);
+        Game.getInstance().addBullet(bullet);
     }
 
     /**
@@ -233,6 +253,10 @@ export default class Player extends Sprite2D implements IEntity {
      */
     public isPlayer(): boolean {
         return true;
+    }
+
+    public genereHitBox(): HitBox {
+        return new HitBox(this._position, this._skin);
     }
 
     /**

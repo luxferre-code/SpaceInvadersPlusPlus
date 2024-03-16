@@ -9,9 +9,24 @@
     <link rel="stylesheet" href="/styles/main.scss">
 
     <script type="module" src="/src/main.ts"></script>
+
+    <style>
+      #score {
+        z-index: 1;
+        position: absolute;
+        top: 0;
+        left: 20px;
+        color: white;
+        font-size: 20px;
+        font-weight: bold;
+
+      }
+    </style>
   </head>
   <body>
     <img class="main-background" src="/assets/pictures/main-background-2k.jpg" alt="Main background with stars">
+
+    <p id="score">Score: 0</p>
 
     <canvas class="disabled" aria-disabled="true" height="400" width="600"></canvas>
 

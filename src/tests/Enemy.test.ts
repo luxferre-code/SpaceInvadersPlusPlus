@@ -28,7 +28,7 @@ describe('Tests for Enemy class', () => {
         Enemy.horizontally = true;
         const enemy = createDummyEnemy(canvas, img);
         enemy.speed = new Vector2(0, 10);
-        enemy.next();
+        enemy.move();
         expect(enemy.getPosition().x).toEqual(0);
         expect(enemy.getPosition().y).toEqual(10);
     });

@@ -1,3 +1,4 @@
+import Game from "./Game";
 import GameSettingsPage from "./ui/GameSettingsPage";
 import SettingsDB from "./server/GlobalSettingsDB";
 import SettingsPage from "./ui/SettingsPage";
@@ -53,23 +54,26 @@ window.addEventListener("load", () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     player.setPosition(new Vector2(50, 50));
-    // player.position = new Vector2(canvas.width / 2 - player.image.width, canvas.height - canvas.height / 4 - player.image.height);
-    
 });
+
+const game : Game = new Game(canvas);
+game.addEntity(player);
+game.addEntity(enemy);
 
 function render() {
     if (playing) {
         context.clearRect(0, 0, canvas.width, canvas.height);
+        game.updateRender();
         player.render();
         enemy.render();
+        document.querySelector('#score')!.innerHTML = "Score: " + game.getScore();
     }
     requestAnimationFrame(render);
 }
 
 setInterval(() => {
     if (playing) {
-        player.move();
-        enemy.next();
+        game.updateMove();
     }
 }, 1000 / 60);
 

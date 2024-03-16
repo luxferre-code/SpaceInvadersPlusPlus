@@ -101,7 +101,6 @@ describe('Test for Bullet Class', () => {
         const bullet = new Bullet(createFakeCanvas(), new Vector2(-1, -1));
         const player: Player = createDummyPlayer(canvas, img);
         bullet.attachTo(player);
-        expect(bullet.canvas).toBeDefined();
-        expect(bullet.image).toBeDefined();
+        expect(bullet.owner).toEqual(player);
     });
 });
