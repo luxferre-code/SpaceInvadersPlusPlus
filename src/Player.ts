@@ -127,7 +127,7 @@ export default class Player extends Sprite2D implements IEntity {
      * position does not exceed the limits of the screen
      * @param nextX The next value of {@link mX}.
      */
-    public isXOutOfBounds(nextX: number) {
+    private isXOutOfBounds(nextX: number) {
         return nextX <= 0 || nextX + this.image.width >= this.canvas.width;
     }
     
@@ -136,7 +136,7 @@ export default class Player extends Sprite2D implements IEntity {
      * position does not exceed the limits of the screen
      * @param nextY The next value of {@link mY}.
      */
-    public isYOutOfBounds(nextY: number) {
+    private isYOutOfBounds(nextY: number) {
         return nextY <= 0 || nextY + this.image.height >= this.canvas.height;
     }
 
@@ -145,7 +145,7 @@ export default class Player extends Sprite2D implements IEntity {
      * this function will increment or decrement the movement
      * variables accordingly (see {@link mX} and {@link mY}).
      */
-    public handleMovementControls() {
+    private handleMovementControls() {
         if (this.controls[Controls.UP])    this.mY -= this.MOVEMENT_STRENGTH;
         if (this.controls[Controls.RIGHT]) this.mX += this.MOVEMENT_STRENGTH;
         if (this.controls[Controls.DOWN])  this.mY += this.MOVEMENT_STRENGTH;
@@ -210,7 +210,7 @@ export default class Player extends Sprite2D implements IEntity {
         this._context.beginPath();
         // Draw image if is loaded
         if (this.isSkinLoaded()) {
-            this._context.drawImage(this._skin, this._position.x, this._position.y, 50, 50);
+            this._context.drawImage(this._skin, this._position.x, this._position.y, this._skin.width, this._skin.height);
             this._context.fill();
         } else {
             this._context.fillStyle = "red";
