@@ -56,7 +56,7 @@ export default class Bullet extends Node2D {
             if (this._owner.isPlayer()) {
                 (entity as Enemy).die();
             } else {
-                console.warn("hummmm, wtf...."); // TODO: is this possible that this gets triggered???
+                console.warn("hummmm, todo...."); // TODO: pretty sure we have to do something here
             }
         }
     }
@@ -64,7 +64,11 @@ export default class Bullet extends Node2D {
     public render() : void {
         this._context.fillStyle = "white";
         this._context.beginPath();
-        this._context.arc(this._position.add(new Vector2(5, 0)).x, this._position.y, 5, 0, 2 * Math.PI);
+        // How to place the bullet:
+        // The current position at the top left corner (this._position.x)
+        // + the width of the skin
+        // - half the size of the bullet
+        this._context.rect(this._position.x + 25 - 4, this._position.y, 8, 8);
         this._context.fill();
         this._context.closePath();
     }
