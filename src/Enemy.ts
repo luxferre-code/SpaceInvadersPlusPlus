@@ -20,7 +20,7 @@ export default class Enemy extends Sprite2D implements IEntity {
     private _scoreToGive: number = 10;
     private _canShoot: boolean = true;
 
-    constructor(canvas: HTMLCanvasElement, position = Enemy.generateRandomXPosition(canvas), speed = new Vector2(Enemy._horizontally ? 0 : 10, Enemy._horizontally ? 10 : 0)) {
+    constructor(canvas: HTMLCanvasElement, position = Enemy.generateRandomXPosition(), speed = new Vector2(Enemy._horizontally ? 0 : 10, Enemy._horizontally ? 10 : 0)) {
         super(canvas, Skin.GREEN);
         this._position = position;
         this._speed = speed;
@@ -39,8 +39,8 @@ export default class Enemy extends Sprite2D implements IEntity {
      * @param canvas The canvas where the game is rendered.
      * @returns The random position.
      */
-    public static generateRandomXPosition(canvas: HTMLCanvasElement) : Vector2 {
-        return new Vector2(Math.random() * canvas.width, 0);
+    public static generateRandomXPosition() : Vector2 {
+        return new Vector2(Math.random() * Game.limits.maxX, 0);
     }
 
     /**

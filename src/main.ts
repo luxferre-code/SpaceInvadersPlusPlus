@@ -1,6 +1,7 @@
 import { preloadSkins } from "./Skins";
 import GameSettingsPage from "./ui/GameSettingsPage";
 import SettingsDB from "./server/GlobalSettingsDB";
+import GameSettings from "./models/GameSettings";
 import SettingsPage from "./ui/SettingsPage";
 import RankingPage from "./ui/RankingPage";
 import RankingDB from "./server/RankingDB";
@@ -8,11 +9,10 @@ import Player from "./Player";
 import Enemy from "./Enemy";
 import Game from "./Game";
 import UI from "./ui/UI";
-import GameSettings from "./models/GameSettings";
 
 const canvas: HTMLCanvasElement = document.querySelector("canvas") as HTMLCanvasElement;
 const context: CanvasRenderingContext2D = canvas.getContext("2d")!;
-const game = new Game(canvas);
+const game = new Game();
 
 let playing = false;
 let loadingAssets = true;
@@ -56,9 +56,19 @@ async function preloadAssets() {
     loadingAssets = false;
 }
 
+function calculateGameLimits(canvas: HTMLCanvasElement, bordersUI: typeof UI.gameBorders): GameLimits {
+    return {
+        minY: 0,
+        minX: bordersUI.left.getBoundingClientRect().width,
+        maxX: canvas.width - bordersUI.right.getBoundingClientRect().width,
+        maxY: canvas.height,
+    }
+}
+
 function fillScreen() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
+    Game.limits = calculateGameLimits(canvas, UI.gameBorders);
 }
 
 // Add event listener, if window is being moved, resize canva height et width

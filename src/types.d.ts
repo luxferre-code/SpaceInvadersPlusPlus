@@ -3,23 +3,30 @@ import type RankingTable from "./ui/RankingPage";
 import type Ranking from "./models/Ranking";
 
 declare global {
-  interface PlayerSettings {
+  type PlayerSettings = {
     name: string;
     skin: Skin;
     musicVolume: number;
     effectsVolume: number;
   }
 
-  interface GameSettingsInterface {
+  type GameSettingsInterface = {
     seed: number;
     playerHp: number;
     playerBasedAmmo: number;
   }
 
-  interface Score {
+  type Score = {
     date: Date;
     score: number;
   }
+
+  type GameLimits = {
+    maxY: number;
+    maxX: number;
+    minX: number;
+    minY: number;
+}
 
   type Rankings = {
     player?: Ranking; // the current player's scores

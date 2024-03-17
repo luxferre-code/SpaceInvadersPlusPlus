@@ -11,7 +11,7 @@ import Vector2 from "./Vector2";
  */
 export default class Player extends Sprite2D implements IEntity {
     private _canShoot: boolean = true;
-    private shootDelay: number;
+    private _shootDelay: number;
     private _hp: number;
 
     /**
@@ -64,9 +64,9 @@ export default class Player extends Sprite2D implements IEntity {
     constructor(canvas: HTMLCanvasElement, based_health: number, shoot_delay: number, skin = Skin.RED) {
         super(canvas, skin);
         this._hp = based_health;
-        this.shootDelay = shoot_delay;
+        this._shootDelay = shoot_delay;
         if (this._skinImg) {
-            this._position = new Vector2(canvas.width / 2 - this._skinImg?.width, canvas.height - this._skinImg?.height * 2);
+            this._position = new Vector2(Game.limits.maxX / 2 - this._skinImg.width, Game.limits.maxY - this._skinImg.height * 2);
         } else {
             this._position = new Vector2();
         }
@@ -131,7 +131,7 @@ export default class Player extends Sprite2D implements IEntity {
      * @param nextX The next value of {@link mX}.
      */
     private isXOutOfBounds(nextX: number) {
-        return nextX <= 0 || nextX + this.getSkin().width >= this._canvas.width;
+        return nextX <= Game.limits.minX || nextX + this.getSkin().width >= Game.limits.maxX;
     }
     
     /**
@@ -140,7 +140,7 @@ export default class Player extends Sprite2D implements IEntity {
      * @param nextY The next value of {@link mY}.
      */
     private isYOutOfBounds(nextY: number) {
-        return nextY <= 0 || nextY + this.getSkin().height >= this._canvas.height;
+        return nextY <= Game.limits.minY || nextY + this.getSkin().height >= Game.limits.maxY;
     }
 
     /**
@@ -224,7 +224,7 @@ export default class Player extends Sprite2D implements IEntity {
         this._canShoot = false;
         setTimeout(() => {
             this._canShoot = true;
-        }, this.shootDelay);
+        }, this._shootDelay);
         Game.getInstance().addBullet(bullet);
     }
 

@@ -8,7 +8,7 @@ describe('Tests for Enemy class', () => {
     const canvas = createFakeCanvas();
 
     test('should genere a random position', () => {
-        const vector = Enemy.generateRandomXPosition(canvas);
+        const vector = Enemy.generateRandomXPosition();
         expect(vector.x).toBeGreaterThanOrEqual(0);
         expect(vector.x).toBeLessThanOrEqual(canvas.width);
         expect(vector.x).toBeLessThanOrEqual(canvas.height);

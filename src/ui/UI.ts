@@ -79,6 +79,15 @@ export default class {
   });
 
   /**
+   * The black rectangles at the left & right of the screezn
+   * that appear when a game is being played.
+   */
+  public static readonly gameBorders = Object.freeze({
+    left: document.querySelector("#game-left-border") as HTMLElement,
+    right: document.querySelector("#game-right-border") as HTMLElement,
+  });
+
+  /**
    * The paragraph element that contains the text for telling the user its score during a game.
    */
   public static readonly containerScore = document.querySelector("#container-score") as HTMLElement;
@@ -224,6 +233,8 @@ export default class {
     this.ui.removeAttribute("inert");
     this.showElement(this.ui);
     this.hideElement(this.containerScore);
+    this.hideElement(this.gameBorders.left);
+    this.hideElement(this.gameBorders.right);
   }
 
   /**
@@ -241,6 +252,8 @@ export default class {
     // More info here: https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/inert
     this.ui.setAttribute("inert", "inert");
     this.hideElement(this.ui);
+    this.showElement(this.gameBorders.left);
+    this.showElement(this.gameBorders.right);
     this.showElement(this.containerScore);
     this.closeModal();
     const focusedElement = this.getFocusedElement();

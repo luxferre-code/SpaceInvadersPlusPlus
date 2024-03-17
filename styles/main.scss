@@ -136,3 +136,37 @@ main button {
 @import "modal-pages/ranking-page.scss";
 @import "modal-pages/settings-page.scss";
 @import "modal-pages/game-settings-page.scss";
+
+/*
+*
+* Game borders
+*
+*/
+
+#game-left-border,
+#game-right-border {
+  background-color: #000;
+  height: 100vh;
+  width: 15vw;
+  transition: transform 800ms ease;
+  position: fixed;
+  top: 0;
+
+  &[aria-hidden="false"] {
+    transform: translateX(0);
+  }
+
+  @media screen and (max-width: 750px) {
+    width: 0;
+  }
+}
+
+#game-left-border {
+  left: 0;
+  transform: translateX(-100%);
+}
+
+#game-right-border {
+  right: 0;
+  transform: translateX(100%);
+}

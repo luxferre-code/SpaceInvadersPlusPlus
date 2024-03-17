@@ -43,9 +43,10 @@ describe('Test for Bullet Class', () => {
     test('should by lost hp to a player', () => {
         const bullet = new Bullet(createFakeCanvas(), new Vector2(-1, -1));
         const player: Player = createDummyPlayer(canvas);
+        const initial_health = player.getHealth();
         bullet.attachTo(createDummyEnemy(canvas));
         bullet.shoot(player);
-        expect(player.getHealth()).toBe(Player.MAX_HP - 1);
+        expect(player.getHealth()).toBe(initial_health - 1);
     });
 
     test('should by kill a enemy', () => {

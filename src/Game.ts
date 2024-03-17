@@ -1,3 +1,4 @@
+import type Vector2 from "./Vector2";
 import Bullet from "./Bullet";
 import Enemy from "./Enemy";
 import IEntity from "./IEntity";
@@ -5,19 +6,33 @@ import IEntity from "./IEntity";
 export default class Game {
     private static instance : Game;
 
+    /**
+     * Gets the maximum and minimum X and Y coordinates that an entity can have
+     * to be considered still within the boundaries of the game. An entity outside of
+     * these boundaries should be removed and the player should bounce off of them.
+     */
+    public static limits: GameLimits = { maxX: 0, maxY: 0, minX: 0, minY: 0 };
+
     private _score: number = 0;
     private _bullets : Bullet[] = [];
     private _entities : IEntity[] = [];
-    private _canvas : HTMLCanvasElement;
 
-    constructor(canvas: HTMLCanvasElement) {
-        this._canvas = canvas;
+    constructor() {
         Game.instance = this;
+    }
+
+    public static getInstance(): Game { return this.instance; }
+
+    public static isWithinLimits(position: Vector2): boolean {
+        return position.y > Game.limits.minY &&
+            position.y < Game.limits.maxY &&
+            position.x > Game.limits.minX &&
+            position.x < Game.limits.maxX;
     }
 
     public getBullets(): Bullet[] { return this._bullets; }
     public getEntities(): IEntity[] { return this._entities; }
-    public static getInstance(): Game { return this.instance; }
+
 
     public addBullet(bullet: Bullet) : void {
         if(bullet == null) return;
@@ -49,19 +64,13 @@ export default class Game {
     }
 
     private purgeBullet() : void {
-        this._bullets = this._bullets.filter(b => {
-            const bX = b.getPosition().x;
-            const bY = b.getPosition().y;
-            return bX > 0 && bX < this._canvas.width && bY > 0 && bY < this._canvas.height;
-        });
+        this._bullets = this._bullets.filter(b => Game.isWithinLimits(b.getPosition()));
     }
 
     private purgeEntity() : void {
         this._entities = this._entities.filter(e => {
-            const eX = e.getPosition().x;
-            const eY = e.getPosition().y;
-            if (eX < 0 || eX > this._canvas.width || eY < 0 || eY > this._canvas.height) {
-                console.log("Removing entity " + eX + " " + eY);
+            if (!Game.isWithinLimits(e.getPosition())) {
+                console.log("Removing entity " + e.getPosition().toString());
                 return false;
             }
             if (!e.isPlayer()) {
