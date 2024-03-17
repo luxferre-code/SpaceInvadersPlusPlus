@@ -1,4 +1,4 @@
-import { Difficulty } from "./Difficulty";
+import { Difficulty } from "../utils/Difficulty";
 
 // NOTE: the properties are all set to arbitrary values by default (-1).
 // Their initial values do not matter.

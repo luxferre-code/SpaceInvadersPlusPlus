@@ -1,8 +1,7 @@
-import { MOVEMENT_CONTROLS, Controls } from "./Controls";
-import { Skin } from "./Skins";
+import { MOVEMENT_CONTROLS, Controls } from "./utils/Controls";
+import { Skin } from "./utils/Skins";
 import Bullet from "./Bullet";
 import Game from "./Game";
-import IEntity from "./IEntity";
 import Sprite2D from "./Sprite2D";
 import Vector2 from "./Vector2";
 

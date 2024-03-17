@@ -1,4 +1,4 @@
-import { Difficulty, toDifficulty } from "../models/Difficulty";
+import { Difficulty, toDifficulty } from "../utils/Difficulty";
 import GameSettings from "../models/GameSettings";
 
 /**

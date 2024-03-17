@@ -1,5 +1,5 @@
-import { Skin, getSkinImage } from "./Skins";
-import HitBox from "./HitBox";
+import { Skin, getSkinImage } from "./utils/Skins";
+import HitBox from "./models/HitBox";
 import Node2D from "./Node2D";
 
 /**

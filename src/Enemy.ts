@@ -1,7 +1,6 @@
-import { Skin } from "./Skins";
+import { Skin } from "./utils/Skins";
 import Bullet from "./Bullet";
 import Game from "./Game";
-import IEntity from "./IEntity";
 import Player from "./Player";
 import Sprite2D from "./Sprite2D";
 import Vector2 from "./Vector2";

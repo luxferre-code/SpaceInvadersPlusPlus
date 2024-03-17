@@ -1,4 +1,4 @@
-import { Skin, SkinMaximum } from "../Skins";
+import { Skin, SkinMaximum } from "../utils/Skins";
 
 /**
  * Handles the player's settings.

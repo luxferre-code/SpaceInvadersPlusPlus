@@ -1,4 +1,4 @@
-import { Skin } from "../../Skins";
+import { Skin } from "../../utils/Skins";
 import Vector2 from "../../Vector2";
 import Player from "../../Player";
 import Enemy from "../../Enemy";

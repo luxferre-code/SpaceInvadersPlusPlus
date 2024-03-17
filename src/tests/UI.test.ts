@@ -2,7 +2,7 @@ import { readFile } from "fs/promises";
 import { describe, expect, test } from "vitest";
 import { Browser } from "happy-dom";
 import createHTMLElement from "./lib/createHTMLElement";
-import { Skin } from "../Skins";
+import { Skin } from "../utils/Skins";
 
 describe("Testing the UI abstraction", async () => {
   function keepUndefinedElementsOnlyFrom(o: Object) {

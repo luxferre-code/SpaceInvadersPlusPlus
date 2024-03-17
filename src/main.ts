@@ -1,4 +1,4 @@
-import { preloadSkins } from "./Skins";
+import { preloadSkins } from "./utils/Skins";
 import GameSettingsPage from "./ui/GameSettingsPage";
 import SettingsDB from "./server/GlobalSettingsDB";
 import GameSettings from "./models/GameSettings";

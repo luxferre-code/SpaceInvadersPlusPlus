@@ -1,7 +1,6 @@
 import type Vector2 from "./Vector2";
 import Bullet from "./Bullet";
 import Enemy from "./Enemy";
-import IEntity from "./IEntity";
 
 export default class Game {
     private static instance : Game;

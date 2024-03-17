@@ -1,6 +1,5 @@
 import Enemy from "./Enemy";
-import HitBox from "./HitBox";
-import IEntity from "./IEntity";
+import HitBox from "./models/HitBox";
 import Node2D from "./Node2D";
 import Vector2 from "./Vector2";
 
@@ -55,7 +54,7 @@ export default class Bullet extends Node2D {
             entity.hurt();
         } else {
             if (this._owner.isPlayer()) {
-                (entity as Enemy).die(this._owner);
+                (entity as Enemy).die();
             } else {
                 console.warn("hummmm, wtf...."); // TODO: is this possible that this gets triggered???
             }

@@ -1,4 +1,4 @@
-import type { Skin } from "../Skins";
+import type { Skin } from "../utils/Skins";
 
 /**
  * Handles the player's settings page in the modal.
