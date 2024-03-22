@@ -11,7 +11,6 @@ import Vector2 from "./Vector2";
 export default class Enemy extends Sprite2D implements IEntity {
     public static readonly TIMEOUT_SHOOT: number = 500;
     private static _shootProbability: number = 0.05;
-    private static _horizontally: boolean = true;
 
     private _speed: Vector2;
     private _dead: boolean = false;
@@ -19,7 +18,7 @@ export default class Enemy extends Sprite2D implements IEntity {
     private _scoreToGive: number = 10;
     private _canShoot: boolean = true;
 
-    constructor(canvas: HTMLCanvasElement, position = Enemy.generateRandomXPosition(), speed = new Vector2(Enemy._horizontally ? 0 : 10, Enemy._horizontally ? 10 : 0)) {
+    constructor(canvas: HTMLCanvasElement, position = Enemy.generateRandomXPosition(), speed = new Vector2(10, 0)) {
         super(canvas, Skin.GREEN);
         this._position = position;
         this._speed = speed;
@@ -69,24 +68,11 @@ export default class Enemy extends Sprite2D implements IEntity {
     }
 
     public move() : void {
-        if(Enemy.horizontally) {
-            // console.log("Moving enemy horizontally");
-            this._position.y += this._speed.y;
-        } else {
-            console.log("Moving vertically");
-            this._position.x += this._speed.x;
-        }
+        this._position.x += this._speed.x;
         if(Enemy._shootProbability > Math.random()) {
             console.log("Shooting");
             this.shoot();
         }
-    }
-
-    public fallbackRender(): void {
-        this._context.beginPath();
-        this._context.arc(this._position.x, this._position.y, 25, 0, 2 * Math.PI);
-        this._context.fill();
-        this._context.closePath();
     }
 
     /**
@@ -96,9 +82,6 @@ export default class Enemy extends Sprite2D implements IEntity {
         if(this._dead) return;
         super.render();
     }
-
-    public static get horizontally() { return Enemy._horizontally; }
-    public static set horizontally(value: boolean) { Enemy._horizontally = value; }
 
     public setSpeed(speed: Vector2) { this._speed = speed; }
     public isDead(): boolean { return this._dead; }

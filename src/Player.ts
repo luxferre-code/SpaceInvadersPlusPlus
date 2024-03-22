@@ -204,14 +204,6 @@ export default class Player extends Sprite2D implements IEntity {
         }
     }
 
-    public fallbackRender(): void {
-        this._context.beginPath();
-        this._context.fillStyle = "red";
-        this._context.arc(this._position.x, this._position.y, 25, 0, 2 * Math.PI);
-        this._context.fill();
-        this._context.closePath();
-    }
-
     /**
      * Shoots a bullet.
      * @returs The bullet that was created.
