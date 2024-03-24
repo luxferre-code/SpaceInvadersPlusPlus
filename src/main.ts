@@ -13,9 +13,7 @@ import UI from "./ui/UI";
 
 const canvas: HTMLCanvasElement = document.querySelector("canvas") as HTMLCanvasElement;
 const context: CanvasRenderingContext2D = canvas.getContext("2d")!;
-const random = new Random(new Date().getTime()); // the seed is temporary
 const game = new Game();
-Game.random = random;
 
 let playing = false;
 let loadingAssets = true;
@@ -41,6 +39,7 @@ SettingsPage.listenToSkinChange((newSkin) => SettingsDB.skin = newSkin);
 GameSettingsPage.initDefaultGameSettings();
 GameSettingsPage.onGameStarted(() => {
     if (!loadingAssets) {
+        Game.random = new Random(GameSettings.seed === -1 ? new Date().getTime() : GameSettings.seed);
         const player = new Player(canvas, GameSettings.playerHp, GameSettings.playerShootDelay, SettingsDB.skin);
         const enemy: Enemy = new Enemy(canvas);
         game.addEntity(player);

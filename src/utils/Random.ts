@@ -1,12 +1,18 @@
+import seedrandom from "seedrandom";
+
 export default class Random {
-    private _seed: number;
+    private _generator: seedrandom.PRNG;
 
     constructor(seed: number) {
-        this._seed = seed;
+        this._generator = seedrandom(seed.toString());
     }
 
-    public setSeed(newSeed: number) { this._seed = newSeed; }
-    public getSeed(): number { return this._seed; }
+    /**
+     * Gets a random number in [0; 1[
+     */
+    public next(): number {
+        return this._generator();
+    }
 
     /**
      * Generates a random number in [min; max[
@@ -15,6 +21,6 @@ export default class Random {
      * @returns An integer between min anx max.
      */
     public nextInt(min: number, max: number): number {
-        return Math.floor(Math.random() * (max - min) + min);
+        return Math.floor(this.next() * (max - min) + min);
     }
 }

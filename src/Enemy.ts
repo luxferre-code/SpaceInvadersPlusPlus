@@ -75,7 +75,7 @@ export default class Enemy extends Sprite2D implements IEntity {
 
     public move(): void {
         this._position.y += this._speed.y;
-        if (Enemy._shootProbability > Math.random()) {
+        if (Enemy._shootProbability > Game.random.next()) {
             console.log("Shooting");
             this.shoot();
         }
