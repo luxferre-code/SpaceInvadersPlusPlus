@@ -52,30 +52,26 @@ export default class Game {
     public getEntities(): IEntity[] { return this._entities; }
 
     public addBullet(bullet: Bullet): void {
-        if (bullet == null) return;
         this._bullets.push(bullet);
     }
 
     public addEntity(entity: IEntity): void {
-        if (entity == null) return;
         this._entities.push(entity);
     }
 
     public removeEntity(entity: IEntity): void {
-        if (entity == null) return;
         console.log("Removing entity " + entity.getPosition().toString());
         this._entities = this._entities.filter(e => e != entity);
     }
 
     public removeBullet(bullet: Bullet): void {
-        if (bullet == null) return;
         this._bullets = this._bullets.filter(b => b != bullet);
     }
 
     public updateRender(): void {
         this.purgeBullet();
         this.purgeEntity();
-        this.bulletHit();
+        this.handleBulletCollisions();
         this._entities.forEach(e => e.render());
         this._bullets.forEach(b => b.render());
     }
@@ -87,13 +83,11 @@ export default class Game {
     private purgeEntity(): void {
         this._entities = this._entities.filter(e => {
             if (Game.shouldDispawn(e.getPosition())) {
-                console.log("the enemy is oustide of the game's borers", Game.limits);
                 console.log("Removing entity " + e.getPosition().toString());
                 return false;
             }
             if (!e.isPlayer()) {
-                const enemy = e as Enemy;
-                if (enemy.isDead()) {
+                if ((e as Enemy).isDead()) {
                     return false;
                 }
             }
@@ -101,12 +95,11 @@ export default class Game {
         });
     }
 
-    private bulletHit(): void {
+    private handleBulletCollisions(): void {
         const toRemove: Bullet[] = [];
         this._bullets.forEach(b => {
             this._entities.forEach(e => {
-                if (b.getOwner() == e) return;
-                if (b.isColliding(e)) {
+                if (b.getOwner() != e && b.isColliding(e)) {
                     b.shoot(e);
                     toRemove.push(b);
                 }
@@ -117,9 +110,7 @@ export default class Game {
 
     public updateMove(): void {
         this._entities.forEach(e => e.move());
-        this._bullets.forEach(b => {
-            b.move();
-        });
+        this._bullets.forEach(b => b.move());
     }
 
     /**

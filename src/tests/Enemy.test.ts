@@ -19,12 +19,12 @@ describe('Tests for Enemy class', () => {
     test('should genere a random position', () => {
         for (let i = 0; i < 100; i++) {
             const enemy = createDummyEnemy(canvas);
-            enemy.setPosition(Enemy.generateRandomXPosition(50));
+            enemy.setPosition(Enemy.generateRandomSpawnPosition(50, 50));
             const pos = enemy.getPosition();
             expect(pos.x).toBeGreaterThan(Game.limits.minX);
             expect(pos.x).toBeLessThan(Game.limits.maxX - 50);
             expect(pos.y).toBeLessThan(Game.limits.maxY);
-            expect(pos.y).toBeGreaterThan(0);
+            expect(pos.y).toEqual(-60);
         }
     });
 
