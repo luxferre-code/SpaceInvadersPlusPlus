@@ -18,9 +18,9 @@ export default class Enemy extends Sprite2D implements IEntity {
     private _scoreToGive: number = 10;
     private _canShoot: boolean = true;
 
-    constructor(canvas: HTMLCanvasElement, position = Enemy.generateRandomXPosition(), speed = new Vector2(10, 0)) {
+    constructor(canvas: HTMLCanvasElement, position?: Vector2, speed = new Vector2(10, 0)) {
         super(canvas, Skin.GREEN);
-        this._position = position;
+        this._position = position ?? Enemy.generateRandomXPosition(this._skinImg.width);
         this._speed = speed;
     }
 
@@ -34,18 +34,24 @@ export default class Enemy extends Sprite2D implements IEntity {
 
     /**
      * This method generates a random position on the x-axis of the canvas.
+     * The X coordinate won't be equal to the border's X limits,
+     * indeed it will be strictly greater than the lower
+     * limit and strictly less than the upper limit.
      * @param canvas The canvas where the game is rendered.
      * @returns The random position.
      */
-    public static generateRandomXPosition() : Vector2 {
-        return new Vector2(Math.random() * Game.limits.maxX, 0);
+    public static generateRandomXPosition(width: number): Vector2 {
+        return new Vector2(Game.random.nextInt(
+            Game.limits.minX + 1,
+            Game.limits.maxX - width
+        ), 30);
     }
 
     /**
      * This method kills the enemy and increments the general score of the game.
      * @returns True if the enemy is dead, false otherwise.
      */
-    public die() : boolean {
+    public die(): boolean {
         this._hp--;
         if (this._hp > 0) {
             return false;
@@ -56,8 +62,8 @@ export default class Enemy extends Sprite2D implements IEntity {
         }
     }
 
-    public shoot() : void {
-        if(!this._canShoot) return;
+    public shoot(): void {
+        if (!this._canShoot) return;
         const bullet: Bullet = new Bullet(this._canvas, this._position);
         bullet.attachTo(this);
         this._canShoot = false;
@@ -67,9 +73,9 @@ export default class Enemy extends Sprite2D implements IEntity {
         Game.getInstance().addBullet(bullet);
     }
 
-    public move() : void {
-        this._position.x += this._speed.x;
-        if(Enemy._shootProbability > Math.random()) {
+    public move(): void {
+        this._position.y += this._speed.y;
+        if (Enemy._shootProbability > Math.random()) {
             console.log("Shooting");
             this.shoot();
         }
@@ -78,8 +84,8 @@ export default class Enemy extends Sprite2D implements IEntity {
     /**
      * This method renders the enemy on the canvas.
      */
-    public render() : void {
-        if(this._dead) return;
+    public render(): void {
+        if (this._dead) return;
         super.render();
     }
 

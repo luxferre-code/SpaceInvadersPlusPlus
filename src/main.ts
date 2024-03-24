@@ -5,6 +5,7 @@ import GameSettings from "./models/GameSettings";
 import SettingsPage from "./ui/SettingsPage";
 import RankingPage from "./ui/RankingPage";
 import RankingDB from "./server/RankingDB";
+import Random from "./utils/Random";
 import Player from "./Player";
 import Enemy from "./Enemy";
 import Game from "./Game";
@@ -12,7 +13,9 @@ import UI from "./ui/UI";
 
 const canvas: HTMLCanvasElement = document.querySelector("canvas") as HTMLCanvasElement;
 const context: CanvasRenderingContext2D = canvas.getContext("2d")!;
+const random = new Random(new Date().getTime()); // the seed is temporary
 const game = new Game();
+Game.random = random;
 
 let playing = false;
 let loadingAssets = true;
