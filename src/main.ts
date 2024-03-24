@@ -5,6 +5,7 @@ import GameSettings from "./models/GameSettings";
 import SettingsPage from "./ui/SettingsPage";
 import RankingPage from "./ui/RankingPage";
 import RankingDB from "./server/RankingDB";
+import Random from "./utils/Random";
 import Player from "./Player";
 import Enemy from "./Enemy";
 import Game from "./Game";
@@ -38,6 +39,7 @@ SettingsPage.listenToSkinChange((newSkin) => SettingsDB.skin = newSkin);
 GameSettingsPage.initDefaultGameSettings();
 GameSettingsPage.onGameStarted(() => {
     if (!loadingAssets) {
+        Game.random = new Random(GameSettings.seed === -1 ? new Date().getTime() : GameSettings.seed);
         const player = new Player(canvas, GameSettings.playerHp, GameSettings.playerShootDelay, SettingsDB.skin);
         const enemy: Enemy = new Enemy(canvas);
         game.addEntity(player);
