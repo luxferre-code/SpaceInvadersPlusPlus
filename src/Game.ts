@@ -2,7 +2,6 @@ import type Vector2 from "./Vector2";
 import Random from "./utils/Random";
 import Bullet from "./Bullet";
 import Enemy from "./Enemy";
-import Player from "./Player";
 
 export default class Game {
     private static instance: Game;
@@ -138,6 +137,12 @@ export default class Game {
         for(let i: number = 0; i < Game.random.nextInt(-1, 2 + (this._score / 100)); i++) {
             if (!this.limitSpawnRate()) { return; }
             const enemy = new Enemy(this._canvas);
+
+            // Check if the enemy is not spawning on a another entity
+            while(this._entities.some(e => e.isColliding(enemy))) {
+                enemy.setPosition(Enemy.generateRandomSpawnPosition(this._canvas.width, this._canvas.height));
+            }
+
             console.log("Spawning enemy at " + enemy.getPosition().toString());
             this.addEntity(enemy);
         }

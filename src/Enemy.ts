@@ -4,6 +4,7 @@ import Game from "./Game";
 import Player from "./Player";
 import Sprite2D from "./Sprite2D";
 import Vector2 from "./Vector2";
+import HitBox from "./models/HitBox";
 
 /**
  *  This class represents the enemy entity in the game.
@@ -92,6 +93,13 @@ export default class Enemy extends Sprite2D implements IEntity {
     public render(): void {
         if (this._dead) return;
         super.render();
+    }
+    
+    public isColliding(enemy: IEntity): boolean {
+        // This code check if the enemy is colliding with another entity
+        const hitBox: HitBox = this.generateHitBox();
+        const otherHitBox: HitBox = enemy.generateHitBox();
+        return hitBox.isColliding(otherHitBox);
     }
 
     public setGravity(gravity: number) { this._gravity = gravity; }
