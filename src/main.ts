@@ -7,13 +7,12 @@ import RankingPage from "./ui/RankingPage";
 import RankingDB from "./server/RankingDB";
 import Random from "./utils/Random";
 import Player from "./Player";
-import Enemy from "./Enemy";
 import Game from "./Game";
 import UI from "./ui/UI";
 
 const canvas: HTMLCanvasElement = document.querySelector("canvas") as HTMLCanvasElement;
 const context: CanvasRenderingContext2D = canvas.getContext("2d")!;
-const game = new Game();
+const game = new Game(canvas);
 
 let playing = false;
 let loadingAssets = true;
@@ -41,9 +40,7 @@ GameSettingsPage.onGameStarted(() => {
     if (!loadingAssets) {
         Game.random = new Random(GameSettings.seed === -1 ? new Date().getTime() : GameSettings.seed);
         const player = new Player(canvas, GameSettings.playerHp, GameSettings.playerShootDelay, SettingsDB.skin);
-        const enemy: Enemy = new Enemy(canvas);
         game.addEntity(player);
-        game.addEntity(enemy);
         playing = true;
         UI.hideUI();
     }
@@ -93,6 +90,13 @@ setInterval(() => {
         game.updateMove();
     }
 }, 1000 / 60);
+
+setInterval(() => {
+    if (playing) {
+        console.log("Spawning monster");
+        game.updateMonsterSpawn();
+    }
+}, 1000 / 2);
 
 // The order in which those two
 // functions are called do not matter.

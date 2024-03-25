@@ -22,9 +22,11 @@ export default class Game {
     private _score: number = 0;
     private _bullets: Bullet[] = [];
     private _entities: IEntity[] = [];
+    private _canvas: HTMLCanvasElement;
 
-    constructor() {
+    constructor(canvas: HTMLCanvasElement) {
         Game.instance = this;
+        this._canvas = canvas;
     }
 
     public static getInstance(): Game { return this.instance; }
@@ -124,4 +126,19 @@ export default class Game {
     public getScore(): number {
         return this._score;
     }
+
+    public updateMonsterSpawn(): void {
+        console.log(1 + (this._score / 100));
+        for(let i: number = 0; i < Game.random.nextInt(-1, 2 + (this._score / 100)); i++) {
+            if (!this.limitSpawnRate()) { return; }
+            const enemy = new Enemy(this._canvas);
+            console.log("Spawning enemy at " + enemy.getPosition().toString());
+            this.addEntity(enemy);
+        }
+    }
+
+    private limitSpawnRate() : boolean {
+        return this._entities.filter(e => !e.isPlayer()).length < 3 + (this._score / 100);
+    }
+
 }

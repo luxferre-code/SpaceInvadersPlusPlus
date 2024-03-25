@@ -17,7 +17,7 @@ export default class Player extends Sprite2D implements IEntity {
      * It describes by how many pixels pressing a control key moves the player on each frame.
      * The higher this value, the higher the player's acceleration towards {@link MAX_VELOCITY}.
      */
-    private readonly MOVEMENT_STRENGTH = 0.2;
+    private readonly MOVEMENT_STRENGTH = 1.0;
 
     /**
      * The coefficient that is applied to a movement (either {@link mX} or {@link mY})
@@ -36,7 +36,7 @@ export default class Player extends Sprite2D implements IEntity {
      * Note that this max velocity isn't necessarily reached.
      * The maximum speed of the player can exceed it by the amount described by {@link MOVEMENT_STRENGTH}.
      */
-    private readonly MAX_VELOCITY = 3;
+    private readonly MAX_VELOCITY = 6;
 
     /**
      * Describes the player's current movement on the X-axis.
