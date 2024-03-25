@@ -127,6 +127,10 @@ export default class Game {
         return this._score;
     }
 
+    /**
+     * This method updates the spawn rate of the monsters.
+     * @returns     Nothing
+     */
     public updateMonsterSpawn(): void {
         console.log(1 + (this._score / 100));
         for(let i: number = 0; i < Game.random.nextInt(-1, 2 + (this._score / 100)); i++) {
@@ -137,6 +141,10 @@ export default class Game {
         }
     }
 
+    /**
+     * This method limits the spawn rate of the enemies.
+     * @returns     True if the spawn rate is not limited, false otherwise.
+     */
     private limitSpawnRate() : boolean {
         return this._entities.filter(e => !e.isPlayer()).length < 3 + (this._score / 100);
     }
