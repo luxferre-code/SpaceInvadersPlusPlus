@@ -235,6 +235,8 @@ export default class {
     this.hideElement(this.containerScore);
     this.hideElement(this.gameBorders.left);
     this.hideElement(this.gameBorders.right);
+    // Focus the main button (Play now)
+    this.mainButtons.playNow.focus();
   }
 
   /**
