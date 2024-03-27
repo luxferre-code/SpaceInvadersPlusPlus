@@ -1,6 +1,6 @@
 import { describe, test, expect } from "vitest";
 import { createFakeCanvas } from "./lib/createHTMLElement";
-import { createDummyPlayer } from "./lib/createDummyEntties";
+import { createDummyPlayer } from "./lib/createDummyEntities";
 import Player from '../Player';
 
 describe("Tests for Player class", () => {

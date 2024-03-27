@@ -9,7 +9,7 @@ import Enemy from "../../Enemy";
  * @param img A dummy image used for the skin of the player.
  */
 export function createDummyPlayer(canvas: HTMLCanvasElement, skin = Skin.RED): Player {
-  return new Player(canvas, 5, 300, skin);
+  return new Player(canvas, skin);
 }
 
 /**
@@ -18,5 +18,5 @@ export function createDummyPlayer(canvas: HTMLCanvasElement, skin = Skin.RED): P
  * @param img A dummy image used for the skin of the enemy.
  */
 export function createDummyEnemy(canvas: HTMLCanvasElement): Enemy {
-  return new Enemy(canvas, new Vector2(), new Vector2());
+  return new Enemy(canvas, new Vector2());
 }

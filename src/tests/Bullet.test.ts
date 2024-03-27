@@ -1,5 +1,5 @@
 import { describe, test, expect } from "vitest";
-import { createDummyEnemy, createDummyPlayer } from "./lib/createDummyEntties";
+import { createDummyEnemy, createDummyPlayer } from "./lib/createDummyEntities";
 import { createFakeCanvas } from "./lib/createHTMLElement";
 import Bullet from "../Bullet";
 import Vector2 from "../Vector2";

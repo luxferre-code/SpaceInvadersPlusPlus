@@ -1,13 +1,13 @@
 import { describe, test, expect } from "vitest";
 import { createFakeCanvas } from "./lib/createHTMLElement";
-import { createDummyEnemy } from "./lib/createDummyEntties";
+import { createDummyEnemy } from "./lib/createDummyEntities";
 import Random from "../utils/Random";
 import Game from "../Game";
 import Enemy from "../Enemy";
 
 describe('Tests for Enemy class', () => {
     const canvas = createFakeCanvas();
-    new Game();
+    new Game(canvas);
     Game.random = new Random(10);
     Game.limits = {
         minX: 100,

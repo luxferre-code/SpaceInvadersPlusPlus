@@ -35,5 +35,15 @@ export default abstract class Sprite2D extends Node2D {
         return new HitBox(this._position, this._skinImg);
     }
 
+    /**
+     * Sets the new skin of the sprite.
+     */
+    public setSkin(skin: Skin) {
+        if (skin != this._skin) {
+            this._skin = skin;
+            this._skinImg = getSkinImage(skin);
+        }
+    }
+
     public getSkin(): HTMLImageElement { return this._skinImg; }
 }

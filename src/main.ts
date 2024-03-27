@@ -13,6 +13,7 @@ import UI from "./ui/UI";
 const canvas: HTMLCanvasElement = document.querySelector("canvas") as HTMLCanvasElement;
 const context: CanvasRenderingContext2D = canvas.getContext("2d")!;
 const game = new Game(canvas);
+const player = new Player(canvas);
 
 let playing = false;
 let loadingAssets = true;
@@ -39,9 +40,11 @@ GameSettingsPage.initDefaultGameSettings();
 GameSettingsPage.onGameStarted(() => {
     if (!loadingAssets) {
         Game.random = new Random(GameSettings.seed === -1 ? new Date().getTime() : GameSettings.seed);
-        const player = new Player(canvas, GameSettings.playerHp, GameSettings.playerShootDelay, SettingsDB.skin);
-        game.addEntity(player);
+        player.setSkin(SettingsDB.skin);
+        player.useLastGameSettings();
+        player.placeAtStartingPosition(); // call it after changing the skin
         playing = true;
+        game.addEntity(player);
         UI.hideUI();
     }
 });
@@ -49,7 +52,12 @@ GameSettingsPage.onGameStarted(() => {
 async function preloadAssets() {
     try {
         await preloadSkins();
+        // Initializes the player with its skin.
+        // It's important to do it here because as of now
+        // the player doesn't have a loaded skin.
+        player.setSkin(SettingsDB.skin);
     } catch (e) {
+        console.error(e);
         alert("Quelques skins n'ont pas pu être chargés correctement.");
     }
     loadingAssets = false;

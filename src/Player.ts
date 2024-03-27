@@ -5,14 +5,15 @@ import Game from "./Game";
 import Sprite2D from "./Sprite2D";
 import Vector2 from "./Vector2";
 import HitBox from "./models/HitBox";
+import GameSettings from "./models/GameSettings";
 
 /**
  * This class represents the player entity in the game.
  */
 export default class Player extends Sprite2D implements IEntity {
     private _canShoot: boolean = true;
-    private _shootDelay: number;
-    private _hp: number;
+    private _shootDelay: number = 500;
+    private _hp: number = 5;
 
     /**
      * Whether or not the player is currently immuned to all sort of damage.
@@ -74,16 +75,22 @@ export default class Player extends Sprite2D implements IEntity {
      * Creates a new player and places it at the center of the screen
      * and a short distance away from the bottom.
      */
-    constructor(canvas: HTMLCanvasElement, based_health: number, shoot_delay: number, skin = Skin.RED) {
+    constructor(canvas: HTMLCanvasElement, skin = Skin.RED) {
         super(canvas, skin);
-        this._hp = based_health;
-        this._shootDelay = shoot_delay;
+        this.initializeMovementControls();
+    }
+
+    public placeAtStartingPosition() {
         if (this._skinImg) {
             this._position = new Vector2(Game.limits.maxX / 2 - this._skinImg.width, Game.limits.maxY - this._skinImg.height * 2);
         } else {
             this._position = new Vector2();
         }
-        this.initializeMovementControls();
+    }
+
+    public useLastGameSettings() {
+        this._hp = GameSettings.playerHp;
+        this._shootDelay = GameSettings.playerShootDelay;
     }
 
     public render(): void {
