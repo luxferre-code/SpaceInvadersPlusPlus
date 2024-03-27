@@ -88,6 +88,11 @@ function render() {
 setInterval(() => {
     if (playing) {
         game.updateMove();
+        if(game.gameOver()) {
+            playing = false;
+            UI.showUI();
+            game.reset();
+        }
     }
 }, 1000 / 60);
 

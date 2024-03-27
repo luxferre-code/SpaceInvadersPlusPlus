@@ -23,6 +23,7 @@ export default class Game {
     private _bullets: Bullet[] = [];
     private _entities: IEntity[] = [];
     private _canvas: HTMLCanvasElement;
+    private static MINIMAL_SPAWN: number = 3;
 
     constructor(canvas: HTMLCanvasElement) {
         Game.instance = this;
@@ -127,18 +128,55 @@ export default class Game {
         return this._score;
     }
 
+    /**
+     * This method updates the spawn rate of the monsters.
+     * @returns     Nothing
+     */
     public updateMonsterSpawn(): void {
         console.log(1 + (this._score / 100));
         for(let i: number = 0; i < Game.random.nextInt(-1, 2 + (this._score / 100)); i++) {
             if (!this.limitSpawnRate()) { return; }
             const enemy = new Enemy(this._canvas);
+
+            // Check if the enemy is not spawning on a another entity
+            while(this._entities.some(e => e.isColliding(enemy))) {
+                enemy.setPosition(Enemy.generateRandomSpawnPosition(this._canvas.width, this._canvas.height));
+            }
+
             console.log("Spawning enemy at " + enemy.getPosition().toString());
             this.addEntity(enemy);
         }
     }
 
+    /**
+     * This method limits the spawn rate of the enemies.
+     * @returns     True if the spawn rate is not limited, false otherwise.
+     */
     private limitSpawnRate() : boolean {
-        return this._entities.filter(e => !e.isPlayer()).length < 3 + (this._score / 100);
+        return this._entities.filter(e => !e.isPlayer()).length < Game.MINIMAL_SPAWN + (this._score / 100);
+    }
+
+    /**
+     * This method checks if the game is over.
+     * @returns     True if the game is over, false otherwise.
+     */
+    public gameOver() : boolean {
+        for(const entity of this._entities) {
+            if (entity.isPlayer() && entity.getHealth() <= 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * This method resets the game.
+     * @returns     Nothing
+     */
+    public reset() : void {
+        this._score = 0;
+        this._entities = [];
+        this._bullets = [];
     }
 
 }

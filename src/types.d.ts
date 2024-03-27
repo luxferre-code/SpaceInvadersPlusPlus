@@ -4,6 +4,7 @@ import type Ranking from "./models/Ranking";
 import type Player from "./Player";
 import type Vector2 from "./Vector2";
 import type HitBox from "./models/HitBox";
+import Enemy from "./Enemy";
 
 declare global {
   /**
@@ -18,6 +19,7 @@ declare global {
     generateHitBox() : HitBox;
     render() : void;
     move() : void;
+    isColliding(enemy: IEntity): boolean;
 }
 
   type PlayerSettings = {

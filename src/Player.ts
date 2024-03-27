@@ -4,6 +4,7 @@ import Bullet from "./Bullet";
 import Game from "./Game";
 import Sprite2D from "./Sprite2D";
 import Vector2 from "./Vector2";
+import HitBox from "./models/HitBox";
 
 /**
  * This class represents the player entity in the game.
@@ -217,6 +218,13 @@ export default class Player extends Sprite2D implements IEntity {
             this._canShoot = true;
         }, this._shootDelay);
         Game.getInstance().addBullet(bullet);
+    }
+
+    public isColliding(enemy: IEntity): boolean {
+        // This code check if the enemy is colliding with another entity
+        const hitBox: HitBox = this.generateHitBox();
+        const otherHitBox: HitBox = enemy.generateHitBox();
+        return hitBox.isColliding(otherHitBox);
     }
 
     /**
