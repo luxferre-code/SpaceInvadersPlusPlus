@@ -15,6 +15,19 @@ export default class Player extends Sprite2D implements IEntity {
     private _hp: number;
 
     /**
+     * Whether or not the player is currently immuned to all sort of damage.
+     * This is useful when the player got hit, and we don't want it to get
+     * hit multiple times in a row (which would happen if two bullets overlapped).
+     */
+    private _immune: boolean = false;
+
+    /**
+     * For how long the player can stay immune to any damage
+     * (see {@link _immune}).
+     */
+    private readonly IMMUNITY_DELAY = 500;
+
+    /**
      * It describes by how many pixels pressing a control key moves the player on each frame.
      * The higher this value, the higher the player's acceleration towards {@link MAX_VELOCITY}.
      */
@@ -73,6 +86,16 @@ export default class Player extends Sprite2D implements IEntity {
         this.initializeMovementControls();
     }
 
+    public render(): void {
+        if (this._immune) {
+            this._context.filter = "brightness(100)";
+            super.render();
+            this._context.filter = "brightness(1)";
+        } else {
+            super.render();
+        }
+    }
+
     /**
      * Handles a key that is being pressed.
      * It checks if it's a control key (a key in the {@link Controls} enum).
@@ -104,11 +127,25 @@ export default class Player extends Sprite2D implements IEntity {
     }
 
     /**
+     * Returns `true` if the player is temporarily immuned to all damage.
+     */
+    public isImmuned() {
+        return this._immune;
+    }
+
+    /**
      * Method to decrease the player's HP
      * @returns true if the player is alive, false otherwise
      */
     public hurt() : boolean {
-        return --this._hp > 0;
+        if (!this._immune) {
+            this._hp -= 1;
+            this._immune = true;
+            setTimeout(() => {
+                this._immune = false;
+            }, this.IMMUNITY_DELAY);
+        }
+        return this._hp > 0;
     }
 
     /**
