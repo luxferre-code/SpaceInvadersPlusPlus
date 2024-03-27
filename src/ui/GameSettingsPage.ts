@@ -46,7 +46,6 @@ export default class {
     // The inputs should already be disabled.
 
     this.difficultyLevelSelect.addEventListener('change', (e) => {
-      console.log(e);
       if (e.target) {
         const level = (e.target as HTMLSelectElement).value.toLocaleLowerCase();
         const difficulty = toDifficulty(level);

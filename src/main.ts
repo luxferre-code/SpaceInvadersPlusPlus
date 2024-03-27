@@ -15,6 +15,13 @@ const context: CanvasRenderingContext2D = canvas.getContext("2d")!;
 const game = new Game(canvas);
 const player = new Player(canvas);
 
+// This callback gets called every single that
+// that the player loses a health point.
+// There is a parameter that can be used to
+// customise the game's behaviour when the player
+// dies.
+player.onPlayerHit(() => UI.removeHeart());
+
 let playing = false;
 let loadingAssets = true;
 
@@ -45,6 +52,7 @@ GameSettingsPage.onGameStarted(() => {
         player.placeAtStartingPosition(); // call it after changing the skin
         playing = true;
         game.addEntity(player);
+        initializeHealthPoints(player.getHealth());
         UI.hideUI();
     }
 });
@@ -61,6 +69,12 @@ async function preloadAssets() {
         alert("Quelques skins n'ont pas pu être chargés correctement.");
     }
     loadingAssets = false;
+}
+
+function initializeHealthPoints(hp: number) {
+    for (let i = 0; i < hp; i++) {
+        UI.createHeart();
+    }
 }
 
 function calculateGameLimits(canvas: HTMLCanvasElement, bordersUI: typeof UI.gameBorders): GameLimits {

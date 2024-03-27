@@ -73,6 +73,8 @@ describe("Testing the UI abstraction", async () => {
   test("should have no undefined element", () => {
     expect(UI.ui == null).toBe(false);
     expect(UI.modal == null).toBe(false);
+    expect(UI.containerHearts == null).toBe(false);
+    expect(UI.containerScore == null).toBe(false);
     expect(keepUndefinedElementsOnlyFrom(UI.cornerButtons)).toHaveLength(0);
     expect(keepUndefinedElementsOnlyFrom(UI.mainButtons)).toHaveLength(0);
     expect(keepUndefinedElementsOnlyFrom(UI.modalPages)).toHaveLength(0);
@@ -258,6 +260,14 @@ describe("Testing the UI abstraction", async () => {
     } catch (e) {
       expect(true).toBe(false);
     }
+  });
+
+  test("should add and remove hearts from the hearts container", () => {
+    expect(UI.containerHearts.children).toHaveLength(0);
+    UI.createHeart();
+    expect(UI.containerHearts.children).toHaveLength(1);
+    UI.removeHeart();
+    expect(UI.containerHearts.children).toHaveLength(0);
   });
 
   // Let's keep it clean :)

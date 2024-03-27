@@ -14,9 +14,12 @@ describe("Tests for Player class", () => {
     
     test("should lose a HP", () => {
         const player = createDummyPlayer(canvas);
+        let callback_called = false;
+        player.onPlayerHit(() => callback_called = true);
         expect(player.hurt()).toEqual(true);
         expect(player.isImmuned()).toEqual(true);
         setTimeout(() => {
+            expect(callback_called).toEqual(true);
             expect(player.isImmuned()).toEqual(false);
         }, 1000);
     });

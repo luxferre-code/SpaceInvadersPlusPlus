@@ -53,6 +53,8 @@ export default class Player extends Sprite2D implements IEntity {
      */
     private readonly MAX_VELOCITY = 6;
 
+    private on_player_hit_callback: null | ((hp: number) => void) = null;
+
     /**
      * Describes the player's current movement on the X-axis.
      * A value of 0 means the player isn't moving horizontally.
@@ -148,11 +150,19 @@ export default class Player extends Sprite2D implements IEntity {
         if (!this._immune) {
             this._hp -= 1;
             this._immune = true;
+            this.on_player_hit_callback?.(this._hp);
             setTimeout(() => {
                 this._immune = false;
             }, this.IMMUNITY_DELAY);
         }
         return this._hp > 0;
+    }
+
+    /**
+     * Defines a callback when the player gets hit.
+     */
+    public onPlayerHit(callback: (hp: number) => void) {
+        this.on_player_hit_callback = callback;
     }
 
     /**
