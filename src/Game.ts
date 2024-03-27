@@ -19,11 +19,29 @@ export default class Game {
      */
     public static limits: GameLimits = { maxX: 0, maxY: 0, minX: 0, minY: 0 };
 
+    /**
+     * The maximum amount of enemies that can spawn.
+     */
+    private static MAX_ENEMIES: number = 5;
+
     private _score: number = 0;
     private _bullets: Bullet[] = [];
     private _entities: IEntity[] = [];
     private _canvas: HTMLCanvasElement;
-    private static MINIMAL_SPAWN: number = 3;
+
+    /**
+     * The chance that an enemy has to spawn at every frame.
+     * An enemy will not spawn if the limit is exceeded
+     * (see {@link MAX_ENEMIES}).
+     */
+    private _spawn_chance: number = 0.01;
+
+    /**
+     * Multiplies {@link _spawn_chance} by this amount for an increasing
+     * difficulty depending on the player's score. It will get applied
+     * every time the player kills an enemy.
+     */
+    private _score_multiplier: number = 0.00001;
 
     constructor(canvas: HTMLCanvasElement) {
         Game.instance = this;
@@ -63,7 +81,6 @@ export default class Game {
     }
 
     public removeEntity(entity: IEntity): void {
-        console.log("Removing entity " + entity.getPosition().toString());
         this._entities = this._entities.filter(e => e != entity);
     }
 
@@ -86,7 +103,6 @@ export default class Game {
     private purgeEntity(): void {
         this._entities = this._entities.filter(e => {
             if (Game.shouldDispawn(e.getPosition())) {
-                console.log("Removing entity " + e.getPosition().toString());
                 return false;
             }
             if (!e.isPlayer()) {
@@ -98,12 +114,25 @@ export default class Game {
         });
     }
 
+    /**
+     * Increases the chance that an enemy has to spawn
+     * on each frame depending on the player's score.
+     * Call this method every time the player
+     * kills an enemy.
+     */
+    private increaseDifficulty() {
+        this._spawn_chance = Math.min(this._spawn_chance + this._score * this._score_multiplier, 1);
+    }
+
     private handleBulletCollisions(): void {
         const toRemove: Bullet[] = [];
         this._bullets.forEach(b => {
             this._entities.forEach(e => {
                 if (b.getOwner() != e && b.isColliding(e)) {
                     b.shoot(e);
+                    if (b.getOwner()?.isPlayer() && !e.isPlayer()) {
+                        this.increaseDifficulty();
+                    }
                     toRemove.push(b);
                 }
             });
@@ -129,39 +158,41 @@ export default class Game {
     }
 
     /**
-     * This method updates the spawn rate of the monsters.
-     * @returns     Nothing
+     * Tries to spawn an enemy if the limit was not reached.
+     * It has a small chance of spawning an enemy (see {@link this._spawn_chance}).
+     * It makes sure that an enemy will not spawn on top of another one.
      */
     public updateMonsterSpawn(): void {
-        console.log(1 + (this._score / 100));
-        for(let i: number = 0; i < Game.random.nextInt(-1, 2 + (this._score / 100)); i++) {
-            if (!this.limitSpawnRate()) { return; }
-            const enemy = new Enemy(this._canvas);
+        if (this.countEnemies() < Game.MAX_ENEMIES && this._spawn_chance > Game.random.next()) {
+            const new_enemy = new Enemy(this._canvas);
 
-            // Check if the enemy is not spawning on a another entity
-            while(this._entities.some(e => e.isColliding(enemy))) {
-                enemy.setPosition(Enemy.generateRandomSpawnPosition(this._canvas.width, this._canvas.height));
+            // just making sure that the loop never gets stuck indefinitely.
+            let i = 0;
+            while (this._entities.some(e => e.isColliding(new_enemy))) {
+                new_enemy.newSpawnPosition();
+                i++;
+                if (i >= 50) {
+                    break;
+                }
             }
 
-            console.log("Spawning enemy at " + enemy.getPosition().toString());
-            this.addEntity(enemy);
+            this.addEntity(new_enemy);
         }
     }
 
     /**
-     * This method limits the spawn rate of the enemies.
-     * @returns     True if the spawn rate is not limited, false otherwise.
+     * Counts the number of enemies.
      */
-    private limitSpawnRate() : boolean {
-        return this._entities.filter(e => !e.isPlayer()).length < Game.MINIMAL_SPAWN + (this._score / 100);
+    private countEnemies(): number {
+        return this._entities.filter(e => !e.isPlayer()).length;
     }
 
     /**
      * This method checks if the game is over.
-     * @returns     True if the game is over, false otherwise.
+     * @returns true if the game is over, false otherwise.
      */
-    public gameOver() : boolean {
-        for(const entity of this._entities) {
+    public gameOver(): boolean {
+        for (const entity of this._entities) {
             if (entity.isPlayer() && entity.getHealth() <= 0) {
                 return true;
             }
@@ -171,12 +202,10 @@ export default class Game {
 
     /**
      * This method resets the game.
-     * @returns     Nothing
      */
-    public reset() : void {
+    public reset(): void {
         this._score = 0;
         this._entities = [];
         this._bullets = [];
     }
-
 }

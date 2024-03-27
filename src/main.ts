@@ -88,20 +88,14 @@ function render() {
 setInterval(() => {
     if (playing) {
         game.updateMove();
-        if(game.gameOver()) {
+        game.updateMonsterSpawn();
+        if (game.gameOver()) {
             playing = false;
             UI.showUI();
             game.reset();
         }
     }
 }, 1000 / 60);
-
-setInterval(() => {
-    if (playing) {
-        console.log("Spawning monster");
-        game.updateMonsterSpawn();
-    }
-}, 1000 / 2);
 
 // The order in which those two
 // functions are called do not matter.

@@ -50,6 +50,13 @@ export default class Enemy extends Sprite2D implements IEntity {
     }
 
     /**
+     * Generates a new random position for the enemy.
+     */
+    public newSpawnPosition() {
+        this._position = Enemy.generateRandomSpawnPosition(this._skinImg.width, this._skinImg.height);
+    }
+
+    /**
      * This method kills the enemy and increments the general score of the game.
      * @returns True if the enemy is dead, false otherwise.
      */
