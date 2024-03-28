@@ -130,7 +130,7 @@ export default class Player extends Sprite2D implements IEntity {
      */
     private handleKeyPressed(e: KeyboardEvent, value: boolean) {
         const key = e.key.toLocaleLowerCase();
-        if (key in this.controls || MOVEMENT_CONTROLS.includes(key)) {
+        if (MOVEMENT_CONTROLS.includes(key)) {
             this.controls[key] = value;
         }
     }
@@ -141,9 +141,9 @@ export default class Player extends Sprite2D implements IEntity {
      */
     private initializeMovementControls() : void {
         window.addEventListener("keydown", e => {
-            if (e.code === "Space") {
-                this.shoot();
-            } else {
+            if (e.code.toLowerCase() === Controls.SHOOT) {
+                this.controls[Controls.SHOOT] = true;
+            } else {
                 this.handleKeyPressed(e, true);
             }
         });
@@ -223,6 +223,7 @@ export default class Player extends Sprite2D implements IEntity {
         if (this.controls[Controls.RIGHT]) this.mX += this.MOVEMENT_STRENGTH;
         if (this.controls[Controls.DOWN])  this.mY += this.MOVEMENT_STRENGTH;
         if (this.controls[Controls.LEFT])  this.mX -= this.MOVEMENT_STRENGTH;
+        if (this.controls[Controls.SHOOT]) this.shoot();
     }
 
     /**
