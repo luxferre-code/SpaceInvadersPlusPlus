@@ -32,7 +32,7 @@ export default class Player extends Sprite2D implements IEntity {
      * It describes by how many pixels pressing a control key moves the player on each frame.
      * The higher this value, the higher the player's acceleration towards {@link MAX_VELOCITY}.
      */
-    private readonly MOVEMENT_STRENGTH = 1.0;
+    private readonly MOVEMENT_STRENGTH = 0.8;
 
     /**
      * The coefficient that is applied to a movement (either {@link mX} or {@link mY})
@@ -51,8 +51,12 @@ export default class Player extends Sprite2D implements IEntity {
      * Note that this max velocity isn't necessarily reached.
      * The maximum speed of the player can exceed it by the amount described by {@link MOVEMENT_STRENGTH}.
      */
-    private readonly MAX_VELOCITY = 6;
+    private readonly MAX_VELOCITY = 5;
 
+    /**
+     * A callback to call when the player gets hit.
+     * See {@link hurt}.
+     */
     private on_player_hit_callback: null | ((hp: number) => void) = null;
 
     /**
@@ -82,19 +86,31 @@ export default class Player extends Sprite2D implements IEntity {
         this.initializeMovementControls();
     }
 
+    /**
+     * Places the player at a starting position depending on the width and height of its skin.
+     * If for some reason the skin didn't load properly, it will spawn at a fallback position,
+     * around the middle of the screen, near the bottom, but won't be properly aligned.
+     */
     public placeAtStartingPosition() {
         if (this._skinImg) {
             this._position = new Vector2(Game.limits.maxX / 2 - this._skinImg.width, Game.limits.maxY - this._skinImg.height * 2);
         } else {
-            this._position = new Vector2();
+            this._position = new Vector2(Game.limits.maxX / 2, Game.limits.maxY - 100);
         }
     }
 
+    /**
+     * Sets the attributes of the player with the values defined in {@link GameSettings}.
+     */
     public useLastGameSettings() {
         this._hp = GameSettings.playerHp;
         this._shootDelay = GameSettings.playerShootDelay;
     }
 
+    /**
+     * Renders the player, and increases the brightness of its skin
+     * by a big amount when it is immuned (for clarity's sake).
+     */
     public render(): void {
         if (this._immune) {
             this._context.filter = "brightness(100)";
