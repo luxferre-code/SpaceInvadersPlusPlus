@@ -20,7 +20,16 @@ const player = new Player(canvas);
 // There is a parameter that can be used to
 // customise the game's behaviour when the player
 // dies.
-player.onPlayerHit(() => UI.removeHeart());
+player.onPlayerHit((hp: number) => {
+    UI.removeHeart();
+    if (hp == 0) {
+        UI.showDeathScreen();
+        setTimeout(() => {
+            UI.hideDeathScreen();
+            UI.showUI();
+        }, 2000);
+    }
+});
 
 let playing = false;
 let loadingAssets = true;
@@ -113,7 +122,6 @@ setInterval(() => {
         game.updateMonsterSpawn();
         if (game.gameOver()) {
             playing = false;
-            UI.showUI();
             game.reset();
         }
     }

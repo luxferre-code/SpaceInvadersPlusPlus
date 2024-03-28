@@ -104,6 +104,12 @@ export default class {
     public static readonly containerHearts = document.querySelector("#container-hearts") as HTMLElement;
 
     /**
+     * The death screen. Show it when the player is dead,
+     * and hide it when a game is restarted.
+     */
+    public static readonly deathScreen = document.querySelector("#death-screen") as HTMLElement;
+
+    /**
      * Shows an element while respecting ARIA recommendations.
      * @param element The element to show.
      */
@@ -306,6 +312,14 @@ export default class {
         if (this.containerHearts.lastElementChild) {
             this.containerHearts.removeChild(this.containerHearts.lastElementChild);
         }
+    }
+    
+    public static showDeathScreen() {
+        this.showElement(this.deathScreen);
+    }
+
+    public static hideDeathScreen() {
+        this.hideElement(this.deathScreen);
     }
 
     /**
