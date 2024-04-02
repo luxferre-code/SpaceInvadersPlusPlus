@@ -71,16 +71,19 @@ export default class PlayerServer implements IEntity {
     private _position: Vector2;
     private _imageWidth: number;
     private _imageHeight: number;
+    private _socketId: string;
 
     /**
      * Creates a new player and places it at the center of the screen
      * and a short distance away from the bottom.
      */
-    constructor(position: Vector2, imageWidth: number, imageHeight: number) {
+    constructor(position: Vector2, imageWidth: number, imageHeight: number, socketId: string) {
         this._position = position;
         this._imageWidth = imageWidth;
         this._imageHeight = imageHeight;
+        this._socketId = socketId;
     }
+    
     getPosition(): Vector2 {
         throw new Error("Method not implemented.");
     }
@@ -210,7 +213,7 @@ export default class PlayerServer implements IEntity {
         setTimeout(() => {
             this._canShoot = true;
         }, this._shootDelay);
-        Game.getInstance().addBullet(bullet);
+        Game.getInstance(this._socketId).addBullet(bullet);
     }
 
     public generateHitBox(): HitBox {

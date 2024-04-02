@@ -26,6 +26,16 @@ const context: CanvasRenderingContext2D = canvas.getContext("2d")!;
 const game = new Game(canvas);
 const player = new Player(canvas);
 
+document.querySelector("#playNow")?.addEventListener("click", () => {
+    console.log('Emitting playNow');
+    socket.emit('playNowSolo');
+});
+
+socket.on('gameStarted', () => {
+    console.log('Game started');
+    
+});
+
 // This callback gets called every single that
 // that the player loses a health point.
 // There is a parameter that can be used to

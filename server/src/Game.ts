@@ -1,4 +1,5 @@
 import Bullet from "./Bullet.js";
+import IEntity from "./IEntity.js";
 
 export default class Game {
 
@@ -10,23 +11,51 @@ export default class Game {
         maxY: 600
     };
 
-    private static instance: Game;
+    private _bullets: Bullet[] = [];
+    private _entities: IEntity[] = [];
+    private _owner: string;
+    private _players: string[] = [];
 
-    private constructor() {
-        if(Game.instance == null) {
-            Game.instance = this;
-            console.log('Game initialized with success!');
+    private static readonly _games: Game[] = [];
+
+    private constructor(sockerId: string) {
+        this._owner = sockerId;
+        this._players.push(sockerId);
+        if(Game.getInstance(sockerId) === undefined) {
+            Game._games.push(this);
         } else {
-            throw new Error('Game is a singleton class. Use Game.getInstance() instead.');
+            Game.remove(sockerId);
         }
     }
 
-    public static getInstance() {
-        return Game.instance || new Game();
+    public static new(sockerId: string) : Game {
+        return new Game(sockerId);
+    }
+
+    public static remove(sockerId: string) : void {
+        for (let i = 0; i < Game._games.length; i++) {
+            if (Game._games[i]._owner === sockerId) {
+                Game._games.splice(i, 1);
+                return;
+            }
+        }
+    }
+
+    public static getInstance(sockerId: string) : Game {
+        for (const game of Game._games) {
+            if (game._owner === sockerId) {
+                return game;
+            }
+        }
+        return undefined;
     }
 
     public addBullet(bullet: Bullet) : void {
-        //TODO: implement this method
+        this._bullets.push(bullet);
+    }
+
+    public addEntity(entity: IEntity) : void {
+        this._entities.push(entity);
     }
 
 }
