@@ -1,8 +1,8 @@
-import Bullet from "./Bullet";
-import Game from "./Game";
-import HitBox from "./HitBox";
-import IEntity from "./IEntity";
-import Vector2 from "./Vector2";
+import Bullet from "./Bullet.js";
+import Game from "./Game.js";
+import HitBox from "./HitBox.js";
+import IEntity from "./IEntity.js";
+import Vector2 from "./Vector2.js";
 
 /**
  * This class represents the player entity in the game.

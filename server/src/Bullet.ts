@@ -1,7 +1,7 @@
-import Enemy from "./Enemy";
-import HitBox from "./HitBox";
-import IEntity from "./IEntity";
-import Vector2 from "./Vector2";
+import Enemy from "./Enemy.js";
+import HitBox from "./HitBox.js";
+import IEntity from "./IEntity.js";
+import Vector2 from "./Vector2.js";
 
 /**
  * This class represents a bullet in the game.

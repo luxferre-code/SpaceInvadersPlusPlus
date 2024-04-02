@@ -1,9 +1,9 @@
 import { createServer } from "http";
 import { Server } from "socket.io";
 import express from "express";
-import Game from "./src/Game";
+import Game from "./src/Game.js";
 const port = process.env.PORT ?? 3000;
-const game = new Game();
+const game = Game.getInstance();
 const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {

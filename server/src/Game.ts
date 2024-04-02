@@ -1,4 +1,4 @@
-import Bullet from "./Bullet";
+import Bullet from "./Bullet.js";
 
 export default class Game {
 
@@ -12,8 +12,8 @@ export default class Game {
 
     private static instance: Game;
 
-    constructor() {
-        if(Game.instance === null) {
+    private constructor() {
+        if(Game.instance == null) {
             Game.instance = this;
             console.log('Game initialized with success!');
         } else {

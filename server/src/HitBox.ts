@@ -1,4 +1,4 @@
-import Vector2 from "./Vector2";
+import Vector2 from "./Vector2.js";
 
 export default class HitBox {
     public top_left: Vector2;

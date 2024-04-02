@@ -3,7 +3,7 @@
     "module": "esnext",
     "target": "esnext",
     "allowSyntheticDefaultImports": true,
-    "moduleResolution": "Node",
+    "moduleResolution": "bundler",
     "outDir": "./out"
   },
   "include": ["server.ts", "src/**/*"]
