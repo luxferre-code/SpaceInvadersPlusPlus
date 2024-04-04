@@ -1,3 +1,4 @@
+import { io } from 'socket.io-client';
 import { preloadSkins } from "./utils/Skins";
 import GameSettingsPage from "./ui/GameSettingsPage";
 import SettingsDB from "./server/GlobalSettingsDB";
@@ -5,32 +6,31 @@ import GameSettings from "./models/GameSettings";
 import SettingsPage from "./ui/SettingsPage";
 import RankingPage from "./ui/RankingPage";
 import RankingDB from "./server/RankingDB";
+import LobbyPage from "./ui/LobbyPage";
 import Random from "./utils/Random";
 import Player from "./Player";
 import Game from "./Game";
 import UI from "./ui/UI";
-import { io } from 'socket.io-client';
 
 const socket = io(`${window.location.hostname}:3000`);
 
 socket.on('connect', () => {
-  console.log('Connected to server');
+  console.log('Connected to server as', socket.id);
 });
 
 socket.on('disconnect', () => {
   console.log('Disconnected from server');
 });
 
-
 const canvas: HTMLCanvasElement = document.querySelector("canvas") as HTMLCanvasElement;
 const context: CanvasRenderingContext2D = canvas.getContext("2d")!;
 const game = new Game(canvas);
 const player = new Player(canvas);
 
-player.setCommunicationCallback((controls) => {
-    console.log('Emitting playerMoved');
-    socket.emit('playerMoved', controls);
-});
+// player.setCommunicationCallback((controls) => {
+//     console.log('Emitting playerMoved');
+//     socket.emit('playerMoved', controls);
+// });
 
 document.querySelector("#playNow")?.addEventListener("click", () => {
     console.log('Emitting playNow');
@@ -72,6 +72,7 @@ const rankings = RankingDB.fetchRankingsAndScores();
 // Even if the data is empty, the initWith()
 // method has to be called.
 RankingPage.initWith(rankings);
+LobbyPage.bindEvents(socket);
 
 SettingsPage.initWith(SettingsDB.cloned);
 SettingsPage.listenToNameChange((newName) => SettingsDB.name = newName);

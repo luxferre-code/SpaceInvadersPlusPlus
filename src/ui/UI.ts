@@ -1,3 +1,4 @@
+import LobbyPage from "./LobbyPage";
 import RankingTable from "./RankingPage";
 
 /**
@@ -75,7 +76,8 @@ export default class {
         credits: this.modal.querySelector("#credits-page") as HTMLDivElement,
         ranking: this.modal.querySelector("#ranking-page") as HTMLDivElement,
         settings: this.modal.querySelector("#settings-page") as HTMLDivElement,
-        gameSettings: this.modal.querySelector("#game-settings-page") as HTMLDivElement
+        gameSettings: this.modal.querySelector("#game-settings-page") as HTMLDivElement,
+        lobby: this.modal.querySelector("#lobby-page") as HTMLDivElement,
     });
 
     /**
@@ -209,6 +211,10 @@ export default class {
         if (!this.initialized) {
             this.mainButtons.playNow.addEventListener('click', () => this.showModal(this.modalPages.gameSettings));
             this.mainButtons.credits.addEventListener('click', () => this.showModal(this.modalPages.credits));
+            this.mainButtons.playCoop.addEventListener('click', () => {
+                LobbyPage.requestRooms();
+                this.showModal(this.modalPages.lobby);
+            });
 
             // Events related to the corner buttons
             this.cornerButtons.rankings.addEventListener('click', () => this.showModal(this.modalPages.ranking));

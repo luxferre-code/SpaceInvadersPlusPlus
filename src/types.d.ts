@@ -59,6 +59,11 @@ declare global {
   // properties of an object which has properties
   // named "first", "second" and "third" easier.
   type RankingKey = keyof typeof RankingTable.worldWideRecords;
+
+  type Room = {
+      id: string;
+      players: string[]; // the room's creator is the first player
+  };
 }
 
 export {};
