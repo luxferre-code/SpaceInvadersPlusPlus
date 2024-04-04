@@ -27,6 +27,11 @@ const context: CanvasRenderingContext2D = canvas.getContext("2d")!;
 const game = new Game(canvas);
 const player = new Player(canvas);
 
+player.setCommunicationCallback((controls) => {
+    console.log('Emitting playerMoved');
+    socket.emit('playerMoved', controls);
+});
+
 document.querySelector("#playNow")?.addEventListener("click", () => {
     console.log('Emitting playNow');
     socket.emit('playNowSolo');
@@ -121,6 +126,7 @@ function fillScreen() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     Game.limits = calculateGameLimits(canvas, UI.gameBorders);
+    socket.emit('screenResized', Game.limits);
 }
 
 // Add event listener, if window is being moved, resize canva height et width

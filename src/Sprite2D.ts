@@ -15,6 +15,7 @@ export default abstract class Sprite2D extends Node2D {
     constructor(canvas: HTMLCanvasElement, skin: Skin) {
         super(canvas);
         this._skin = skin;
+        console.log(this._skin);
         this._skinImg = getSkinImage(skin);
     }
 

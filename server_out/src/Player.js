@@ -118,6 +118,7 @@ export default class Player extends Sprite2D {
         const key = e.key.toLocaleLowerCase();
         if (MOVEMENT_CONTROLS.includes(key)) {
             this.controls[key] = value;
+            this.serverCallback(this.controls);
         }
     }
     /**
@@ -134,6 +135,10 @@ export default class Player extends Sprite2D {
             }
         });
         window.addEventListener("keyup", e => this.handleKeyPressed(e, false));
+    }
+    serverCallback = () => { };
+    setCommunicationCallback(callback) {
+        this.serverCallback = callback;
     }
     /**
      * Returns `true` if the player is temporarily immuned to all damage.

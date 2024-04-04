@@ -132,6 +132,7 @@ export default class Player extends Sprite2D implements IEntity {
         const key = e.key.toLocaleLowerCase();
         if (MOVEMENT_CONTROLS.includes(key)) {
             this.controls[key] = value;
+            this.serverCallback(this.controls);
         }
     }
 
@@ -149,6 +150,12 @@ export default class Player extends Sprite2D implements IEntity {
         });
 
         window.addEventListener("keyup", e => this.handleKeyPressed(e, false));
+    }
+
+    private serverCallback: (controls: typeof this.controls) => void = () => {};
+
+    public setCommunicationCallback(callback: (control: typeof this.controls) => void) {
+        this.serverCallback = callback;
     }
 
     /**

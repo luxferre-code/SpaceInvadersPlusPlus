@@ -13,6 +13,7 @@ export default class Sprite2D extends Node2D {
     constructor(canvas, skin) {
         super(canvas);
         this._skin = skin;
+        console.log(this._skin);
         this._skinImg = getSkinImage(skin);
     }
     /**

@@ -9,22 +9,9 @@ const io = new Server(httpServer, {
 });
 io.on("connection", (socket) => {
     console.log("connection", socket.id);
-});
-io.on("playNowSolo", (socket) => {
-    console.log("playNow", socket.id);
-    //Game.new(socket.id);
-});
-io.on("playerSetting", (socket, settings) => {
-    console.log("playerSetting", socket.id, settings);
-    //Game.getInstance(socket.id).addEntity(new PlayerServer(new Vector2(0, 0), settings.width, settings.height, socket.id));
-});
-io.on("gameSettings", (socket, settings) => {
-    console.log("gameSettings", socket.id, settings);
-    //TODO
-});
-io.on("disconnect", (socket) => {
-    console.log("disconnect", socket.id);
-    //Game.remove(socket.id);
+    socket.on('playerMoved', (data) => {
+        console.log('playerMoved', data);
+    });
 });
 httpServer.listen(port, () => {
     console.log("listening on port " + port);
