@@ -71,7 +71,7 @@ io.on("connection", (socket) => {
         let current_room = hasRoom();
         if (current_room != null) {
             if (current_room == room_id) {
-                return false;
+                return { success: false };
             }
             leaveRoom(current_room);
         }
@@ -79,10 +79,13 @@ io.on("connection", (socket) => {
             if (room.id === room_id) {
                 room.players.push(socket.id);
                 socket.join(room_id);
-                return true;
+                return {
+                    success: true,
+                    manager_username: room.players[0],
+                };
             }
         }
-        return false;
+        return { success: false };
     }
     // socket.on('playerMoved', (data) => {
     //     console.log('playerMoved', data);
@@ -92,7 +95,6 @@ io.on("connection", (socket) => {
         updateLobby();
     });
     socket.on("join_room", (room_id, ack) => {
-        console.log("joining room", room_id);
         ack(joinExistingRoom(room_id));
         updateLobby();
     });
