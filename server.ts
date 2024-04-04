@@ -72,7 +72,7 @@ io.on("connection", (socket) => {
         return null;
     }
 
-    function joinExistingRoom(room_id: string): { success: boolean, manager_username?: string } {
+    function joinExistingRoom(room_id: string): boolean {
         // Basically checking if the user is already in another room.
         // If he is in another room, then leave it.
         // Also make sure that if the room he's already in is the
@@ -80,7 +80,7 @@ io.on("connection", (socket) => {
         let current_room = hasRoom();
         if (current_room != null) {
             if (current_room == room_id) {
-                return { success: false };
+                return false;
             }
             leaveRoom(current_room);
         }
@@ -88,26 +88,25 @@ io.on("connection", (socket) => {
             if (room.id === room_id) {
                 room.players.push(socket.id);
                 socket.join(room_id);
-                return {
-                    success: true,
-                    manager_username: room.players[0],
-                };
+                return true;
             }
         }
-        return { success: false };
+        return false;
     }
-
-    // socket.on('playerMoved', (data) => {
-    //     console.log('playerMoved', data);
-    // });
 
     socket.on("host", (ack: (roomId: string) => void) => {
         ack(createRoom()); // will be called on the client
         updateLobby();
     });
 
-    socket.on("join_room", (room_id: string, ack: ({ success, manager_username }: { success: boolean, manager_username?: string }) => void) => {
+    socket.on("join_room", (room_id: string, ack: (success: boolean) => void) => {
         ack(joinExistingRoom(room_id));
+        updateLobby();
+    });
+
+    socket.on("quit_room", (room_id: string, ack: () => void) => {
+        leaveRoom(room_id);
+        ack(); // must be called before "updateLobby"
         updateLobby();
     });
 

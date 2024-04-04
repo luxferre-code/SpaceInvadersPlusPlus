@@ -71,7 +71,7 @@ io.on("connection", (socket) => {
         let current_room = hasRoom();
         if (current_room != null) {
             if (current_room == room_id) {
-                return { success: false };
+                return false;
             }
             leaveRoom(current_room);
         }
@@ -79,23 +79,22 @@ io.on("connection", (socket) => {
             if (room.id === room_id) {
                 room.players.push(socket.id);
                 socket.join(room_id);
-                return {
-                    success: true,
-                    manager_username: room.players[0],
-                };
+                return true;
             }
         }
-        return { success: false };
+        return false;
     }
-    // socket.on('playerMoved', (data) => {
-    //     console.log('playerMoved', data);
-    // });
     socket.on("host", (ack) => {
         ack(createRoom()); // will be called on the client
         updateLobby();
     });
     socket.on("join_room", (room_id, ack) => {
         ack(joinExistingRoom(room_id));
+        updateLobby();
+    });
+    socket.on("quit_room", (room_id, ack) => {
+        leaveRoom(room_id);
+        ack(); // must be called before "updateLobby"
         updateLobby();
     });
     socket.on("request_lobby", (ack) => {

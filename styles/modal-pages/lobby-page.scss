@@ -68,6 +68,17 @@
     display: none;
 }
 
+#quit-lobby-button {
+    background-color: transparent;
+    text-decoration: underline;
+    cursor: pointer;
+    border: none;
+    color: #fff;
+    font-family: $font;
+    font-size: 18px;
+    padding: 5px 5px 5px 0;
+}
+
 @media screen and (max-width: 700px) {
     #host-game-button {
         font-size: 1.2em;
