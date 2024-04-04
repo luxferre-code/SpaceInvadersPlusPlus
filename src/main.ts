@@ -11,15 +11,16 @@ import Game from "./Game";
 import UI from "./ui/UI";
 import { io } from 'socket.io-client';
 
-const socket = io('http://localhost:3000');
+const socket = io(`${window.location.hostname}:3000`);
 
 socket.on('connect', () => {
-    console.log('Connected to server');
+  console.log('Connected to server');
 });
 
 socket.on('disconnect', () => {
-    console.log('Disconnected from server');
+  console.log('Disconnected from server');
 });
+
 
 const canvas: HTMLCanvasElement = document.querySelector("canvas") as HTMLCanvasElement;
 const context: CanvasRenderingContext2D = canvas.getContext("2d")!;
