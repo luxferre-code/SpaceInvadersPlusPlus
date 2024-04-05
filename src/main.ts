@@ -35,11 +35,6 @@ const player = new Player(canvas);
 //     socket.emit('playerMoved', controls);
 // });
 
-document.querySelector("#playNow")?.addEventListener("click", () => {
-    console.log('Emitting playNow');
-    socket.emit('playNowSolo');
-});
-
 // This callback gets called every single that
 // that the player loses a health point.
 // There is a parameter that can be used to
@@ -71,6 +66,10 @@ const rankings = RankingDB.fetchRankingsAndScores();
 // method has to be called.
 RankingPage.initWith(rankings);
 LobbyPage.bindEvents(socket);
+LobbyPage.setOnGameStarted(() => {
+    playing = true;
+    UI.hideUI();
+});
 
 SettingsPage.initWith(SettingsDB.cloned);
 SettingsPage.listenToEffectsVolumeChange((newVolume) => SettingsDB.effectsVolume = newVolume);

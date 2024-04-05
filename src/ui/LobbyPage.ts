@@ -17,6 +17,8 @@ export default class LobbyPage {
     private static joined_room_id: string | undefined = undefined;
     private static game_started = false;
 
+    private static game_started_callback: (() => void) | undefined = undefined;
+
     private static isHostingGame(): boolean {
         return this.hosted_room_id != undefined;
     }
@@ -31,6 +33,10 @@ export default class LobbyPage {
 
     private static getRoomId(): string | undefined {
         return this.isClient() ? this.joined_room_id : this.hosted_room_id;
+    }
+
+    public static setOnGameStarted(callback: () => void): void {
+        this.game_started_callback = callback;
     }
 
     public static bindEvents(socket: Socket) {
@@ -49,6 +55,7 @@ export default class LobbyPage {
                 } else {
                     socket.emit("start_game", this.getRoomId(), () => {
                         this.game_started = true;
+                        this.game_started_callback?.();
                     });
                 }
             });
@@ -89,7 +96,7 @@ export default class LobbyPage {
                 // The host started the game, so the server
                 // sends the information to all listeners of his room.
                 if (this.isClient()) {
-                    console.log("the host started the game", this.getRoomId());
+                    this.game_started_callback?.();
                 }
             });
 
