@@ -116,7 +116,10 @@ export default class Player extends Sprite2D {
      */
     handleKeyPressed(e, value) {
         const key = e.key.toLocaleLowerCase();
-        if (MOVEMENT_CONTROLS.includes(key)) {
+        if (e.code.toLowerCase() === Controls.SHOOT) {
+            this.controls[Controls.SHOOT] = value;
+        }
+        else if (MOVEMENT_CONTROLS.includes(key)) {
             this.controls[key] = value;
             this.serverCallback(this.controls);
         }
@@ -126,14 +129,7 @@ export default class Player extends Sprite2D {
      * the player's movement with the keyboard.
      */
     initializeMovementControls() {
-        window.addEventListener("keydown", e => {
-            if (e.code.toLowerCase() === Controls.SHOOT) {
-                this.controls[Controls.SHOOT] = true;
-            }
-            else {
-                this.handleKeyPressed(e, true);
-            }
-        });
+        window.addEventListener("keydown", e => this.handleKeyPressed(e, true));
         window.addEventListener("keyup", e => this.handleKeyPressed(e, false));
     }
     serverCallback = () => { };

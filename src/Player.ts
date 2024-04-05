@@ -75,7 +75,7 @@ export default class Player extends Sprite2D implements IEntity {
      * This will register any key that is being pressed.
      * The key of this map is the name of the key, in lower case.
      */
-    private controls: {[key: string]: boolean} = {};
+    private controls: { [key: string]: boolean } = {};
 
     /**
      * Creates a new player and places it at the center of the screen
@@ -116,7 +116,7 @@ export default class Player extends Sprite2D implements IEntity {
             this._context.filter = "brightness(100)";
             super.render();
             this._context.filter = "brightness(1)";
-        } else {
+        } else {
             super.render();
         }
     }
@@ -130,7 +130,9 @@ export default class Player extends Sprite2D implements IEntity {
      */
     private handleKeyPressed(e: KeyboardEvent, value: boolean) {
         const key = e.key.toLocaleLowerCase();
-        if (MOVEMENT_CONTROLS.includes(key)) {
+        if (e.code.toLowerCase() === Controls.SHOOT) {
+            this.controls[Controls.SHOOT] = value;
+        } else if (MOVEMENT_CONTROLS.includes(key)) {
             this.controls[key] = value;
             this.serverCallback(this.controls);
         }
@@ -140,19 +142,12 @@ export default class Player extends Sprite2D implements IEntity {
      * Initializes the event listeners for controlling
      * the player's movement with the keyboard.
      */
-    private initializeMovementControls() : void {
-        window.addEventListener("keydown", e => {
-            if (e.code.toLowerCase() === Controls.SHOOT) {
-                this.controls[Controls.SHOOT] = true;
-            } else {
-                this.handleKeyPressed(e, true);
-            }
-        });
-
+    private initializeMovementControls(): void {
+        window.addEventListener("keydown", e => this.handleKeyPressed(e, true));
         window.addEventListener("keyup", e => this.handleKeyPressed(e, false));
     }
 
-    private serverCallback: (controls: typeof this.controls) => void = () => {};
+    private serverCallback: (controls: typeof this.controls) => void = () => { };
 
     public setCommunicationCallback(callback: (control: typeof this.controls) => void) {
         this.serverCallback = callback;
@@ -169,7 +164,7 @@ export default class Player extends Sprite2D implements IEntity {
      * Method to decrease the player's HP
      * @returns true if the player is alive, false otherwise
      */
-    public hurt() : boolean {
+    public hurt(): boolean {
         if (!this._immune) {
             this._hp -= 1;
             this._immune = true;
@@ -210,7 +205,7 @@ export default class Player extends Sprite2D implements IEntity {
     private isXOutOfBounds(nextX: number) {
         return nextX <= Game.limits.minX || nextX + this.getSkin().width >= Game.limits.maxX;
     }
-    
+
     /**
      * Returns `true` if the player's future vertical
      * position does not exceed the limits of the screen
@@ -226,10 +221,10 @@ export default class Player extends Sprite2D implements IEntity {
      * variables accordingly (see {@link mX} and {@link mY}).
      */
     private handleMovementControls() {
-        if (this.controls[Controls.UP])    this.mY -= this.MOVEMENT_STRENGTH;
+        if (this.controls[Controls.UP]) this.mY -= this.MOVEMENT_STRENGTH;
         if (this.controls[Controls.RIGHT]) this.mX += this.MOVEMENT_STRENGTH;
-        if (this.controls[Controls.DOWN])  this.mY += this.MOVEMENT_STRENGTH;
-        if (this.controls[Controls.LEFT])  this.mX -= this.MOVEMENT_STRENGTH;
+        if (this.controls[Controls.DOWN]) this.mY += this.MOVEMENT_STRENGTH;
+        if (this.controls[Controls.LEFT]) this.mX -= this.MOVEMENT_STRENGTH;
         if (this.controls[Controls.SHOOT]) this.shoot();
     }
 
@@ -287,8 +282,8 @@ export default class Player extends Sprite2D implements IEntity {
      * Shoots a bullet.
      * @returs The bullet that was created.
      */
-    public shoot() : void {
-        if(!this._canShoot) return;
+    public shoot(): void {
+        if (!this._canShoot) return;
         const bullet: Bullet = new Bullet(this._canvas, this._position.add(new Vector2(this._skinImg.width / 2, 0)));
         bullet.attachTo(this);
         this._canShoot = false;
