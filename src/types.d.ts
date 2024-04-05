@@ -62,7 +62,10 @@ declare global {
 
   type Room = {
       id: string;
-      players: string[]; // the room's creator is the first player
+      players: {
+        id: string;
+        username: string;
+      }[]; // the room's creator is the first player
   };
 }
 

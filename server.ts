@@ -25,6 +25,7 @@ function updateLobby() {
 }
 
 io.on("connection", (socket) => {
+    let username = "";
     console.log("connection", socket.id);
 
     function leaveRoom(room_id: string): void {
@@ -39,7 +40,7 @@ io.on("connection", (socket) => {
                 } else {
                     // The player is not alone in the room,
                     // so just remove him from the list of players.
-                    let playerIdx = room.players.findIndex(p => p === socket.id);
+                    let playerIdx = room.players.findIndex(p => p.id === socket.id);
                     room.players.splice(playerIdx, 1);
                 }
                 return;
@@ -58,14 +59,17 @@ io.on("connection", (socket) => {
         socket.join(roomId);
         rooms.push({
             id: roomId,
-            players: [socket.id],
+            players: [{
+                id: socket.id,
+                username,
+            }],
         });
         return roomId;
     }
 
     function hasRoom(): string | null {
         for (const room of rooms) {
-            if (room.players.includes(socket.id)) {
+            if (room.players.map(p => p.id).includes(socket.id)) {
                 return room.id;
             }
         }
@@ -86,13 +90,27 @@ io.on("connection", (socket) => {
         }
         for (const room of rooms) {
             if (room.id === room_id) {
-                room.players.push(socket.id);
+                room.players.push({
+                    id: socket.id,
+                    username,
+                });
                 socket.join(room_id);
                 return true;
             }
         }
         return false;
     }
+
+    socket.on("username_changed", (name: string) => {
+        username = name;
+        for (const room of rooms) {
+            const playerIdx = room.players.findIndex(p => p.id === socket.id);
+            if (playerIdx >= 0) {
+                room.players[playerIdx].username = name;
+            }
+        }
+        updateLobby(); // necessary in the lobby when we're waiting for players to arrive
+    });
 
     socket.on("host", (ack: (roomId: string) => void) => {
         ack(createRoom()); // will be called on the client
@@ -118,11 +136,11 @@ io.on("connection", (socket) => {
         const to_remove: number[] = [];
         for (let i = 0; i < rooms.length; i++) {
             const room = rooms[i];
-            if (room.players.includes(socket.id)) {
+            if (room.players.map(p => p.id).includes(socket.id)) {
                 if (room.players.length === 1) {
                     to_remove.push(i);
                 } else {
-                    room.players.filter(p => p !== socket.id);
+                    room.players.filter(p => p.id !== socket.id);
                 }
             }
         }

@@ -22,6 +22,9 @@ socket.on('disconnect', () => {
   console.log('Disconnected from server');
 });
 
+// Send to the server the username of the current user
+socket.emit("username_changed", SettingsDB.name);
+
 const canvas: HTMLCanvasElement = document.querySelector("canvas") as HTMLCanvasElement;
 const context: CanvasRenderingContext2D = canvas.getContext("2d")!;
 const game = new Game(canvas);
@@ -35,11 +38,6 @@ const player = new Player(canvas);
 document.querySelector("#playNow")?.addEventListener("click", () => {
     console.log('Emitting playNow');
     socket.emit('playNowSolo');
-});
-
-socket.on('gameStarted', () => {
-    console.log('Game started');
-    
 });
 
 // This callback gets called every single that
@@ -75,10 +73,13 @@ RankingPage.initWith(rankings);
 LobbyPage.bindEvents(socket);
 
 SettingsPage.initWith(SettingsDB.cloned);
-SettingsPage.listenToNameChange((newName) => SettingsDB.name = newName);
 SettingsPage.listenToEffectsVolumeChange((newVolume) => SettingsDB.effectsVolume = newVolume);
 SettingsPage.listenToMusicVolumeChange((newVolume) => SettingsDB.musicVolume = newVolume);
 SettingsPage.listenToSkinChange((newSkin) => SettingsDB.skin = newSkin);
+SettingsPage.listenToNameChange((newName) => {
+    SettingsDB.name = newName;
+    socket.emit("username_changed", newName);
+});
 
 GameSettingsPage.initDefaultGameSettings();
 GameSettingsPage.onGameStarted(() => {

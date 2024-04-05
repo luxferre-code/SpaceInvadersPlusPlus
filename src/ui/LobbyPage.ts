@@ -55,7 +55,6 @@ export default class LobbyPage {
                     socket.emit("quit_room", this.getRoomId()!, () => {
                         this.joined_room_id = undefined;
                         this.hosted_room_id = undefined;
-                        console.log("quit the room ");
                     });
                 }
             });
@@ -64,13 +63,13 @@ export default class LobbyPage {
                 if (this.isConnected()) {
                     const room_id = this.getRoomId();
                     const all_players = rooms.find(r => r.id === room_id)!.players;
-                    const other_players = all_players.filter(p => p !== socket.id);
+                    const other_players = all_players.filter(p => p.id !== socket.id);
                     if (all_players.length > 0) {
                         const manager = all_players[0];
-                        this.noteAwaitingForManager.setAttribute("aria-hidden", manager === socket.id ? "true" : "false");
-                        this.hostUsername.textContent = manager;
+                        this.noteAwaitingForManager.setAttribute("aria-hidden", manager.id === socket.id ? "true" : "false");
+                        this.hostUsername.textContent = manager.username;
                     }
-                    this.updateAwaitingPlayers(other_players);
+                    this.updateAwaitingPlayers(other_players.map(p => p.username));
                 } else {
                     this.resetView();
                     this.updateRooms(rooms);
@@ -132,7 +131,7 @@ export default class LobbyPage {
     /**
      * Clears the rooms that are currently being displayed in {@link lobbiesTable}.
      */
-    private static clear(element: HTMLElement): void {
+    private static clearView(element: HTMLElement): void {
         while (element.firstChild) {
             element.removeChild(element.firstChild);
         }
@@ -142,14 +141,14 @@ export default class LobbyPage {
      * Creates the rows of {@link lobbiesTable} so that the player can join them.
      */
     private static updateRooms(rooms: Room[]): void {
-        this.clear(this.lobbiesTable);
+        this.clearView(this.lobbiesTable);
         for (const room of rooms) {
             this.lobbiesTable.appendChild(this.createRoomElement(room));
         }
     }
 
     private static updateAwaitingPlayers(players: string[]): void {
-        this.clear(this.containerPlayersList);
+        this.clearView(this.containerPlayersList);
         for (const player of players) {
             this.containerPlayersList.appendChild(this.createAwaitingPlayerElement(player));
         }
