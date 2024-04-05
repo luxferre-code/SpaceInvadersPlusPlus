@@ -1,4 +1,5 @@
 import type { Socket } from "socket.io-client";
+import GameClient from "../GameClient";
 
 export default class LobbyPage {
     private static readonly lobbyPage = document.querySelector("#lobby-page") as HTMLElement;
@@ -53,8 +54,9 @@ export default class LobbyPage {
                         this.noteForAwaitingPlayers.setAttribute("aria-hidden", "false");
                     });
                 } else {
-                    socket.emit("start_game", this.getRoomId(), (gameData: GameData) => {
+                    socket.emit("start_game", this.getRoomId(), GameClient.limits, (gameData: GameData) => {
                         this.game_started = true;
+                        console.log("started game with data:", gameData);
                         this.game_started_callback?.(gameData);
                     });
                 }

@@ -106,21 +106,20 @@ async function preloadAssets() {
 //         UI.createHeart();
 //     }
 // }
-//
-// function calculateGameLimits(canvas: HTMLCanvasElement, bordersUI: typeof UI.gameBorders): GameLimits {
-//     return {
-//         minY: 0,
-//         minX: bordersUI.left.getBoundingClientRect().width,
-//         maxX: canvas.width - bordersUI.right.getBoundingClientRect().width,
-//         maxY: canvas.height,
-//     }
-// }
+
+function calculateGameLimits(canvas: HTMLCanvasElement, bordersUI: typeof UI.gameBorders): GameLimits {
+    return {
+        minY: 0,
+        minX: bordersUI.left.getBoundingClientRect().width,
+        maxX: canvas.width - bordersUI.right.getBoundingClientRect().width,
+        maxY: canvas.height,
+    }
+}
 
 function fillScreen() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    // Game.limits = calculateGameLimits(canvas, UI.gameBorders);
-    // socket.emit('screenResized', Game.limits);
+    GameClient.limits = calculateGameLimits(canvas, UI.gameBorders);
 }
 
 // Add event listener, if window is being moved, resize canva height et width

@@ -21,13 +21,6 @@ export default class GameClient {
     public static getCanvas(): HTMLCanvasElement { return this.canvas!; }
     public static getContext(): CanvasRenderingContext2D { return this.context!; }
 
-    public static getCanvasDimensions(): { width: number, height: number } {
-        return {
-            width: this.canvas!.width,
-            height: this.canvas!.height
-        };
-    }
-
     public static isWithinLimits(position: Vector2): boolean {
         return position.y > this.limits.minY &&
             position.y < this.limits.maxY &&

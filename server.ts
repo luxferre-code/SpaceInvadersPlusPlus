@@ -40,6 +40,17 @@ function updateLobby() {
     io.emit("update_lobby", getAvailableRooms());
 }
 
+function getRandomInt(min: number, max: number) {
+    return Math.floor(Math.random() * (max - min) + min);
+}
+
+function getRandomPositionWithinLimits(limits: GameLimits): {x: number, y: number} {
+    return {
+        x: getRandomInt(limits.minX + 1, limits.maxX - 50),
+        y: limits.maxY - 60,
+    };
+}
+
 io.on("connection", (socket) => {
     let username = "";
     console.log("connection", socket.id);
@@ -145,7 +156,7 @@ io.on("connection", (socket) => {
         updateLobby();
     });
 
-    socket.on("start_game", (room_id, ack: (gameData: GameData) => void) => {
+    socket.on("start_game", (room_id: string, limits: GameLimits, ack: (gameData: GameData) => void) => {
         const room = rooms.find(r => r.id === room_id);
         if (room) {
             const data: GameData = {
@@ -153,9 +164,9 @@ io.on("connection", (socket) => {
                 bullets: [],
                 players: room.players.map(p => ({
                     username: p.username,
-                    position: { x: Math.floor(Math.random() * 300) + 300, y: 600 },
+                    position: getRandomPositionWithinLimits(limits),
                     id: p.id,
-                    skin: 1,
+                    skin: 0, // TODO: fix getRandomPositionWithinLimits() so that it doesn't use hard-coded values
                     hp: 5,
                 })),
             };

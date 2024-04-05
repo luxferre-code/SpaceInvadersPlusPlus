@@ -15,12 +15,6 @@ export default class GameClient {
     }
     static getCanvas() { return this.canvas; }
     static getContext() { return this.context; }
-    static getCanvasDimensions() {
-        return {
-            width: this.canvas.width,
-            height: this.canvas.height
-        };
-    }
     static isWithinLimits(position) {
         return position.y > this.limits.minY &&
             position.y < this.limits.maxY &&
