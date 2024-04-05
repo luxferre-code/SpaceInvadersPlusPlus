@@ -1,6 +1,7 @@
 import { Skin, getSkinImage } from "./utils/Skins";
 import HitBox from "./models/HitBox";
 import Node2D from "./Node2D";
+import GameClient from "./GameClient";
 
 /**
  * Describes a 2D element to be displayed in a canvas.
@@ -12,10 +13,9 @@ export default abstract class Sprite2D extends Node2D {
     protected _skinImg: HTMLImageElement;
     protected _skin: Skin;
 
-    constructor(canvas: HTMLCanvasElement, skin: Skin) {
-        super(canvas);
+    constructor(skin: Skin) {
+        super();
         this._skin = skin;
-        console.log(this._skin);
         this._skinImg = getSkinImage(skin);
     }
 
@@ -23,10 +23,10 @@ export default abstract class Sprite2D extends Node2D {
      * Renders the sprite using the canvas API.
      */
     public render(): void {
-        this._context.beginPath();
-        this._context.drawImage(this._skinImg, this._position.x, this._position.y, this._skinImg.width, this._skinImg.height);
-        this._context.fill();
-        this._context.closePath();
+        GameClient.getContext().beginPath();
+        GameClient.getContext().drawImage(this._skinImg, this._position.x, this._position.y, this._skinImg.width, this._skinImg.height);
+        GameClient.getContext().fill();
+        GameClient.getContext().closePath();
     }
 
     /**

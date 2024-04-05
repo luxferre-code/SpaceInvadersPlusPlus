@@ -1,6 +1,5 @@
 import { Skin } from "./utils/Skins";
 import Bullet from "./Bullet";
-import Game from "./Game";
 import Sprite2D from "./Sprite2D";
 import Vector2 from "./Vector2";
 /**
@@ -14,8 +13,8 @@ export default class Enemy extends Sprite2D {
     _hp = 1;
     _scoreToGive = 10;
     _canShoot = true;
-    constructor(canvas, position, gravity = 2) {
-        super(canvas, Skin.GREEN);
+    constructor(position, gravity = 2) {
+        super(Skin.GREEN);
         this._position = position ?? Enemy.generateRandomSpawnPosition(this._skinImg.width, this._skinImg.height);
         this._gravity = gravity;
     }
@@ -36,7 +35,12 @@ export default class Enemy extends Sprite2D {
      * @returns The random position.
      */
     static generateRandomSpawnPosition(width, height) {
-        return new Vector2(Game.random.nextInt(Game.limits.minX + 1, Game.limits.maxX - width), -height - 10);
+        // return new Vector2(Game.random.nextInt(
+        //     Game.limits.minX + 1,
+        //     Game.limits.maxX - width
+        // ), -height - 10);
+        // TODO: remove hard coded value
+        return new Vector2(500, 300);
     }
     /**
      * Generates a new random position for the enemy.
@@ -55,18 +59,19 @@ export default class Enemy extends Sprite2D {
         }
         else {
             this._dead = true;
-            Game.getInstance()?.incrementScore(this._scoreToGive);
+            // Increment score
+            // Game.getInstance()?.incrementScore(this._scoreToGive);
             return true;
         }
     }
     shoot() {
-        const bullet = new Bullet(this._canvas, this._position);
+        const bullet = new Bullet(this._position);
         bullet.attachTo(this);
         this._canShoot = false;
         setTimeout(() => {
             this._canShoot = true;
         }, Enemy.TIMEOUT_SHOOT);
-        Game.getInstance().addBullet(bullet);
+        // Add bullet
     }
     /**
      * Moves the enemy down at every frame
@@ -75,9 +80,9 @@ export default class Enemy extends Sprite2D {
      */
     move() {
         this._position.y += this._gravity;
-        if (this._canShoot && Enemy._shootProbability > Game.random.next()) {
-            this.shoot();
-        }
+        // if (this._canShoot && Enemy._shootProbability > Game.random.next()) {
+        //     this.shoot();
+        // }
     }
     /**
      * This method renders the enemy on the canvas.

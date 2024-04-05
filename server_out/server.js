@@ -8,12 +8,24 @@ const io = new Server(httpServer, {
     }
 });
 const rooms = [];
+const games = new Map();
 function generateUniqueRoomId() {
     let room = "room-";
     for (let i = 0; i < 4; i++) {
         room += Math.floor(Math.random() * 10);
     }
     return room;
+}
+function removePlayerFromGameData(player_id, room_id) {
+    if (games.has(room_id)) {
+        const game = games.get(room_id);
+        if (game.players.length === 1) {
+            games.delete(room_id);
+        }
+        else {
+            game.players = game.players.filter(p => p.id !== player_id);
+        }
+    }
 }
 function getAvailableRooms() {
     return rooms.filter(r => !r.game_started);
@@ -121,9 +133,21 @@ io.on("connection", (socket) => {
     socket.on("start_game", (room_id, ack) => {
         const room = rooms.find(r => r.id === room_id);
         if (room) {
+            const data = {
+                enemies: [],
+                bullets: [],
+                players: room.players.map(p => ({
+                    username: p.username,
+                    position: { x: Math.floor(Math.random() * 300) + 300, y: 600 },
+                    id: p.id,
+                    skin: 1,
+                    hp: 5,
+                })),
+            };
             room.game_started = true;
-            socket.to(room_id).emit("host_started_game");
-            ack();
+            games.set(room_id, data);
+            socket.to(room_id).emit("host_started_game", data);
+            ack(data);
             updateLobby();
         }
     });
@@ -141,6 +165,7 @@ io.on("connection", (socket) => {
                 else {
                     room.players.filter(p => p.id !== socket.id);
                 }
+                removePlayerFromGameData(socket.id, room.id);
             }
         }
         for (let i = to_remove.length - 1; i >= 0; i--) {

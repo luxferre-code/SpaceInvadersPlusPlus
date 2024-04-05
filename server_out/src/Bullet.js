@@ -1,3 +1,4 @@
+import GameClient from "./GameClient";
 import HitBox from "./models/HitBox";
 import Node2D from "./Node2D";
 import Vector2 from "./Vector2";
@@ -10,8 +11,8 @@ export default class Bullet extends Node2D {
     _velocity;
     _owner = null;
     size = 10;
-    constructor(canvas, position = new Vector2(), velocity = new Vector2(!Bullet._isVertical ? Bullet._bulletSpeed : 0, Bullet._isVertical ? -Bullet._bulletSpeed : 0)) {
-        super(canvas);
+    constructor(position = new Vector2(), velocity = new Vector2(!Bullet._isVertical ? Bullet._bulletSpeed : 0, Bullet._isVertical ? -Bullet._bulletSpeed : 0)) {
+        super();
         this._position = position;
         this._velocity = velocity;
     }
@@ -59,15 +60,15 @@ export default class Bullet extends Node2D {
         }
     }
     render() {
-        this._context.fillStyle = "white";
-        this._context.beginPath();
+        GameClient.getContext().fillStyle = "white";
+        GameClient.getContext().beginPath();
         // How to place the bullet:
         // The current position at the top left corner (this._position.x)
         // + the width of the skin
         // - half the size of the bullet
-        this._context.rect(this._position.x + 25 - 4, this._position.y, 8, 8);
-        this._context.fill();
-        this._context.closePath();
+        GameClient.getContext().rect(this._position.x + 25 - 4, this._position.y, 8, 8);
+        GameClient.getContext().fill();
+        GameClient.getContext().closePath();
     }
     move() {
         this._position = this._position.add(this._velocity);

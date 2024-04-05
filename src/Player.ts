@@ -1,11 +1,11 @@
 import { MOVEMENT_CONTROLS, Controls } from "./utils/Controls";
 import { Skin } from "./utils/Skins";
 import Bullet from "./Bullet";
-import Game from "./Game";
 import Sprite2D from "./Sprite2D";
 import Vector2 from "./Vector2";
 import HitBox from "./models/HitBox";
 import GameSettings from "./models/GameSettings";
+import GameClient from "./GameClient";
 
 /**
  * This class represents the player entity in the game.
@@ -81,8 +81,8 @@ export default class Player extends Sprite2D implements IEntity {
      * Creates a new player and places it at the center of the screen
      * and a short distance away from the bottom.
      */
-    constructor(canvas: HTMLCanvasElement, skin = Skin.RED) {
-        super(canvas, skin);
+    constructor(skin = Skin.RED) {
+        super(skin);
         this.initializeMovementControls();
     }
 
@@ -93,9 +93,9 @@ export default class Player extends Sprite2D implements IEntity {
      */
     public placeAtStartingPosition() {
         if (this._skinImg) {
-            this._position = new Vector2(Game.limits.maxX / 2 - this._skinImg.width, Game.limits.maxY - this._skinImg.height * 2);
+            this._position = new Vector2(GameClient.limits.maxX / 2 - this._skinImg.width, GameClient.limits.maxY - this._skinImg.height * 2);
         } else {
-            this._position = new Vector2(Game.limits.maxX / 2, Game.limits.maxY - 100);
+            this._position = new Vector2(GameClient.limits.maxX / 2, GameClient.limits.maxY - 100);
         }
     }
 
@@ -113,9 +113,9 @@ export default class Player extends Sprite2D implements IEntity {
      */
     public render(): void {
         if (this._immune) {
-            this._context.filter = "brightness(100)";
+            GameClient.getContext().filter = "brightness(100)";
             super.render();
-            this._context.filter = "brightness(1)";
+            GameClient.getContext().filter = "brightness(1)";
         } else {
             super.render();
         }
@@ -134,7 +134,6 @@ export default class Player extends Sprite2D implements IEntity {
             this.controls[Controls.SHOOT] = value;
         } else if (MOVEMENT_CONTROLS.includes(key)) {
             this.controls[key] = value;
-            this.serverCallback(this.controls);
         }
     }
 
@@ -145,12 +144,6 @@ export default class Player extends Sprite2D implements IEntity {
     private initializeMovementControls(): void {
         window.addEventListener("keydown", e => this.handleKeyPressed(e, true));
         window.addEventListener("keyup", e => this.handleKeyPressed(e, false));
-    }
-
-    private serverCallback: (controls: typeof this.controls) => void = () => { };
-
-    public setCommunicationCallback(callback: (control: typeof this.controls) => void) {
-        this.serverCallback = callback;
     }
 
     /**
@@ -203,7 +196,7 @@ export default class Player extends Sprite2D implements IEntity {
      * @param nextX The next value of {@link mX}.
      */
     private isXOutOfBounds(nextX: number) {
-        return nextX <= Game.limits.minX || nextX + this.getSkin().width >= Game.limits.maxX;
+        return nextX <= GameClient.limits.minX || nextX + this.getSkin().width >= GameClient.limits.maxX;
     }
 
     /**
@@ -212,7 +205,7 @@ export default class Player extends Sprite2D implements IEntity {
      * @param nextY The next value of {@link mY}.
      */
     private isYOutOfBounds(nextY: number) {
-        return nextY <= Game.limits.minY || nextY + this.getSkin().height >= Game.limits.maxY;
+        return nextY <= GameClient.limits.minY || nextY + this.getSkin().height >= GameClient.limits.maxY;
     }
 
     /**
@@ -284,13 +277,12 @@ export default class Player extends Sprite2D implements IEntity {
      */
     public shoot(): void {
         if (!this._canShoot) return;
-        const bullet: Bullet = new Bullet(this._canvas, this._position.add(new Vector2(this._skinImg.width / 2, 0)));
+        const bullet: Bullet = new Bullet(this._position.add(new Vector2(this._skinImg.width / 2, 0)));
         bullet.attachTo(this);
         this._canShoot = false;
         setTimeout(() => {
             this._canShoot = true;
         }, this._shootDelay);
-        Game.getInstance().addBullet(bullet);
     }
 
     public isColliding(enemy: IEntity): boolean {

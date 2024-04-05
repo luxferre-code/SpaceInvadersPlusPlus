@@ -17,7 +17,7 @@ export default class LobbyPage {
     private static joined_room_id: string | undefined = undefined;
     private static game_started = false;
 
-    private static game_started_callback: (() => void) | undefined = undefined;
+    private static game_started_callback: ((gameData: GameData) => void) | undefined = undefined;
 
     private static isHostingGame(): boolean {
         return this.hosted_room_id != undefined;
@@ -35,7 +35,7 @@ export default class LobbyPage {
         return this.isClient() ? this.joined_room_id : this.hosted_room_id;
     }
 
-    public static setOnGameStarted(callback: () => void): void {
+    public static setOnGameStarted(callback: (gameData: GameData) => void): void {
         this.game_started_callback = callback;
     }
 
@@ -53,9 +53,9 @@ export default class LobbyPage {
                         this.noteForAwaitingPlayers.setAttribute("aria-hidden", "false");
                     });
                 } else {
-                    socket.emit("start_game", this.getRoomId(), () => {
+                    socket.emit("start_game", this.getRoomId(), (gameData: GameData) => {
                         this.game_started = true;
-                        this.game_started_callback?.();
+                        this.game_started_callback?.(gameData);
                     });
                 }
             });
@@ -92,11 +92,11 @@ export default class LobbyPage {
                 }
             });
 
-            socket.on("host_started_game", () => {
+            socket.on("host_started_game", (gameData: GameData) => {
                 // The host started the game, so the server
                 // sends the information to all listeners of his room.
                 if (this.isClient()) {
-                    this.game_started_callback?.();
+                    this.game_started_callback?.(gameData);
                 }
             });
 

@@ -1,11 +1,7 @@
 import Vector2 from "./Vector2";
 export default class Node2D {
-    _context;
-    _canvas;
     _position;
-    constructor(canvas) {
-        this._canvas = canvas;
-        this._context = canvas.getContext('2d');
+    constructor() {
         this._position = new Vector2();
     }
     /**
@@ -18,6 +14,4 @@ export default class Node2D {
      * Gets the node's current position.
      */
     getPosition() { return this._position; }
-    getCanvas() { return this._canvas; }
-    getContext() { return this._context; }
 }

@@ -1,6 +1,5 @@
 import { Skin } from "./utils/Skins";
 import Bullet from "./Bullet";
-import Game from "./Game";
 import Player from "./Player";
 import Sprite2D from "./Sprite2D";
 import Vector2 from "./Vector2";
@@ -19,8 +18,8 @@ export default class Enemy extends Sprite2D implements IEntity {
     private _scoreToGive: number = 10;
     private _canShoot: boolean = true;
 
-    constructor(canvas: HTMLCanvasElement, position?: Vector2, gravity = 2) {
-        super(canvas, Skin.GREEN);
+    constructor(position?: Vector2, gravity = 2) {
+        super(Skin.GREEN);
         this._position = position ?? Enemy.generateRandomSpawnPosition(this._skinImg.width, this._skinImg.height);
         this._gravity = gravity;
     }
@@ -43,10 +42,12 @@ export default class Enemy extends Sprite2D implements IEntity {
      * @returns The random position.
      */
     public static generateRandomSpawnPosition(width: number, height: number): Vector2 {
-        return new Vector2(Game.random.nextInt(
-            Game.limits.minX + 1,
-            Game.limits.maxX - width
-        ), -height - 10);
+        // return new Vector2(Game.random.nextInt(
+        //     Game.limits.minX + 1,
+        //     Game.limits.maxX - width
+        // ), -height - 10);
+        // TODO: remove hard coded value
+        return new Vector2(500, 300);
     }
 
     /**
@@ -66,21 +67,21 @@ export default class Enemy extends Sprite2D implements IEntity {
             return false;
         } else {
             this._dead = true;
-            Game.getInstance()?.incrementScore(this._scoreToGive);
+            // Increment score
+            // Game.getInstance()?.incrementScore(this._scoreToGive);
             return true;
         }
     }
 
     public shoot(): void {
-        const bullet = new Bullet(this._canvas, this._position);
+        const bullet = new Bullet(this._position);
         bullet.attachTo(this);
         this._canShoot = false;
         setTimeout(() => {
             this._canShoot = true;
         }, Enemy.TIMEOUT_SHOOT);
-        Game.getInstance().addBullet(bullet);
+        // Add bullet
     }
-
     
     /**
      * Moves the enemy down at every frame
@@ -89,9 +90,9 @@ export default class Enemy extends Sprite2D implements IEntity {
      */
     public move(): void {
         this._position.y += this._gravity;
-        if (this._canShoot && Enemy._shootProbability > Game.random.next()) {
-            this.shoot();
-        }
+        // if (this._canShoot && Enemy._shootProbability > Game.random.next()) {
+        //     this.shoot();
+        // }
     }
 
     /**
