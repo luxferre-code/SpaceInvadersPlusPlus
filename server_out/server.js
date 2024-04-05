@@ -15,8 +15,11 @@ function generateUniqueRoomId() {
     }
     return room;
 }
+function getAvailableRooms() {
+    return rooms.filter(r => !r.game_started);
+}
 function updateLobby() {
-    io.emit("update_lobby", rooms);
+    io.emit("update_lobby", getAvailableRooms());
 }
 io.on("connection", (socket) => {
     let username = "";
@@ -52,6 +55,7 @@ io.on("connection", (socket) => {
         socket.join(roomId);
         rooms.push({
             id: roomId,
+            game_started: false,
             players: [{
                     id: socket.id,
                     username,
@@ -114,8 +118,17 @@ io.on("connection", (socket) => {
         ack(); // must be called before "updateLobby"
         updateLobby();
     });
+    socket.on("start_game", (room_id, ack) => {
+        const room = rooms.find(r => r.id === room_id);
+        if (room) {
+            room.game_started = true;
+            socket.to(room_id).emit("host_started_game");
+            ack();
+            updateLobby();
+        }
+    });
     socket.on("request_lobby", (ack) => {
-        ack(rooms);
+        ack(getAvailableRooms());
     });
     socket.on("disconnect", () => {
         const to_remove = [];

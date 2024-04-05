@@ -62,6 +62,7 @@ declare global {
 
   type Room = {
       id: string;
+      game_started: boolean,
       players: {
         id: string;
         username: string;

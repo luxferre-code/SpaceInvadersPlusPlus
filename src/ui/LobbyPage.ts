@@ -15,6 +15,7 @@ export default class LobbyPage {
     private static socket: Socket | undefined = undefined;
     private static hosted_room_id: string | undefined = undefined;
     private static joined_room_id: string | undefined = undefined;
+    private static game_started = false;
 
     private static isHostingGame(): boolean {
         return this.hosted_room_id != undefined;
@@ -37,17 +38,19 @@ export default class LobbyPage {
             this.socket = socket;
 
             this.hostButton.addEventListener("click", () => {
-                socket.emit("host", (room_id: string) => {
-                    if (!this.isHostingGame()) {
+                if (!this.isHostingGame()) {
+                    socket.emit("host", (room_id: string) => {
                         this.hostButton.textContent = "Lancer la partie";
                         this.hosted_room_id = room_id;
                         this.containerPlayers.setAttribute("aria-hidden", "false");
                         this.lobbiesTable.setAttribute("aria-hidden", "true");
                         this.noteForAwaitingPlayers.setAttribute("aria-hidden", "false");
-                    } else {
-                        // Start the game
-                    }
-                });
+                    });
+                } else {
+                    socket.emit("start_game", this.getRoomId(), () => {
+                        this.game_started = true;
+                    });
+                }
             });
 
             this.quitRoomButton.addEventListener("click", () => {
@@ -61,18 +64,32 @@ export default class LobbyPage {
 
             socket.on("update_lobby", (rooms: Room[]) => {
                 if (this.isConnected()) {
-                    const room_id = this.getRoomId();
-                    const all_players = rooms.find(r => r.id === room_id)!.players;
-                    const other_players = all_players.filter(p => p.id !== socket.id);
-                    if (all_players.length > 0) {
-                        const manager = all_players[0];
-                        this.noteAwaitingForManager.setAttribute("aria-hidden", manager.id === socket.id ? "true" : "false");
-                        this.hostUsername.textContent = manager.username;
+                    if (this.game_started) {
+                        console.log("game is started, ignore lobby update");
+                    } else {
+                        const room_id = this.getRoomId();
+                        const all_players = rooms.find(r => r.id === room_id)?.players;
+                        if (all_players != undefined) {
+                            const other_players = all_players.filter(p => p.id !== socket.id);
+                            if (all_players.length > 0) {
+                                const manager = all_players[0];
+                                this.noteAwaitingForManager.setAttribute("aria-hidden", manager.id === socket.id ? "true" : "false");
+                                this.hostUsername.textContent = manager.username;
+                            }
+                            this.updateAwaitingPlayers(other_players.map(p => p.username));
+                        }
                     }
-                    this.updateAwaitingPlayers(other_players.map(p => p.username));
                 } else {
                     this.resetView();
                     this.updateRooms(rooms);
+                }
+            });
+
+            socket.on("host_started_game", () => {
+                // The host started the game, so the server
+                // sends the information to all listeners of his room.
+                if (this.isClient()) {
+                    console.log("the host started the game", this.getRoomId());
                 }
             });
 
