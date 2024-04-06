@@ -24,7 +24,6 @@ socket.on('disconnect', () => {
 socket.emit("username_changed", SettingsDB.name);
 
 const canvas = document.querySelector("canvas") as HTMLCanvasElement;
-// const context = canvas.getContext("2d")!;
 GameClient.initWith(canvas);
 
 // This callback gets called every single that
@@ -119,14 +118,13 @@ function fillScreen() {
     GameClient.limits = calculateGameLimits(canvas, UI.gameBorders);
 }
 
-// Add event listener, if window is being moved, resize canva height et width
 window.addEventListener("resize", () => fillScreen());
 window.addEventListener("load", () => fillScreen());
 
 function render() {
     if (globalGameData) {
         GameClient.getContext().clearRect(0, 0, canvas.width, canvas.height);
-        globalGameData.players.forEach(p => GameClient.renderPlayer(p.position.x, p.position.y, p.skin));
+        globalGameData.players.forEach(p => GameClient.renderPlayer(p.position.x, p.position.y, p.skin, p.username));
         globalGameData.bullets.forEach(b => GameClient.renderBullet(b.x, b.y));
     }
     requestAnimationFrame(render);
@@ -137,18 +135,8 @@ socket.on("game_update", (game: GameData) => {
 });
 
 setInterval(() => {
-    // if (playing) {
-    // game.updateMove();
-    // game.updateMonsterSpawn();
-    // if (game.gameOver()) {
-    //     playing = false;
-    //     game.reset();
-    // }
-    // }
-
     PlayerClient.move();
     socket.emit("player_moved", PlayerClient.getPosition());
-
 }, 1000 / 60);
 
 // The order in which those two

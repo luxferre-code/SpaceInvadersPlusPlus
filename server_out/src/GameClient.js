@@ -21,18 +21,20 @@ export default class GameClient {
             position.x > this.limits.minX &&
             position.x < this.limits.maxX;
     }
-    static renderPlayer(x, y, skin) {
+    static renderPlayer(x, y, skin, username) {
         const skinImg = getSkinImage(skin);
         this.context.beginPath();
         this.context.drawImage(skinImg, x, y, skinImg.width, skinImg.height);
+        this.context.fillStyle = "red";
+        this.context.rect(x, y + skinImg.height + 5, skinImg.width, 10);
         this.context.fill();
         this.context.closePath();
     }
     static renderBullet(x, y) {
-        GameClient.getContext().fillStyle = "white";
-        GameClient.getContext().beginPath();
-        GameClient.getContext().rect(x, y, 8, 8);
-        GameClient.getContext().fill();
-        GameClient.getContext().closePath();
+        this.context.fillStyle = "white";
+        this.context.beginPath();
+        this.context.rect(x, y, 8, 8);
+        this.context.fill();
+        this.context.closePath();
     }
 }

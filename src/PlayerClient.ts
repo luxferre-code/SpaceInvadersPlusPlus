@@ -76,7 +76,7 @@ export default class PlayerClient {
     /**
      * Defines the player's metadata such as its skin, username, initial position, etc.
      */
-    public static setPlayerData(player_data: PlayerData) {
+    public static setPlayerData(player_data: Readonly<PlayerData>) {
         this.player_position = player_data.position;
         this.player_skin_img = getSkinImage(player_data.skin);
     }

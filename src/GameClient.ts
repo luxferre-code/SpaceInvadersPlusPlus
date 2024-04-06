@@ -15,7 +15,6 @@ export default class GameClient {
     public static initWith(canvas: HTMLCanvasElement) {
         this.canvas = canvas;
         this.context = canvas.getContext('2d')!;
-        console.log("context initialized", this.context);
     }
 
     public static getCanvas(): HTMLCanvasElement { return this.canvas!; }
@@ -28,19 +27,25 @@ export default class GameClient {
             position.x < this.limits.maxX;
     }
 
-    public static renderPlayer(x: number, y: number, skin: Skin) {
+    public static renderPlayer(x: number, y: number, skin: Skin, username: string) {
         const skinImg = getSkinImage(skin);
         this.context!.beginPath();
         this.context!.drawImage(skinImg, x, y, skinImg.width, skinImg.height);
+        this.context!.globalAlpha = 0.2;
+        this.context!.fillStyle = "white";
+        this.context!.font = "15px SpaceInvadersFont";
+        this.context!.textAlign = "center";
+        this.context!.fillText(username, x + skinImg.width / 2, y + skinImg.height + 15); // 15 = font size
+        this.context!.globalAlpha = 1;
         this.context!.fill();
         this.context!.closePath();
     }
 
     public static renderBullet(x: number, y: number) {
-        GameClient.getContext().fillStyle = "white";
-        GameClient.getContext().beginPath();
-        GameClient.getContext().rect(x, y, 8, 8);
-        GameClient.getContext().fill();
-        GameClient.getContext().closePath();
+        this.context!.fillStyle = "white";
+        this.context!.beginPath();
+        this.context!.rect(x, y, 8, 8);
+        this.context!.fill();
+        this.context!.closePath();
     }
 }
