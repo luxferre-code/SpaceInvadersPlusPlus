@@ -175,34 +175,6 @@ main button {
 
 /*
 *
-* Health points
-*
-*/
-
-#container-hearts {
-    z-index: 10;
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    opacity: 1;
-    transition: opacity 200ms ease;
-
-    &[aria-hidden="true"] {
-        opacity: 0;
-    }
-
-    img {
-        width: 30px;
-        height: 30px;
-        object-fit: cover;
-        user-select: none;
-        pointer-events: none;
-        margin-right: 10px;
-    }
-}
-
-/*
-*
 * Death screen
 *
 */

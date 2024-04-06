@@ -23,7 +23,6 @@ export default class {
 
   /**
    * The number of HP that the player has.
-   * One HP is one heart.
    * One damage an integer and the HP get
    * reduced by a certain amount of damage.
    */

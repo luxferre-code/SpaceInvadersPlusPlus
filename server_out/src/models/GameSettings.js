@@ -18,7 +18,6 @@ export default class default_1 {
     static difficultyLevel = 1 /* Difficulty.EASY */;
     /**
      * The number of HP that the player has.
-     * One HP is one heart.
      * One damage an integer and the HP get
      * reduced by a certain amount of damage.
      */

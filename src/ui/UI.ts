@@ -100,12 +100,6 @@ export default class {
     public static readonly scoreElement = this.containerScore.querySelector("#score") as HTMLElement;
 
     /**
-     * The container that contains the heart images,
-     * which represent the health points of the player.
-     */
-    public static readonly containerHearts = document.querySelector("#container-hearts") as HTMLElement;
-
-    /**
      * The death screen. Show it when the player is dead,
      * and hide it when a game is restarted.
      */
@@ -253,7 +247,6 @@ export default class {
         this.hideElement(this.containerScore);
         this.hideElement(this.gameBorders.left);
         this.hideElement(this.gameBorders.right);
-        this.hideElement(this.containerHearts);
         // Focus the main button (Play now)
         this.mainButtons.playNow.focus();
     }
@@ -276,7 +269,6 @@ export default class {
         this.showElement(this.gameBorders.left);
         this.showElement(this.gameBorders.right);
         this.showElement(this.containerScore);
-        this.showElement(this.containerHearts);
         this.closeModal();
         const focusedElement = this.getFocusedElement();
         if (focusedElement) {
@@ -298,26 +290,6 @@ export default class {
      */
     public static setScore(score: number) {
         this.scoreElement.textContent = score.toString();
-    }
-
-    /**
-     * Creates a heart to be added to the UI, more precisely
-     * in the container made for this (see {@link containerHearts}).
-     */
-    public static createHeart() {
-        const img = document.createElement("img");
-        img.src = "/assets/icons/heart-icon.png";
-        this.containerHearts.appendChild(img);
-    }
-
-    /**
-     * Removes a heart from the UI, meaning the player
-     * has just lost an HP.
-     */
-    public static removeHeart() {
-        if (this.containerHearts.lastElementChild) {
-            this.containerHearts.removeChild(this.containerHearts.lastElementChild);
-        }
     }
     
     public static showDeathScreen() {
