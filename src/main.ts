@@ -17,6 +17,8 @@ socket.on('connect', () => {
 });
 
 socket.on('disconnect', () => {
+    globalGameData = undefined;
+    LobbyPage.disconnect();
     console.log('Disconnected from server');
 });
 
@@ -25,22 +27,6 @@ socket.emit("username_changed", SettingsDB.name);
 
 const canvas = document.querySelector("canvas") as HTMLCanvasElement;
 GameClient.initWith(canvas);
-
-// This callback gets called every single that
-// that the player loses a health point.
-// There is a parameter that can be used to
-// customise the game's behaviour when the player
-// dies.
-// player.onPlayerHit((hp: number) => {
-//     UI.removeHeart();
-//     if (hp == 0) {
-//         UI.showDeathScreen();
-//         setTimeout(() => {
-//             UI.hideDeathScreen();
-//             UI.showUI();
-//         }, 2000);
-//     }
-// });
 
 let loadingAssets = true;
 let globalGameData: GameData | undefined = undefined;

@@ -32,6 +32,14 @@ export default class LobbyPage {
         return this.isClient() || this.isHostingGame();
     }
 
+    public static disconnect() {
+        this.game_started = false;
+        this.joined_room_id = undefined;
+        this.hosted_room_id = undefined;
+        this.socket = undefined;
+        this.resetView();
+    }
+
     public static getRoomId(): string | undefined {
         return this.isClient() ? this.joined_room_id : this.hosted_room_id;
     }
