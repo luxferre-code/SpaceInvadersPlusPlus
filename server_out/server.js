@@ -68,6 +68,12 @@ io.on("connection", (socket) => {
     let physics_interval = undefined;
     let process_interval = undefined;
     console.log("connection", socket.id);
+    function clearGameIntervals() {
+        if (physics_interval)
+            clearInterval(physics_interval);
+        if (process_interval)
+            clearInterval(process_interval);
+    }
     function leaveRoom(room_id) {
         for (let i = 0; i < rooms.length; i++) {
             const room = rooms[i];
@@ -293,6 +299,9 @@ io.on("connection", (socket) => {
             updateLobby();
         }
     });
+    socket.on("game_ended", () => {
+        clearGameIntervals();
+    });
     socket.on("player_moved", (player_position) => {
         const game = games.get(getRoom() ?? "");
         if (game) {
@@ -347,10 +356,7 @@ io.on("connection", (socket) => {
             rooms.splice(i, 1);
         }
         updateLobby();
-        if (physics_interval)
-            clearInterval(physics_interval);
-        if (process_interval)
-            clearInterval(process_interval);
+        clearGameIntervals();
     });
 });
 httpServer.listen(port, () => {

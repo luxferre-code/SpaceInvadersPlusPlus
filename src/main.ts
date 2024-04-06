@@ -97,12 +97,6 @@ async function preloadAssets() {
     loadingAssets = false;
 }
 
-// function initializeHealthPoints(hp: number) {
-//     for (let i = 0; i < hp; i++) {
-//         UI.createHeart();
-//     }
-// }
-
 function calculateGameLimits(canvas: HTMLCanvasElement, bordersUI: typeof UI.gameBorders): GameLimits {
     return {
         minY: 0,
@@ -127,7 +121,7 @@ window.addEventListener("load", () => fillScreen());
 function render() {
     if (globalGameData) {
         GameClient.getContext().clearRect(0, 0, canvas.width, canvas.height);
-        globalGameData.players.forEach(p => GameClient.renderPlayer(p));
+        globalGameData.players.forEach(p => { if (p.hp > 0) GameClient.renderPlayer(p) });
         globalGameData.bullets.forEach(b => GameClient.renderBullet(b.x, b.y));
         globalGameData.enemies.forEach(e => GameClient.renderEnemy(e.x, e.y));
     }
@@ -139,6 +133,13 @@ socket.on("game_update", (game: GameData) => {
         UI.setScore(game.score);
     }
     globalGameData = game;
+    if (globalGameData.players.every(p => p.hp <= 0)) {
+        UI.showDeathScreen();
+        setTimeout(() => {
+            UI.hideDeathScreen();
+        }, 2000);
+        socket.emit("game_ended");
+    }
 });
 
 setInterval(() => {
