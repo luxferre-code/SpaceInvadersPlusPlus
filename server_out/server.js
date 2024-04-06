@@ -229,6 +229,8 @@ io.on("connection", (socket) => {
                             game.bullets.splice(i, 1);
                         }
                     }
+                    const enemy_hit_boxes = [];
+                    const player_hurt_boxes = [];
                     const used_bullets = [];
                     const killed_enemies = [];
                     for (let b = 0; b < game.bullets.length; b++) {
@@ -238,6 +240,7 @@ io.on("connection", (socket) => {
                             for (let i = 0; i < game.enemies.length; i++) {
                                 const enemy = game.enemies[i];
                                 const hurt_box = new Box(enemy.x, enemy.y, 50, 50);
+                                enemy_hit_boxes.push(hurt_box);
                                 if (hit_box.isColliding(hurt_box)) {
                                     killed_enemies.push(i);
                                     used_bullets.push(b);
@@ -248,8 +251,9 @@ io.on("connection", (socket) => {
                         }
                         else {
                             for (const player of game.players) {
+                                const hurt_box = new Box(player.position.x, player.position.y, 50, 50);
+                                player_hurt_boxes.push(hurt_box);
                                 if (player.hp > 0) {
-                                    const hurt_box = new Box(player.position.x, player.position.y, 50, 50);
                                     if (hit_box.isColliding(hurt_box)) {
                                         if (!player.immune) {
                                             player.hp -= 1;
@@ -261,6 +265,23 @@ io.on("connection", (socket) => {
                                         used_bullets.push(b);
                                         break;
                                     }
+                                }
+                            }
+                        }
+                    }
+                    for (let i = 0; i < game.enemies.length; i++) {
+                        const enemy = game.enemies[i];
+                        const hit_box = i >= enemy_hit_boxes.length ? new Box(enemy.x, enemy.y, 50, 50) : enemy_hit_boxes[i];
+                        for (let i = 0; i < game.players.length; i++) {
+                            const player = game.players[i];
+                            if (player.hp > 0 && !player.immune) {
+                                const hurt_box = i >= player_hurt_boxes.length ? new Box(player.position.x, player.position.y, 50, 50) : player_hurt_boxes[i];
+                                if (hit_box.isColliding(hurt_box)) {
+                                    player.hp -= 1;
+                                    player.immune = true;
+                                    setTimeout(() => {
+                                        player.immune = false;
+                                    }, 500);
                                 }
                             }
                         }
@@ -292,11 +313,11 @@ io.on("connection", (socket) => {
                     }
                     for (const enemy of game.enemies) {
                         if (0.04 > Math.random()) {
-                            game.bullets.push({
-                                shotByPlayer: false,
-                                x: enemy.x + 25 - 8,
-                                y: enemy.y + 50,
-                            });
+                            // game.bullets.push({
+                            //     shotByPlayer: false,
+                            //     x: enemy.x + 25 - 8,
+                            //     y: enemy.y + 50,
+                            // });
                         }
                     }
                 }
