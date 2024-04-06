@@ -9,6 +9,8 @@ const io = new Server(httpServer, {
 });
 const rooms = [];
 const games = new Map();
+const BULLET_VELOCITY = 10;
+const BULLET_WIDTH = 8;
 function generateUniqueRoomId() {
     let room = "room-";
     for (let i = 0; i < 4; i++) {
@@ -166,7 +168,7 @@ io.on("connection", (socket) => {
                     // Update position of enemies and bullets.
                     // Check for collisions and update the game accordingly.
                     for (const bullet of game.bullets) {
-                        bullet.y += bullet.shotByPlayer ? -10 : 10;
+                        bullet.y += bullet.shotByPlayer ? -BULLET_VELOCITY : BULLET_VELOCITY;
                     }
                     io.to(room_id).emit("game_update", game);
                 }
@@ -185,7 +187,7 @@ io.on("connection", (socket) => {
             if (shooter) {
                 game.bullets.push({
                     shotByPlayer: true,
-                    x: shooter.position.x + 25 - 8,
+                    x: shooter.position.x + 25 - BULLET_WIDTH,
                     y: shooter.position.y,
                 });
             }
