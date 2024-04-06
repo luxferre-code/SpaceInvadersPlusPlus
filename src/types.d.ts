@@ -87,6 +87,7 @@ declare global {
         position: Vec2;
         skin: Skin;
         hp: number;
+        immune: boolean;
     };
 
     type GameData = {

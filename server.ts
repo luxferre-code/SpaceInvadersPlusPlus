@@ -222,6 +222,7 @@ io.on("connection", (socket) => {
                 players: room.players.map(p => ({
                     username: p.username,
                     position: getRandomPlayerSpawnPosition(room.computed_screen_limits),
+                    immune: false,
                     id: p.id,
                     skin: 0, // TODO: fix getRandomPlayerSpawnPosition() so that it doesn't use hard-coded values
                     hp: 5,
@@ -269,7 +270,13 @@ io.on("connection", (socket) => {
                                 if (player.hp > 0) {
                                     const hurt_box = new Box(player.position.x, player.position.y, 50, 50);
                                     if (hit_box.isColliding(hurt_box)) {
-                                        player.hp -= 1;
+                                        if (!player.immune) {
+                                            player.hp -= 1;
+                                            player.immune = true;
+                                            setTimeout(() => {
+                                                player.immune = false;
+                                            }, 500);
+                                        }
                                         used_bullets.push(b);
                                         break;
                                     }
