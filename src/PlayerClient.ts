@@ -1,5 +1,6 @@
 import type { Socket } from "socket.io-client";
 import { Controls, MOVEMENT_CONTROLS } from "./utils/Controls";
+import { getSkinImage } from "./utils/Skins";
 import GameClient from "./GameClient";
 
 export default class PlayerClient {
@@ -68,10 +69,16 @@ export default class PlayerClient {
     private static player_position = { x: 0, y: 0 };
 
     /**
-     * Sets the player's current position.
+     * The HTML element of the player's skin.
      */
-    public static setPosition(pos: { x: number, y: number }) {
-        this.player_position = pos;
+    private static player_skin_img: HTMLImageElement | null = null;
+
+    /**
+     * Defines the player's metadata such as its skin, username, initial position, etc.
+     */
+    public static setPlayerData(player_data: PlayerData) {
+        this.player_position = player_data.position;
+        this.player_skin_img = getSkinImage(player_data.skin);
     }
 
     /**
@@ -79,6 +86,20 @@ export default class PlayerClient {
      */
     public static getPosition(): { x: number, y: number } {
         return this.player_position;
+    }
+
+    /**
+     * Gets the player's skin width, or 0 if it's not defined;
+     */
+    private static getSkinWidth(): number {
+        return this.player_skin_img?.width ?? 0;
+    }
+
+    /**
+     * Gets the player's skin height, or 0 if it's not defined;
+     */
+    private static getSkinHeight(): number {
+        return this.player_skin_img?.height ?? 0;
     }
 
     /**
@@ -123,7 +144,7 @@ export default class PlayerClient {
      * @param nextX The next value of {@link mX}.
      */
     private static isXOutOfBounds(nextX: number) {
-        return nextX <= GameClient.limits.minX || nextX + 50 >= GameClient.limits.maxX;
+        return nextX <= GameClient.limits.minX || nextX + this.getSkinWidth() >= GameClient.limits.maxX;
     }
 
     /**
@@ -132,7 +153,7 @@ export default class PlayerClient {
      * @param nextY The next value of {@link mY}.
      */
     private static isYOutOfBounds(nextY: number) {
-        return nextY <= GameClient.limits.minY || nextY + 50 >= GameClient.limits.maxY;
+        return nextY <= GameClient.limits.minY || nextY + this.getSkinHeight() >= GameClient.limits.maxY;
     }
 
     /**

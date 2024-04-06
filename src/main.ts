@@ -5,10 +5,10 @@ import SettingsDB from "./server/GlobalSettingsDB";
 import SettingsPage from "./ui/SettingsPage";
 import RankingPage from "./ui/RankingPage";
 import RankingDB from "./server/RankingDB";
+import PlayerClient from './PlayerClient';
 import LobbyPage from "./ui/LobbyPage";
 import GameClient from './GameClient';
 import UI from "./ui/UI";
-import PlayerClient from './PlayerClient';
 
 const socket = io(`${window.location.hostname}:3000`);
 
@@ -50,7 +50,7 @@ PlayerClient.initConnection(socket);
 LobbyPage.bindEvents(socket);
 LobbyPage.setOnGameStarted((gameData: GameData) => {
     globalGameData = gameData;
-    PlayerClient.setPosition(gameData.players.find(p => p.id === socket.id)!.position);
+    PlayerClient.setPlayerData(gameData.players.find(p => p.id === socket.id)!);
     UI.hideUI();
 });
 
@@ -92,12 +92,7 @@ GameSettingsPage.onGameStarted(() => {
 async function preloadAssets() {
     try {
         await preloadSkins();
-        // Initializes the player with its skin.
-        // It's important to do it here because as of now
-        // the player doesn't have a loaded skin.
-        // player.setSkin(SettingsDB.skin);
     } catch (e) {
-        console.error(e);
         alert("Quelques skins n'ont pas pu être chargés correctement.");
     }
     loadingAssets = false;

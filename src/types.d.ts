@@ -65,7 +65,7 @@ declare global {
         players: {
             id: string;
             username: string;
-        }[]; // the room's creator is the first player
+        }[]; // the room's manager is the first player
     };
 
     type ServerBullet = {
@@ -74,16 +74,18 @@ declare global {
         y: number;
     };
 
+    type PlayerData = {
+        id: string;
+        username: string;
+        position: { x: number, y: number };
+        skin: Skin;
+        hp: number;
+    };
+
     type GameData = {
         enemies: { x: number, y: number }[];
         bullets: ServerBullet[];
-        players: {
-            id: string;
-            username: string;
-            position: { x: number, y: number };
-            skin: Skin;
-            hp: number;
-        }[];
+        players: PlayerData[];
     }
 }
 
