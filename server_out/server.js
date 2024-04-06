@@ -44,6 +44,7 @@ function getRandomPositionWithinLimits(limits) {
 }
 io.on("connection", (socket) => {
     let username = "";
+    let interval = undefined;
     console.log("connection", socket.id);
     function leaveRoom(room_id) {
         for (let i = 0; i < rooms.length; i++) {
@@ -84,7 +85,7 @@ io.on("connection", (socket) => {
         });
         return roomId;
     }
-    function hasRoom() {
+    function getRoom() {
         for (const room of rooms) {
             if (room.players.map(p => p.id).includes(socket.id)) {
                 return room.id;
@@ -97,7 +98,7 @@ io.on("connection", (socket) => {
         // If he is in another room, then leave it.
         // Also make sure that if the room he's already in is the
         // given one (`room_id`) then don't leave it and return a failure.
-        let current_room = hasRoom();
+        let current_room = getRoom();
         if (current_room != null) {
             if (current_room == room_id) {
                 return false;
@@ -156,8 +157,38 @@ io.on("connection", (socket) => {
             room.game_started = true;
             games.set(room_id, data);
             socket.to(room_id).emit("host_started_game", data);
+            interval = setInterval(() => {
+                // "io.to" instead of "socket.to"
+                // because "socket.to" doesn't send
+                // to "socket".
+                const game = games.get(room_id);
+                if (game) {
+                    // Update position of enemies and bullets.
+                    // Check for collisions and update the game accordingly.
+                    for (const bullet of game.bullets) {
+                        bullet.y += bullet.shotByPlayer ? -10 : 10;
+                    }
+                    io.to(room_id).emit("game_update", game);
+                }
+                else {
+                    clearInterval(interval);
+                }
+            }, 1000 / 60);
             ack(data);
             updateLobby();
+        }
+    });
+    socket.on("game_player_shooting", () => {
+        const game = games.get(getRoom() ?? "");
+        if (game) {
+            const shooter = game.players.find(p => p.id === socket.id);
+            if (shooter) {
+                game.bullets.push({
+                    shotByPlayer: true,
+                    x: shooter.position.x + 25 - 8,
+                    y: shooter.position.y,
+                });
+            }
         }
     });
     socket.on("request_lobby", (ack) => {
@@ -181,6 +212,9 @@ io.on("connection", (socket) => {
             rooms.splice(i, 1);
         }
         updateLobby();
+        if (interval) {
+            clearInterval(interval);
+        }
     });
 });
 httpServer.listen(port, () => {

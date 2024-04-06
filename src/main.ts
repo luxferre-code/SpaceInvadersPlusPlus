@@ -154,7 +154,7 @@ function handleMovementControls() {
 
 function shoot() {
     if (can_shoot) {
-        console.log("shooting");
+        socket.emit("game_player_shooting");
         can_shoot = false;
         setTimeout(() => {
             can_shoot = true;
@@ -168,9 +168,17 @@ function render() {
         for (const player of globalGameData.players) {
             GameClient.renderPlayer(player.position.x, player.position.y, player.skin);
         }
+        for (const bullet of globalGameData.bullets) {
+            GameClient.renderBullet(bullet.x, bullet.y);
+        }
     }
     requestAnimationFrame(render);
 }
+
+socket.on("game_update", (game: GameData) => {
+    globalGameData = game;
+    // console.log("game update", game);
+});
 
 setInterval(() => {
     // if (playing) {

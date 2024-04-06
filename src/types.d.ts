@@ -68,9 +68,15 @@ declare global {
         }[]; // the room's creator is the first player
     };
 
+    type ServerBullet = {
+        shotByPlayer: boolean;
+        x: number;
+        y: number;
+    };
+
     type GameData = {
-        enemies: Vector2[];
-        bullets: Vector2[];
+        enemies: { x: number, y: number }[];
+        bullets: ServerBullet[];
         players: {
             id: string;
             username: string;

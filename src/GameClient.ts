@@ -35,4 +35,12 @@ export default class GameClient {
         this.context!.fill();
         this.context!.closePath();
     }
+
+    public static renderBullet(x: number, y: number) {
+        GameClient.getContext().fillStyle = "white";
+        GameClient.getContext().beginPath();
+        GameClient.getContext().rect(x, y, 8, 8);
+        GameClient.getContext().fill();
+        GameClient.getContext().closePath();
+    }
 }
