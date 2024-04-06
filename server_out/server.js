@@ -39,7 +39,7 @@ function updateLobby() {
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min) + min);
 }
-function getRandomPositionWithinLimits(limits) {
+function getRandomPlayerSpawnPosition(limits) {
     return {
         x: getRandomInt(limits.minX + 1, limits.maxX - 50),
         y: limits.maxY - 60,
@@ -65,12 +65,13 @@ io.on("connection", (socket) => {
                     // so just remove him from the list of players.
                     let playerIdx = room.players.findIndex(p => p.id === socket.id);
                     room.players.splice(playerIdx, 1);
+                    recomputeGameLimits(room);
                 }
                 return;
             }
         }
     }
-    function createRoom() {
+    function createRoom(initialLimits) {
         // Leave the other rooms where the already player was.
         if (socket.rooms.size > 1) {
             for (const room_id of socket.rooms) {
@@ -83,9 +84,11 @@ io.on("connection", (socket) => {
             id: roomId,
             game_started: false,
             players: [{
-                    id: socket.id,
                     username,
+                    id: socket.id,
+                    game_limits: initialLimits,
                 }],
+            computed_screen_limits: structuredClone(initialLimits),
         });
         return roomId;
     }
@@ -97,7 +100,7 @@ io.on("connection", (socket) => {
         }
         return null;
     }
-    function joinExistingRoom(room_id) {
+    function joinExistingRoom(room_id, game_limits) {
         // Basically checking if the user is already in another room.
         // If he is in another room, then leave it.
         // Also make sure that if the room he's already in is the
@@ -112,14 +115,36 @@ io.on("connection", (socket) => {
         for (const room of rooms) {
             if (room.id === room_id) {
                 room.players.push({
-                    id: socket.id,
                     username,
+                    id: socket.id,
+                    game_limits,
                 });
+                recomputeGameLimits(room);
                 socket.join(room_id);
                 return true;
             }
         }
         return false;
+    }
+    /**
+     * Save the maximums X and Y and minimum X of the game limits.
+     */
+    function recomputeGameLimits(room) {
+        let minX = room.players[0].game_limits.minX;
+        let maxX = room.players[0].game_limits.maxX;
+        let maxY = room.players[0].game_limits.maxY;
+        for (let i = 1; i < room.players.length; i++) {
+            const player = room.players[i];
+            if (player.game_limits.minX < minX)
+                minX = player.game_limits.minX;
+            if (player.game_limits.maxX > maxX)
+                maxX = player.game_limits.maxX;
+            if (player.game_limits.maxY > maxY)
+                maxY = player.game_limits.maxY;
+        }
+        room.computed_screen_limits.minX = minX;
+        room.computed_screen_limits.maxX = maxX;
+        room.computed_screen_limits.maxY = maxY;
     }
     socket.on("username_changed", (name) => {
         username = name;
@@ -131,12 +156,13 @@ io.on("connection", (socket) => {
         }
         updateLobby(); // necessary in the lobby when we're waiting for players to arrive
     });
-    socket.on("host", (ack) => {
-        ack(createRoom()); // will be called on the client
+    socket.on("host", (initial_game_limits, ack) => {
+        ack(createRoom(initial_game_limits)); // will be called on the client
         updateLobby();
     });
-    socket.on("join_room", (room_id, ack) => {
-        ack(joinExistingRoom(room_id));
+    socket.on("join_room", (room_id, limits, ack) => {
+        const success = joinExistingRoom(room_id, limits);
+        ack(success);
         updateLobby();
     });
     socket.on("quit_room", (room_id, ack) => {
@@ -144,7 +170,7 @@ io.on("connection", (socket) => {
         ack(); // must be called before "updateLobby"
         updateLobby();
     });
-    socket.on("start_game", (room_id, limits, ack) => {
+    socket.on("start_game", (room_id, ack) => {
         const room = rooms.find(r => r.id === room_id);
         if (room) {
             const data = {
@@ -152,9 +178,9 @@ io.on("connection", (socket) => {
                 bullets: [],
                 players: room.players.map(p => ({
                     username: p.username,
-                    position: getRandomPositionWithinLimits(limits),
+                    position: getRandomPlayerSpawnPosition(room.computed_screen_limits),
                     id: p.id,
-                    skin: 0, // TODO: fix getRandomPositionWithinLimits() so that it doesn't use hard-coded values
+                    skin: 0, // TODO: fix getRandomPlayerSpawnPosition() so that it doesn't use hard-coded values
                     hp: 5,
                 })),
             };
@@ -170,7 +196,7 @@ io.on("connection", (socket) => {
                     game.bullets.forEach(b => b.y += b.shotByPlayer ? -BULLET_VELOCITY : BULLET_VELOCITY);
                     game.enemies.forEach(e => e.y += ENEMY_VELOCITY);
                     for (let i = game.enemies.length - 1; i >= 0; i--) {
-                        if (game.enemies[i].y >= 1000) {
+                        if (game.enemies[i].y >= room.computed_screen_limits.maxY) {
                             game.enemies.splice(i, 1);
                         }
                     }
@@ -189,11 +215,12 @@ io.on("connection", (socket) => {
                 const game = games.get(room_id);
                 if (game) {
                     // Creates new enemies
-                    if (game.enemies.length < 5 && 0.05 > Math.random()) {
-                        game.enemies.push({
-                            x: getRandomInt(300, 800),
-                            y: -50,
-                        });
+                    if (game.enemies.length < 5 && 0.5 > Math.random()) {
+                        const pos = {
+                            x: getRandomInt(room.computed_screen_limits.minX, room.computed_screen_limits.maxX - 50), // -50 = width of the skin
+                            y: -50, // -50 is the height of the skin
+                        };
+                        game.enemies.push(pos);
                     }
                 }
                 else {
@@ -226,6 +253,16 @@ io.on("connection", (socket) => {
             }
         }
     });
+    socket.on("screen_resized", (room_id, limits) => {
+        const room = rooms.find(r => r.id === room_id);
+        if (room) {
+            const player = room.players.find(p => p.id === socket.id);
+            if (player) {
+                player.game_limits = limits;
+                recomputeGameLimits(room);
+            }
+        }
+    });
     socket.on("request_lobby", (ack) => {
         ack(getAvailableRooms());
     });
@@ -239,6 +276,7 @@ io.on("connection", (socket) => {
                 }
                 else {
                     room.players.filter(p => p.id !== socket.id);
+                    recomputeGameLimits(room);
                 }
                 removePlayerFromGameData(socket.id, room.id);
             }

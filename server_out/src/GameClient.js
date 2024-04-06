@@ -1,4 +1,4 @@
-import { getSkinImage } from "./utils/Skins";
+import { Skin, getSkinImage } from "./utils/Skins";
 export default class GameClient {
     static canvas = undefined;
     static context = undefined;
@@ -11,7 +11,6 @@ export default class GameClient {
     static initWith(canvas) {
         this.canvas = canvas;
         this.context = canvas.getContext('2d');
-        console.log("context initialized", this.context);
     }
     static getCanvas() { return this.canvas; }
     static getContext() { return this.context; }
@@ -25,8 +24,12 @@ export default class GameClient {
         const skinImg = getSkinImage(skin);
         this.context.beginPath();
         this.context.drawImage(skinImg, x, y, skinImg.width, skinImg.height);
-        this.context.fillStyle = "red";
-        this.context.rect(x, y + skinImg.height + 5, skinImg.width, 10);
+        this.context.globalAlpha = 0.2;
+        this.context.fillStyle = "white";
+        this.context.font = "15px SpaceInvadersFont";
+        this.context.textAlign = "center";
+        this.context.fillText(username, x + skinImg.width / 2, y + skinImg.height + 15); // 15 = font size
+        this.context.globalAlpha = 1;
         this.context.fill();
         this.context.closePath();
     }
@@ -34,6 +37,13 @@ export default class GameClient {
         this.context.fillStyle = "white";
         this.context.beginPath();
         this.context.rect(x, y, 8, 8);
+        this.context.fill();
+        this.context.closePath();
+    }
+    static renderEnemy(x, y) {
+        const skinImg = getSkinImage(Skin.GREEN);
+        this.context.beginPath();
+        this.context.drawImage(skinImg, x, y, skinImg.width, skinImg.height);
         this.context.fill();
         this.context.closePath();
     }

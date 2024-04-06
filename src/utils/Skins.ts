@@ -9,10 +9,10 @@
  * into local storage.
  */
 export enum Skin {
-  RED,
-  GREEN,
-  PURPLE,
-  // Do not change the order in which the skins are declared.
+    RED,
+    GREEN,
+    PURPLE,
+    // Do not change the order in which the skins are declared.
 }
 
 /**
@@ -38,34 +38,34 @@ export const SkinMaximum: number = Object.values(Skin).at(-1) as number;
  * @returns The URL that matches the given skin ID.
  */
 export function getSkinURL(skin: number): string {
-  switch (skin) {
-    case Skin.GREEN: return "/assets/skins/skin-green.png";
-    case Skin.PURPLE: return "/assets/skins/skin-purple.png";
-    default:
-      return "/assets/skins/skin-red.png";
-  }
+    switch (skin) {
+        case Skin.GREEN: return "/assets/skins/skin-green.png";
+        case Skin.PURPLE: return "/assets/skins/skin-purple.png";
+        default:
+            return "/assets/skins/skin-red.png";
+    }
 }
 
 /**
  * Gets the pre-loaded Image element for a given skin.
  */
 export function getSkinImage(skin: Skin): HTMLImageElement {
-  return SkinImages[skin];
+    return SkinImages[skin];
 }
 
 /**
  * Pre-loads the Image element for each image.
  */
 export async function preloadSkins(): Promise<void> {
-  const promises: Promise<void>[] = [];
-  for (let skin = 0; skin <= SkinMaximum; skin++) {
-    const image = new Image();
-    image.src = getSkinURL(skin);
-    SkinImages.push(image);
-    promises.push(new Promise((resolve, reject) => {
-      image.onerror = () => reject(`The image for the skin ${Skin[skin]} wasn't properly loaded.`);
-      image.onload = () => resolve();
-    }));
-  }
-  await Promise.all(promises);
+    const promises: Promise<void>[] = [];
+    for (let skin = 0; skin <= SkinMaximum; skin++) {
+        const image = new Image();
+        image.src = getSkinURL(skin);
+        SkinImages.push(image);
+        promises.push(new Promise((resolve, reject) => {
+            image.onerror = () => reject(`The image for the skin ${Skin[skin]} wasn't properly loaded.`);
+            image.onload = () => resolve();
+        }));
+    }
+    await Promise.all(promises);
 }

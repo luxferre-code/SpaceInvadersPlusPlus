@@ -28,11 +28,11 @@ export default class LobbyPage {
         return this.joined_room_id != undefined;
     }
 
-    private static isConnected(): boolean {
+    public static isConnected(): boolean {
         return this.isClient() || this.isHostingGame();
     }
 
-    private static getRoomId(): string | undefined {
+    public static getRoomId(): string | undefined {
         return this.isClient() ? this.joined_room_id : this.hosted_room_id;
     }
 
@@ -46,7 +46,7 @@ export default class LobbyPage {
 
             this.hostButton.addEventListener("click", () => {
                 if (!this.isHostingGame()) {
-                    socket.emit("host", (room_id: string) => {
+                    socket.emit("host", GameClient.limits, (room_id: string) => {
                         this.hostButton.textContent = "Lancer la partie";
                         this.hosted_room_id = room_id;
                         this.containerPlayers.setAttribute("aria-hidden", "false");
@@ -54,9 +54,8 @@ export default class LobbyPage {
                         this.noteForAwaitingPlayers.setAttribute("aria-hidden", "false");
                     });
                 } else {
-                    socket.emit("start_game", this.getRoomId(), GameClient.limits, (gameData: GameData) => {
+                    socket.emit("start_game", this.getRoomId(), (gameData: GameData) => {
                         this.game_started = true;
-                        console.log("started game with data:", gameData);
                         this.game_started_callback?.(gameData);
                     });
                 }
@@ -73,9 +72,7 @@ export default class LobbyPage {
 
             socket.on("update_lobby", (rooms: Room[]) => {
                 if (this.isConnected()) {
-                    if (this.game_started) {
-                        console.log("game is started, ignore lobby update");
-                    } else {
+                    if (!this.game_started) {
                         const room_id = this.getRoomId();
                         const all_players = rooms.find(r => r.id === room_id)?.players;
                         if (all_players != undefined) {
@@ -111,7 +108,7 @@ export default class LobbyPage {
      */
     private static onPlayerAskingToJoin(room_id: string): void {
         if (this.socket) {
-            this.socket.emit("join_room", room_id, (success: boolean) => {
+            this.socket.emit("join_room", room_id, GameClient.limits, (success: boolean) => {
                 if (success) {
                     this.joined_room_id = room_id;
                     this.hostButton.setAttribute("aria-hidden", "true");

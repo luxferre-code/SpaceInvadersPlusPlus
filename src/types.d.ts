@@ -65,7 +65,9 @@ declare global {
         players: {
             id: string;
             username: string;
+            game_limits: GameLimits;
         }[]; // the room's manager is the first player
+        computed_screen_limits: GameLimits; // maximums and minimums among all players' limits
     };
 
     type ServerBullet = {

@@ -53,6 +53,10 @@ LobbyPage.setOnGameStarted((gameData: GameData) => {
     UI.hideUI();
 });
 
+function isPlaying() {
+    return globalGameData != undefined;
+}
+
 // Allow the button to be interactive.
 // Without it, the buttons wouldn't work.
 UI.bindEvents();
@@ -116,6 +120,9 @@ function fillScreen() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     GameClient.limits = calculateGameLimits(canvas, UI.gameBorders);
+    if (LobbyPage.isConnected()) {
+        socket.emit("screen_resized", LobbyPage.getRoomId(), GameClient.limits);
+    }
 }
 
 window.addEventListener("resize", () => fillScreen());
