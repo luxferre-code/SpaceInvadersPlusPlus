@@ -232,13 +232,23 @@ io.on("connection", (socket) => {
             process_interval = setInterval(() => {
                 const game = games.get(room_id);
                 if (game) {
-                    // Creates new enemies
-                    if (game.enemies.length < 5 && 0.5 > Math.random()) {
+                    // - Creates new enemies
+                    // - Make the enemies shoot
+                    if (game.enemies.length < 5 && 0.1 > Math.random()) {
                         const pos = {
                             x: getRandomInt(room.computed_screen_limits.minX, room.computed_screen_limits.maxX - 50), // -50 = width of the skin
                             y: -50, // -50 is the height of the skin
                         };
                         game.enemies.push(pos);
+                    }
+                    for (const enemy of game.enemies) {
+                        if (0.04 > Math.random()) {
+                            game.bullets.push({
+                                shotByPlayer: false,
+                                x: enemy.x + 25 - 8,
+                                y: enemy.y + 50,
+                            });
+                        }
                     }
                 } else {
                     clearInterval(process_interval);
