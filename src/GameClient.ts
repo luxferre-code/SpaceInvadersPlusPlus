@@ -48,4 +48,12 @@ export default class GameClient {
         this.context!.fill();
         this.context!.closePath();
     }
+
+    public static renderEnemy(x: number, y: number) {
+        const skinImg = getSkinImage(Skin.GREEN);
+        this.context!.beginPath();
+        this.context!.drawImage(skinImg, x, y, skinImg.width, skinImg.height);
+        this.context!.fill();
+        this.context!.closePath();
+    }
 }

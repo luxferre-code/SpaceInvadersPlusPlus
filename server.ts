@@ -14,6 +14,7 @@ const rooms: Room[] = [];
 const games: Map<string, GameData> = new Map();
 
 const BULLET_VELOCITY = 10;
+const ENEMY_VELOCITY = 5;
 const BULLET_WIDTH = 8;
 
 function generateUniqueRoomId(): string {
@@ -56,7 +57,8 @@ function getRandomPositionWithinLimits(limits: GameLimits): { x: number, y: numb
 
 io.on("connection", (socket) => {
     let username = "";
-    let interval: NodeJS.Timeout | undefined = undefined;
+    let physics_interval: NodeJS.Timeout | undefined = undefined;
+    let process_interval: NodeJS.Timeout | undefined = undefined;
     console.log("connection", socket.id);
 
     function leaveRoom(room_id: string): void {
@@ -177,22 +179,47 @@ io.on("connection", (socket) => {
             room.game_started = true;
             games.set(room_id, data);
             socket.to(room_id).emit("host_started_game", data);
-            interval = setInterval(() => {
-                // "io.to" instead of "socket.to"
-                // because "socket.to" doesn't send
-                // to "socket".
+            physics_interval = setInterval(() => {
                 const game = games.get(room_id);
                 if (game) {
-                    // Update position of enemies and bullets.
-                    // Check for collisions and update the game accordingly.
-                    for (const bullet of game.bullets) {
-                        bullet.y += bullet.shotByPlayer ? -BULLET_VELOCITY : BULLET_VELOCITY;
+                    // - Update position of enemies and bullets.
+                    // - Remove bullets that are out of the screen.
+                    // - Check for collisions and update the game accordingly.
+
+                    game.bullets.forEach(b => b.y += b.shotByPlayer ? -BULLET_VELOCITY : BULLET_VELOCITY);
+                    game.enemies.forEach(e => e.y += ENEMY_VELOCITY);
+
+                    for (let i = game.enemies.length - 1; i >= 0; i--) {
+                        if (game.enemies[i].y >= 1000) {
+                            game.enemies.splice(i, 1);
+                        }
                     }
+
+                    for (let i = game.bullets.length - 1; i >= 0; i--) {
+                        if (game.bullets[i].y < 10) {
+                            game.bullets.splice(i, 1);
+                        }
+                    }
+
                     io.to(room_id).emit("game_update", game);
                 } else {
-                    clearInterval(interval);
+                    clearInterval(physics_interval);
                 }
             }, 1000 / 60);
+            process_interval = setInterval(() => {
+                const game = games.get(room_id);
+                if (game) {
+                    // Creates new enemies
+                    if (game.enemies.length < 5 && 0.05 > Math.random()) {
+                        game.enemies.push({
+                            x: getRandomInt(300, 800),
+                            y: -50,
+                        });
+                    }
+                } else {
+                    clearInterval(process_interval);
+                }
+            }, 1000 / 20);
             ack(data);
             updateLobby();
         }
@@ -243,9 +270,8 @@ io.on("connection", (socket) => {
             rooms.splice(i, 1);
         }
         updateLobby();
-        if (interval) {
-            clearInterval(interval);
-        }
+        if (physics_interval) clearInterval(physics_interval);
+        if (process_interval) clearInterval(process_interval);
     });
 });
 
