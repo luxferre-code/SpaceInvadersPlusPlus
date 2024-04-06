@@ -93,7 +93,6 @@ export default class Enemy extends Sprite2D {
         super.render();
     }
     isColliding(enemy) {
-        // This code check if the enemy is colliding with another entity
         const hitBox = this.generateHitBox();
         const otherHitBox = enemy.generateHitBox();
         return hitBox.isColliding(otherHitBox);

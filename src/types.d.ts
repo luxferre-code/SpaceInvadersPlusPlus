@@ -70,6 +70,11 @@ declare global {
         computed_screen_limits: GameLimits; // maximums and minimums among all players' limits
     };
 
+    type Vec2 = {
+        x: number;
+        y: number;
+    }
+
     type ServerBullet = {
         shotByPlayer: boolean;
         x: number;
@@ -79,13 +84,13 @@ declare global {
     type PlayerData = {
         id: string;
         username: string;
-        position: { x: number, y: number };
+        position: Vec2;
         skin: Skin;
         hp: number;
     };
 
     type GameData = {
-        enemies: { x: number, y: number }[];
+        enemies: Vec2[];
         bullets: ServerBullet[];
         players: PlayerData[];
     }

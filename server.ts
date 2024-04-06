@@ -14,7 +14,7 @@ const rooms: Room[] = [];
 const games: Map<string, GameData> = new Map();
 
 const BULLET_VELOCITY = 10;
-const ENEMY_VELOCITY = 5;
+const ENEMY_VELOCITY = 4;
 const BULLET_WIDTH = 8;
 
 function generateUniqueRoomId(): string {
@@ -48,11 +48,32 @@ function getRandomInt(min: number, max: number) {
     return Math.floor(Math.random() * (max - min) + min);
 }
 
-function getRandomPlayerSpawnPosition(limits: GameLimits): { x: number, y: number } {
+function getRandomPlayerSpawnPosition(limits: GameLimits): Vec2 {
     return {
         x: getRandomInt(limits.minX + 1, limits.maxX - 50),
         y: limits.maxY - 60,
     };
+}
+
+class Box {
+    public readonly top_left: Vec2;
+    public readonly top_right: Vec2;
+    public readonly bottom_left: Vec2;
+    public readonly bottom_right: Vec2;
+
+    constructor(x: number, y: number, width: number, height: number) {
+        this.top_left = { x, y };
+        this.top_right =  { x: x + width, y };
+        this.bottom_left = { x, y: y + height };
+        this.bottom_right = { x: x + width, y: y + height };
+    }
+
+    public isColliding(hitbox: Readonly<Box>): boolean {
+        return this.top_left.x < hitbox.bottom_right.x &&
+            this.bottom_right.x > hitbox.top_left.x &&
+            this.top_left.y < hitbox.bottom_right.y &&
+            this.bottom_right.y > hitbox.top_left.y;
+    }
 }
 
 io.on("connection", (socket) => {
@@ -211,18 +232,50 @@ io.on("connection", (socket) => {
                     // - Update position of enemies and bullets.
                     // - Remove bullets that are out of the screen.
                     // - Check for collisions and update the game accordingly.
-                    game.bullets.forEach(b => b.y += b.shotByPlayer ? -BULLET_VELOCITY : BULLET_VELOCITY);
-                    game.enemies.forEach(e => e.y += ENEMY_VELOCITY);
                     for (let i = game.enemies.length - 1; i >= 0; i--) {
                         if (game.enemies[i].y >= room.computed_screen_limits.maxY) {
                             game.enemies.splice(i, 1);
                         }
                     }
                     for (let i = game.bullets.length - 1; i >= 0; i--) {
-                        if (game.bullets[i].y < 10) {
+                        if (game.bullets[i].y < 10 || game.bullets[i].y >= room.computed_screen_limits.maxY) {
                             game.bullets.splice(i, 1);
                         }
                     }
+                    const used_bullets: number[] = [];
+                    const killed_enemies: number[] = [];
+                    for (let b = 0; b < game.bullets.length; b++) {
+                        const bullet = game.bullets[b];
+                        const hit_box = new Box(bullet.x, bullet.y, 8, 8);
+                        if (bullet.shotByPlayer) {
+                            for (let i = 0; i < game.enemies.length; i++) {
+                                const enemy = game.enemies[i];
+                                const hurt_box = new Box(enemy.x, enemy.y, 50, 50);
+                                if (hit_box.isColliding(hurt_box)) {
+                                    killed_enemies.push(i);
+                                    used_bullets.push(b);
+                                    break;
+                                }
+                            }
+                        } else {
+                            for (const player of game.players) {
+                                const hurt_box = new Box(player.position.x, player.position.y, 50, 50);
+                                if (hit_box.isColliding(hurt_box)) {
+                                    player.hp -= 1;
+                                    used_bullets.push(b);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    for (let i = killed_enemies.length - 1; i >= 0; i--) {
+                        game.enemies.splice(killed_enemies[i], 1);
+                    }
+                    for (let i = used_bullets.length - 1; i >= 0; i--) {
+                        game.bullets.splice(used_bullets[i], 1);
+                    }
+                    game.bullets.forEach(b => b.y += b.shotByPlayer ? -BULLET_VELOCITY : BULLET_VELOCITY);
+                    game.enemies.forEach(e => e.y += ENEMY_VELOCITY);
                     io.to(room_id).emit("game_update", game);
                 } else {
                     clearInterval(physics_interval);
@@ -235,11 +288,13 @@ io.on("connection", (socket) => {
                     // - Creates new enemies
                     // - Make the enemies shoot
                     if (game.enemies.length < 5 && 0.1 > Math.random()) {
-                        const pos = {
-                            x: getRandomInt(room.computed_screen_limits.minX, room.computed_screen_limits.maxX - 50), // -50 = width of the skin
-                            y: -50, // -50 is the height of the skin
-                        };
-                        game.enemies.push(pos);
+                        game.enemies.push({
+                            y: -50, // -50 is the size of the skin
+                            x: getRandomInt(
+                                room.computed_screen_limits.minX,
+                                room.computed_screen_limits.maxX - 50
+                            ),
+                        });
                     }
                     for (const enemy of game.enemies) {
                         if (0.04 > Math.random()) {
