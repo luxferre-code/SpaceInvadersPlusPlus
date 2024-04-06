@@ -121,7 +121,7 @@ window.addEventListener("load", () => fillScreen());
 function render() {
     if (globalGameData) {
         GameClient.getContext().clearRect(0, 0, canvas.width, canvas.height);
-        globalGameData.players.forEach(p => { if (p.hp > 0) GameClient.renderPlayer(p) });
+        globalGameData.players.forEach(p => GameClient.renderPlayer(p));
         globalGameData.bullets.forEach(b => GameClient.renderBullet(b.x, b.y));
         globalGameData.enemies.forEach(e => GameClient.renderEnemy(e.x, e.y));
     }
@@ -143,8 +143,13 @@ socket.on("game_update", (game: GameData) => {
 });
 
 setInterval(() => {
-    PlayerClient.move();
-    socket.emit("player_moved", PlayerClient.getPosition());
+    if (globalGameData != undefined) {
+        const player = globalGameData.players.find(p => p.id === socket.id)!;
+        if (player.hp > 0) {
+            PlayerClient.move();
+            socket.emit("player_moved", PlayerClient.getPosition());
+        }
+    }
 }, 1000 / 60);
 
 // The order in which those two

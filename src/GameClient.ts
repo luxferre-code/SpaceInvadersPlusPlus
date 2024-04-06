@@ -26,18 +26,28 @@ export default class GameClient {
             position.x < this.limits.maxX;
     }
 
-    public static renderPlayer(data: Readonly<PlayerData>) {
-        const skinImg = getSkinImage(data.skin);
-        const center = data.position.x + skinImg.width / 2;
-        const pseudo_y = data.position.y + skinImg.height + 15; // 15 = font size
-        this.context!.beginPath();
-        this.context!.drawImage(skinImg, data.position.x, data.position.y, skinImg.width, skinImg.height);
+    private static drawUsername(username: string, x: number, y: number) {
         this.context!.globalAlpha = 0.2;
         this.context!.fillStyle = "white";
         this.context!.font = "15px SpaceInvadersFont";
         this.context!.textAlign = "center";
-        this.context!.fillText(data.username, center, pseudo_y);
-        this.context!.fillText(data.hp + "x\u{2764}", center, pseudo_y + 15);
+        this.context!.fillText(username, x, y);
+    }
+
+    public static renderPlayer(data: Readonly<PlayerData>) {
+        const isDead = data.hp <= 0;
+        const skinImg = getSkinImage(isDead ? Skin.TOMBSTONE : data.skin);
+        const center = data.position.x + skinImg.width / 2;
+        const pseudo_y = data.position.y + skinImg.height + 15; // 15 = font size
+        this.context!.beginPath();
+        if (isDead) {
+            this.context!.globalAlpha = 0.2;
+        }
+        this.context!.drawImage(skinImg, data.position.x, data.position.y, skinImg.width, skinImg.height);
+        this.drawUsername(data.username, center, pseudo_y); 
+        if (!isDead) {
+            this.context!.fillText(data.hp + "x\u{2764}", center, pseudo_y + 15);
+        }
         this.context!.globalAlpha = 1;
         this.context!.fill();
         this.context!.closePath();

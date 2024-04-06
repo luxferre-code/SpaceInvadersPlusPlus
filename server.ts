@@ -266,11 +266,13 @@ io.on("connection", (socket) => {
                             }
                         } else {
                             for (const player of game.players) {
-                                const hurt_box = new Box(player.position.x, player.position.y, 50, 50);
-                                if (hit_box.isColliding(hurt_box)) {
-                                    player.hp -= 1;
-                                    used_bullets.push(b);
-                                    break;
+                                if (player.hp > 0) {
+                                    const hurt_box = new Box(player.position.x, player.position.y, 50, 50);
+                                    if (hit_box.isColliding(hurt_box)) {
+                                        player.hp -= 1;
+                                        used_bullets.push(b);
+                                        break;
+                                    }
                                 }
                             }
                         }

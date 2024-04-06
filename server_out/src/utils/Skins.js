@@ -13,6 +13,7 @@ export var Skin;
     Skin[Skin["RED"] = 0] = "RED";
     Skin[Skin["GREEN"] = 1] = "GREEN";
     Skin[Skin["PURPLE"] = 2] = "PURPLE";
+    Skin[Skin["TOMBSTONE"] = 3] = "TOMBSTONE";
     // Do not change the order in which the skins are declared.
 })(Skin || (Skin = {}));
 /**
@@ -39,6 +40,7 @@ export function getSkinURL(skin) {
     switch (skin) {
         case Skin.GREEN: return "/assets/skins/skin-green.png";
         case Skin.PURPLE: return "/assets/skins/skin-purple.png";
+        case Skin.TOMBSTONE: return "/assets/skins/tombstone.png";
         default:
             return "/assets/skins/skin-red.png";
     }

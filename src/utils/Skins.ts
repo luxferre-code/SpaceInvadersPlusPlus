@@ -12,6 +12,7 @@ export enum Skin {
     RED,
     GREEN,
     PURPLE,
+    TOMBSTONE,
     // Do not change the order in which the skins are declared.
 }
 
@@ -41,6 +42,7 @@ export function getSkinURL(skin: number): string {
     switch (skin) {
         case Skin.GREEN: return "/assets/skins/skin-green.png";
         case Skin.PURPLE: return "/assets/skins/skin-purple.png";
+        case Skin.TOMBSTONE: return "/assets/skins/tombstone.png";
         default:
             return "/assets/skins/skin-red.png";
     }
