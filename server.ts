@@ -213,6 +213,7 @@ io.on("connection", (socket) => {
             const data: GameData = {
                 enemies: [],
                 bullets: [],
+                score: 0,
                 players: room.players.map(p => ({
                     username: p.username,
                     position: getRandomPlayerSpawnPosition(room.computed_screen_limits),
@@ -254,6 +255,7 @@ io.on("connection", (socket) => {
                                 if (hit_box.isColliding(hurt_box)) {
                                     killed_enemies.push(i);
                                     used_bullets.push(b);
+                                    game.score += 10;
                                     break;
                                 }
                             }

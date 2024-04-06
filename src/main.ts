@@ -53,10 +53,6 @@ LobbyPage.setOnGameStarted((gameData: GameData) => {
     UI.hideUI();
 });
 
-function isPlaying() {
-    return globalGameData != undefined;
-}
-
 // Allow the button to be interactive.
 // Without it, the buttons wouldn't work.
 UI.bindEvents();
@@ -139,6 +135,9 @@ function render() {
 }
 
 socket.on("game_update", (game: GameData) => {
+    if (globalGameData?.score != game.score) {
+        UI.setScore(game.score);
+    }
     globalGameData = game;
 });
 

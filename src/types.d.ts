@@ -93,6 +93,7 @@ declare global {
         enemies: Vec2[];
         bullets: ServerBullet[];
         players: PlayerData[];
+        score: number;
     }
 }
 
