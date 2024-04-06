@@ -20,15 +20,15 @@ export default class GameClient {
             position.x > this.limits.minX &&
             position.x < this.limits.maxX;
     }
-    static renderPlayer(x, y, skin, username) {
-        const skinImg = getSkinImage(skin);
+    static renderPlayer(data) {
+        const skinImg = getSkinImage(data.skin);
         this.context.beginPath();
-        this.context.drawImage(skinImg, x, y, skinImg.width, skinImg.height);
+        this.context.drawImage(skinImg, data.position.x, data.position.y, skinImg.width, skinImg.height);
         this.context.globalAlpha = 0.2;
         this.context.fillStyle = "white";
         this.context.font = "15px SpaceInvadersFont";
         this.context.textAlign = "center";
-        this.context.fillText(username, x + skinImg.width / 2, y + skinImg.height + 15); // 15 = font size
+        this.context.fillText(data.username, data.position.x + skinImg.width / 2, data.position.y + skinImg.height + 15); // 15 = font size
         this.context.globalAlpha = 1;
         this.context.fill();
         this.context.closePath();
