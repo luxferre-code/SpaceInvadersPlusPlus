@@ -180,6 +180,15 @@ io.on("connection", (socket) => {
             updateLobby();
         }
     });
+    socket.on("player_moved", (player_position) => {
+        const game = games.get(getRoom() ?? "");
+        if (game) {
+            const player = game.players.find(p => p.id === socket.id);
+            if (player) {
+                player.position = player_position;
+            }
+        }
+    });
     socket.on("game_player_shooting", () => {
         const game = games.get(getRoom() ?? "");
         if (game) {

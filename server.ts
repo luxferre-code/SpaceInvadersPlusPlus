@@ -198,6 +198,16 @@ io.on("connection", (socket) => {
         }
     });
 
+    socket.on("player_moved", (player_position: { x: number, y: number }) => {
+        const game = games.get(getRoom() ?? "");
+        if (game) {
+            const player = game.players.find(p => p.id === socket.id);
+            if (player) {
+                player.position = player_position;
+            }
+        }
+    });
+
     socket.on("game_player_shooting", () => {
         const game = games.get(getRoom() ?? "");
         if (game) {

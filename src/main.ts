@@ -1,3 +1,4 @@
+import { Controls, MOVEMENT_CONTROLS } from './utils/Controls';
 import { io } from 'socket.io-client';
 import { preloadSkins } from "./utils/Skins";
 import GameSettingsPage from "./ui/GameSettingsPage";
@@ -8,7 +9,6 @@ import RankingDB from "./server/RankingDB";
 import LobbyPage from "./ui/LobbyPage";
 import GameClient from './GameClient';
 import UI from "./ui/UI";
-import { Controls, MOVEMENT_CONTROLS } from './utils/Controls';
 
 const socket = io(`${window.location.hostname}:3000`);
 
@@ -49,6 +49,7 @@ let globalGameData: GameData | undefined = undefined;
 LobbyPage.bindEvents(socket);
 LobbyPage.setOnGameStarted((gameData: GameData) => {
     globalGameData = gameData;
+    player_position = gameData.players.find(p => p.id === socket.id)!.position;
     UI.hideUI();
 });
 
@@ -128,8 +129,13 @@ window.addEventListener("load", () => fillScreen());
 
 const controls: { [key: string]: boolean } = {};
 let can_shoot = true;
+let player_position = { x: 0, y: 0 };
 let mX = 0;
 let mY = 0;
+
+const MOVEMENT_STRENGTH = 0.8;
+const REPULSIVE_STRENGTH = -2;
+const MAX_VELOCITY = 5;
 
 function handleKeyPressed(e: KeyboardEvent, value: boolean) {
     const key = e.key.toLocaleLowerCase();
@@ -143,12 +149,11 @@ function handleKeyPressed(e: KeyboardEvent, value: boolean) {
 window.addEventListener("keydown", e => handleKeyPressed(e, true));
 window.addEventListener("keyup", e => handleKeyPressed(e, false));
 
-/**
- * Depending on what keys are currently being pressed,
- * this function will increment or decrement the movement
- * variables accordingly (see {@link mX} and {@link mY}).
- */
 function handleMovementControls() {
+    if (controls[Controls.UP]) mY -= MOVEMENT_STRENGTH;
+    if (controls[Controls.RIGHT]) mX += MOVEMENT_STRENGTH;
+    if (controls[Controls.DOWN]) mY += MOVEMENT_STRENGTH;
+    if (controls[Controls.LEFT]) mX -= MOVEMENT_STRENGTH;
     if (controls[Controls.SHOOT]) shoot();
 }
 
@@ -159,6 +164,65 @@ function shoot() {
         setTimeout(() => {
             can_shoot = true;
         }, 500);
+    }
+}
+
+function isXOutOfBounds(nextX: number) {
+    return nextX <= GameClient.limits.minX || nextX + 50 >= GameClient.limits.maxX;
+}
+
+/**
+ * Returns `true` if the player's future vertical
+ * position does not exceed the limits of the screen
+ * @param nextY The next value of {@link mY}.
+ */
+function isYOutOfBounds(nextY: number) {
+    return nextY <= GameClient.limits.minY || nextY + 50 >= GameClient.limits.maxY;
+}
+
+function move() {
+    mX *= 0.95; // the movement on the X-axis get reduced by 5% on every frame
+    mY *= 0.95; // the movement on the y-axis get reduced by 5% on every frame
+
+    // By default, if we keep reducing by 5%
+    // then the movements will never reach 0.
+    // That's annoying because we get very quickly to
+    // numbers such as 5e-20 (which are irrelevant movements).
+    // To avoid this, if the distance to 0 is below a threshold,
+    // then it gets set to 0 manually.
+    // It's not a problem when starting the movement,
+    // as long as the threshold is less than `MOVEMENT_STRENGTH`.
+    if (Math.abs(mX) < 0.005) mX = 0;
+    if (Math.abs(mY) < 0.005) mY = 0;
+
+    // Here, we make sure that the velocity doesn't exceed `MAX_VELOCITY`.
+    // This check works for both negative and positive numbers.
+    // Note that "Math.sign" returns -1 for a negative number, or 1 for positive.
+    if (Math.abs(mX) > MAX_VELOCITY) mX = Math.sign(mX) * MAX_VELOCITY;
+    if (Math.abs(mY) > MAX_VELOCITY) mY = Math.sign(mY) * MAX_VELOCITY;
+
+    // This will check on every frame if keys are pressed,
+    // and increment the speed accordingly by a constant amount.
+    handleMovementControls();
+
+    // This makes sure that the player doesn't get out of the canvas.
+    const nextX = player_position.x + mX;
+    const nextY = player_position.y + mY;
+
+    if (!isXOutOfBounds(nextX)) {
+        player_position.x += mX;
+    } else {
+        // The player reached an horizontal border of the screen.
+        // Apply a repulsive force to keep it away.
+        mX *= REPULSIVE_STRENGTH;
+    }
+
+    if (!isYOutOfBounds(nextY)) {
+        player_position.y += mY;
+    } else {
+        // The player reached a vertical border of the screen.
+        // Apply a repulsive force to keep it away.
+        mY *= REPULSIVE_STRENGTH;
     }
 }
 
@@ -177,7 +241,6 @@ function render() {
 
 socket.on("game_update", (game: GameData) => {
     globalGameData = game;
-    // console.log("game update", game);
 });
 
 setInterval(() => {
@@ -189,10 +252,11 @@ setInterval(() => {
     //     game.reset();
     // }
     // }
-    
-    handleMovementControls();
 
-}, 1000 / 20);
+    move();
+    socket.emit("player_moved", player_position);
+
+}, 1000 / 60);
 
 // The order in which those two
 // functions are called do not matter.
