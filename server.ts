@@ -335,11 +335,11 @@ io.on("connection", (socket) => {
                     }
                     for (const enemy of game.enemies) {
                         if (0.04 > Math.random()) {
-                            // game.bullets.push({
-                            //     shotByPlayer: false,
-                            //     x: enemy.x + 25 - 8,
-                            //     y: enemy.y + 50,
-                            // });
+                            game.bullets.push({
+                                shotByPlayer: false,
+                                x: enemy.x + 25 - 8,
+                                y: enemy.y + 50,
+                            });
                         }
                     }
                 } else {
