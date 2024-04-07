@@ -119,7 +119,19 @@ export default class LobbyPage {
                             const other_players = all_players.filter(p => p.id !== socket.id);
                             if (all_players.length > 0) {
                                 const manager = all_players[0];
-                                this.noteAwaitingForManager.setAttribute("aria-hidden", manager.id === socket.id ? "true" : "false");
+                                if (manager.id === socket.id) {
+                                    if (this.joined_room_id !== undefined) {
+                                        // The player now becomes the manager of the game.
+                                        this.hosted_room_id = this.joined_room_id;
+                                        this.joined_room_id = undefined;
+                                        this.hostButton.textContent = "Lancer la partie";
+                                        this.changeSettingsButton.setAttribute("aria-hidden", "false");
+                                        this.hostButton.setAttribute("aria-hidden", "false");
+                                    }
+                                    this.noteAwaitingForManager.setAttribute("aria-hidden", "true");
+                                } else {
+                                    this.noteAwaitingForManager.setAttribute("aria-hidden", "false");
+                                }
                                 this.hostUsername.textContent = manager.username;
                             }
                             this.updateAwaitingPlayers(other_players.map(p => p.username));
