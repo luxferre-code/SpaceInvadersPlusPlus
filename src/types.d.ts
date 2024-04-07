@@ -49,9 +49,21 @@ declare global {
             id: string;
             username: string;
             game_limits: GameLimits;
+            skin: number;
+            sw: number;
+            sh: number;
         }[]; // the room's manager is the first player
         computed_screen_limits: GameLimits; // maximums and minimums among all players' limits
     };
+
+    // The skin of the player,
+    // along with the dimensions
+    // of the skin (width and height).
+    type FullSkinInformation = {
+        skin: number;
+        sw: number;
+        sh: number;
+    }
 
     type Vec2 = {
         x: number;
@@ -68,11 +80,11 @@ declare global {
         id: string;
         username: string;
         position: Vec2;
-        skin: Skin;
         hp: number;
         immune: boolean;
-        sw: number;
+        sw: number; // all three are herited from the Room
         sh: number;
+        skin: number;
     };
 
     type GameData = {

@@ -57,13 +57,23 @@ export default class LobbyPage {
         this.game_started_callback = callback;
     }
 
+    private static getSkinInformation(): FullSkinInformation {
+        const skin = GlobalSettingsDB.skin;
+        const img = getSkinImage(skin);
+        return {
+            skin,
+            sw: img.width,
+            sh: img.height,
+        };
+    }
+
     public static bindEvents(socket: Socket) {
         if (!this.init) {
             this.socket = socket;
 
             this.hostButton.addEventListener("click", () => {
                 if (!this.isHostingGame()) {
-                    socket.emit("host", GameClient.limits, GlobalSettingsDB.name, (room_id: string) => {
+                    socket.emit("host", GameClient.limits, GlobalSettingsDB.name, this.getSkinInformation(), (room_id: string) => {
                         this.hostButton.textContent = "Lancer la partie";
                         this.hosted_room_id = room_id;
                         this.containerPlayers.setAttribute("aria-hidden", "false");
@@ -71,14 +81,10 @@ export default class LobbyPage {
                         this.noteForAwaitingPlayers.setAttribute("aria-hidden", "false");
                     });
                 } else {
-                    const skin = GlobalSettingsDB.skin;
-                    const img = getSkinImage(skin);
-                    const sw = img.width;
-                    const sh = img.height;
                     const enemy_skin = getSkinImage(Skin.GREEN);
                     const esw = enemy_skin.width;
                     const esh = enemy_skin.height;
-                    socket.emit("start_game", this.getRoomId(), GameSettingsPage.settings, skin, sw, sh, esw, esh, (gameData: GameData) => {
+                    socket.emit("start_game", this.getRoomId(), GameSettingsPage.settings, esw, esh, (gameData: GameData) => {
                         this.game_started = true;
                         this.game_started_callback?.(gameData);
                     });
@@ -160,7 +166,7 @@ export default class LobbyPage {
      */
     private static onPlayerAskingToJoin(room_id: string): void {
         if (this.socket) {
-            this.socket.emit("join_room", room_id, GameClient.limits, GlobalSettingsDB.name, (success: boolean) => {
+            this.socket.emit("join_room", room_id, GameClient.limits, GlobalSettingsDB.name, this.getSkinInformation(), (success: boolean) => {
                 if (success) {
                     this.joined_room_id = room_id;
                     this.hostButton.setAttribute("aria-hidden", "true");

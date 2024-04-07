@@ -106,7 +106,7 @@ io.on("connection", (socket) => {
         }
     }
 
-    function createRoom(initialLimits: GameLimits, host_username: string): string {
+    function createRoom(initialLimits: GameLimits, host_username: string, si: FullSkinInformation): string {
         // Leave the other rooms where the already player was.
         if (socket.rooms.size > 1) {
             for (const room_id of socket.rooms) {
@@ -122,6 +122,9 @@ io.on("connection", (socket) => {
                 id: socket.id,
                 username: host_username,
                 game_limits: initialLimits,
+                skin: si.skin,
+                sw: si.sw,
+                sh: si.sh,
             }],
             computed_screen_limits: structuredClone(initialLimits),
         });
@@ -137,7 +140,7 @@ io.on("connection", (socket) => {
         return null;
     }
 
-    function joinExistingRoom(room_id: string, game_limits: GameLimits, client_username: string): boolean {
+    function joinExistingRoom(room_id: string, game_limits: GameLimits, client_username: string, si: FullSkinInformation): boolean {
         // Basically checking if the user is already in another room.
         // If he is in another room, then leave it.
         // Also make sure that if the room he's already in is the
@@ -155,6 +158,9 @@ io.on("connection", (socket) => {
                     username: client_username,
                     id: socket.id,
                     game_limits,
+                    skin: si.skin,
+                    sw: si.sw,
+                    sh: si.sh,
                 });
                 recomputeGameLimits(room);
                 socket.join(room_id);
@@ -192,7 +198,7 @@ io.on("connection", (socket) => {
         game.max_enemy_count = INITIAL_MAX_ENEMY_COUNT + Math.floor(game.score / 100);
     }
 
-    function startGame(room: Room, settings: GameSettings, skin: number, sw: number, sh: number, esw: number, esh: number): GameData {
+    function startGame(room: Room, settings: GameSettings, esw: number, esh: number): GameData {
         const data: GameData = {
             enemies: [],
             bullets: [],
@@ -209,12 +215,12 @@ io.on("connection", (socket) => {
             max_enemy_count: INITIAL_MAX_ENEMY_COUNT,
             players: room.players.map(p => ({
                 username: p.username,
-                position: getRandomPlayerSpawnPosition(room.computed_screen_limits, sw, sh),
+                position: getRandomPlayerSpawnPosition(room.computed_screen_limits, p.sw, p.sh),
                 immune: false,
                 id: p.id,
-                skin,
-                sw,
-                sh,
+                skin: p.skin,
+                sw: p.sw,
+                sh: p.sh,
                 hp: settings.playerHp,
             })),
         };
@@ -366,13 +372,13 @@ io.on("connection", (socket) => {
         updateLobby(); // necessary in the lobby when we're waiting for players to arrive
     });
 
-    socket.on("host", (initial_game_limits: GameLimits, host_username: string, ack: (room_id: string) => void) => {
-        ack(createRoom(initial_game_limits, host_username)); // will be called on the client
+    socket.on("host", (initial_game_limits: GameLimits, host_username: string, si: FullSkinInformation, ack: (room_id: string) => void) => {
+        ack(createRoom(initial_game_limits, host_username, si)); // will be called on the client
         updateLobby();
     });
 
-    socket.on("join_room", (room_id: string, limits: GameLimits, client_username: string, ack: (success: boolean) => void) => {
-        const success = joinExistingRoom(room_id, limits, client_username);
+    socket.on("join_room", (room_id: string, limits: GameLimits, client_username: string, si: FullSkinInformation, ack: (success: boolean) => void) => {
+        const success = joinExistingRoom(room_id, limits, client_username, si);
         ack(success);
         updateLobby();
     });
@@ -383,10 +389,10 @@ io.on("connection", (socket) => {
         updateLobby();
     });
 
-    socket.on("start_game", (room_id: string, settings: GameSettings, skin: number, sw: number, sh: number, esw: number, esh: number, ack: (gameData: GameData) => void) => {
+    socket.on("start_game", (room_id: string, settings: GameSettings, esw: number, esh: number, ack: (gameData: GameData) => void) => {
         const room = rooms.find(r => r.id === room_id);
         if (room) {
-            const data = startGame(room, settings, skin, sw, sh, esw, esh);
+            const data = startGame(room, settings, esw, esh);
             ack(data);
             updateLobby();
         }
@@ -414,8 +420,7 @@ io.on("connection", (socket) => {
             const game = games.get(room_id);
             if (room && game) {
                 clearGameIntervals(game);
-                const p = game.players[0];
-                const new_game = startGame(room, game.settings, p.skin, p.sw, p.sh, game.esw, game.esh);
+                const new_game = startGame(room, game.settings, game.esw, game.esh);
                 games.set(room_id, new_game);
                 io.to(room_id).emit("game_restarted", new_game);
             }
