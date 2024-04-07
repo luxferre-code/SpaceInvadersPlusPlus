@@ -398,6 +398,13 @@ io.on("connection", (socket) => {
         }
     });
 
+    socket.on("start_solo_game", (sett: GameSettings, lts: GameLimits, name: string, si: FullSkinInformation, esw: number, esh: number, ack: (gameData: GameData) => void) => {
+        const room_id = createRoom(lts, name, si);
+        const room = rooms.find(r => r.id === room_id)!;
+        const data = startGame(room, sett, esw, esh);
+        ack(data);
+    });
+
     socket.on("game_ended", () => {
         quitGame();
     });

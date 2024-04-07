@@ -1,5 +1,5 @@
 import { io } from 'socket.io-client';
-import { preloadSkins } from "./utils/Skins";
+import { Skin, getSkinImage, preloadSkins } from "./utils/Skins";
 import GameSettingsPage from "./ui/GameSettingsPage";
 import SettingsDB from "./db/GlobalSettingsDB";
 import SettingsPage from "./ui/SettingsPage";
@@ -9,6 +9,7 @@ import PlayerClient from './PlayerClient';
 import LobbyPage from "./ui/LobbyPage";
 import GameClient from './GameClient';
 import UI from "./ui/UI";
+import GlobalSettingsDB from './db/GlobalSettingsDB';
 
 const socket = io(`${window.location.hostname}:3000`);
 
@@ -40,8 +41,10 @@ function initGame(game_data: GameData) {
 
 LobbyPage.bindEvents(socket);
 LobbyPage.setOnGameStarted((game_data: GameData) => {
-    initGame(game_data);
-    UI.hideUI();
+    if (!loadingAssets) {
+        initGame(game_data);
+        UI.hideUI();
+    }
 });
 
 socket.on("game_restarted", (game_data: GameData) => {
@@ -76,13 +79,17 @@ SettingsPage.listenToNameChange((newName) => {
 GameSettingsPage.initDefaultGameSettings();
 GameSettingsPage.onGameStarted(() => {
     if (!loadingAssets) {
-        // player.setSkin(SettingsDB.skin);
-        // player.useLastGameSettings();
-        // player.placeAtStartingPosition(); // call it after changing the skin
-        // playing = true;
-        // game.addEntity(player);
-        // initializeHealthPoints(player.getHealth());
-        // UI.hideUI();
+        const enemy_skin = getSkinImage(Skin.GREEN);
+        const esw = enemy_skin.width;
+        const esh = enemy_skin.height;
+        const set = GameSettingsPage.settings;
+        const lts = GameClient.limits;
+        const nam = GlobalSettingsDB.name;
+        const ski = GlobalSettingsDB.getSkinInformation();
+        socket.emit("start_solo_game", set, lts, nam, ski, esw, esh, (gd: GameData) => {
+            initGame(gd);
+            UI.hideUI();
+        });
     }
 });
 

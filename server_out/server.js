@@ -373,6 +373,12 @@ io.on("connection", (socket) => {
             updateLobby();
         }
     });
+    socket.on("start_solo_game", (sett, lts, name, si, esw, esh, ack) => {
+        const room_id = createRoom(lts, name, si);
+        const room = rooms.find(r => r.id === room_id);
+        const data = startGame(room, sett, esw, esh);
+        ack(data);
+    });
     socket.on("game_ended", () => {
         quitGame();
     });

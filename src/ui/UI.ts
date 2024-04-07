@@ -263,6 +263,7 @@ export default class {
         this.hideElement(this.containerScore);
         this.hideElement(this.gameBorders.left);
         this.hideElement(this.gameBorders.right);
+        this.resetScore();
         // Focus the main button (Play now)
         this.mainButtons.playNow.focus();
     }
@@ -368,6 +369,10 @@ export default class {
      */
     public static setScore(score: number) {
         this.scoreElement.textContent = score.toString();
+    }
+
+    public static resetScore() {
+        this.setScore(0);
     }
     
     public static showDeathScreen() {

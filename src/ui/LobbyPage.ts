@@ -57,23 +57,13 @@ export default class LobbyPage {
         this.game_started_callback = callback;
     }
 
-    private static getSkinInformation(): FullSkinInformation {
-        const skin = GlobalSettingsDB.skin;
-        const img = getSkinImage(skin);
-        return {
-            skin,
-            sw: img.width,
-            sh: img.height,
-        };
-    }
-
     public static bindEvents(socket: Socket) {
         if (!this.init) {
             this.socket = socket;
 
             this.hostButton.addEventListener("click", () => {
                 if (!this.isHostingGame()) {
-                    socket.emit("host", GameClient.limits, GlobalSettingsDB.name, this.getSkinInformation(), (room_id: string) => {
+                    socket.emit("host", GameClient.limits, GlobalSettingsDB.name, GlobalSettingsDB.getSkinInformation(), (room_id: string) => {
                         this.hostButton.textContent = "Lancer la partie";
                         this.hosted_room_id = room_id;
                         this.containerPlayers.setAttribute("aria-hidden", "false");
@@ -166,7 +156,7 @@ export default class LobbyPage {
      */
     private static onPlayerAskingToJoin(room_id: string): void {
         if (this.socket) {
-            this.socket.emit("join_room", room_id, GameClient.limits, GlobalSettingsDB.name, this.getSkinInformation(), (success: boolean) => {
+            this.socket.emit("join_room", room_id, GameClient.limits, GlobalSettingsDB.name, GlobalSettingsDB.getSkinInformation(), (success: boolean) => {
                 if (success) {
                     this.joined_room_id = room_id;
                     this.hostButton.setAttribute("aria-hidden", "true");
