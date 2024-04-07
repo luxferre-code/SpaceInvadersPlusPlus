@@ -63,13 +63,27 @@ function getRandomPlayerSpawnPosition(limits: GameLimits, skin_width: number, sk
 
 io.on("connection", (socket) => {
     let username = "";
-    let physics_interval: NodeJS.Timeout | undefined = undefined;
-    let process_interval: NodeJS.Timeout | undefined = undefined;
     console.log("connection", socket.id);
 
     function clearGameIntervals() {
-        if (physics_interval) clearInterval(physics_interval);
-        if (process_interval) clearInterval(process_interval);
+        const room = getRoom();
+        if (room) {
+            const game = games.get(room);
+            if (game) {
+                clearInterval(game._physics_process);
+                clearInterval(game._process);
+            }
+        }
+    }
+
+    function quitGame() {
+        const room_id = getRoom();
+        if (room_id) {
+            leaveRoom(room_id);
+            removePlayerFromGameData(socket.id, room_id);
+            clearGameIntervals();
+            updateLobby();
+        }
     }
 
     function leaveRoom(room_id: string): void {
@@ -136,6 +150,7 @@ io.on("connection", (socket) => {
             }
             leaveRoom(current_room);
         }
+
         for (const room of rooms) {
             if (room.id === room_id) {
                 room.players.push({
@@ -207,7 +222,6 @@ io.on("connection", (socket) => {
         updateLobby();
     });
 
-
     socket.on("start_game", (room_id: string, settings: GameSettings, skin: number, sw: number, sh: number, esw: number, esh: number, ack: (gameData: GameData) => void) => {
         const room = rooms.find(r => r.id === room_id);
         if (room) {
@@ -221,6 +235,8 @@ io.on("connection", (socket) => {
                 settings,
                 paused: false,
                 paused_by: undefined,
+                _physics_process: undefined,
+                _process: undefined,
                 max_enemy_count: INITIAL_MAX_ENEMY_COUNT,
                 players: room.players.map(p => ({
                     username: p.username,
@@ -238,7 +254,7 @@ io.on("connection", (socket) => {
             games.set(room_id, data);
             socket.to(room_id).emit("host_started_game", data);
 
-            physics_interval = setInterval(() => {
+            const physics_process = setInterval(() => {
                 const game = games.get(room_id);
                 if (game) {
                     if (game.paused) {
@@ -324,11 +340,11 @@ io.on("connection", (socket) => {
                     game.enemies.forEach(e => e.y += ENEMY_VELOCITY);
                     io.to(room_id).emit("game_update", game);
                 } else {
-                    clearInterval(physics_interval);
+                    clearInterval(data._physics_process);
                 }
             }, 1000 / 60);
 
-            process_interval = setInterval(() => {
+            const process = setInterval(() => {
                 const game = games.get(room_id);
                 if (game) {
                     if (game.paused) {
@@ -355,9 +371,18 @@ io.on("connection", (socket) => {
                         }
                     }
                 } else {
-                    clearInterval(process_interval);
+                    clearInterval(data._process);
                 }
             }, 1000 / 20);
+
+            // I have learned the hard way that variables stored in this scope
+            // are global to all players. Therefore, the intervals must be attached 
+            // to individuals games via properties. However, it is not possible
+            // to send a variable of type `NodeJS.Timeout` via socket.io.
+            // As a consequence, those intervals must be converted into
+            // their primitive value (numbers).
+            data._physics_process = physics_process[Symbol.toPrimitive]();
+            data._process = process[Symbol.toPrimitive]();
 
             ack(data);
             updateLobby();
@@ -371,7 +396,7 @@ io.on("connection", (socket) => {
     socket.on("game_pause_toggled", (paused_by: string) => {
         const room_id = getRoom();
         if (room_id) {
-            const game = games.get(getRoom() ?? "");
+            const game = games.get(room_id);
             if (game) {
                 game.paused = !game.paused;
                 if (game.paused) {
@@ -423,29 +448,24 @@ io.on("connection", (socket) => {
         ack(getAvailableRooms());
     });
 
-    function quitGame() {
-        const to_remove: number[] = [];
-        for (let i = 0; i < rooms.length; i++) {
-            const room = rooms[i];
-            if (room.players.map(p => p.id).includes(socket.id)) {
-                if (room.players.length === 1) {
-                    to_remove.push(i);
-                } else {
-                    room.players.filter(p => p.id !== socket.id);
-                    recomputeGameLimits(room);
-                }
-                removePlayerFromGameData(socket.id, room.id);
-                clearGameIntervals();
+    socket.on("quit_game", () => {
+        const room_id = getRoom();
+        quitGame();
+        // If the game still exists,
+        // check if it was paused when the player quit.
+        // If it is, then check if this player is the one that paused it.
+        // If it is, then transmit a message to all other players and
+        // transfer ownership of the game's state to the first player in the list.
+        if (room_id) {
+            const game = games.get(room_id);
+            if (game && game.paused && game.paused_by === socket.id) {
+                game.paused_by = game.players[0].id;
+                socket.to(room_id).emit("game_pauser_quit", game);
             }
         }
-        for (let i = to_remove.length - 1; i >= 0; i--) {
-            rooms.splice(i, 1);
-        }
-        updateLobby();
-    }
+    });
 
     socket.on("disconnect", quitGame);
-    socket.on("quit_game", quitGame);
 });
 
 httpServer.listen(port, () => {

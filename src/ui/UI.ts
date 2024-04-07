@@ -318,6 +318,13 @@ export default class {
         });
     }
 
+    public static changePauserName(new_name: string, is_client: boolean) {
+        this.pauseScreen.pausedBy.textContent = new_name;
+        if (is_client) {
+            this.pauseScreen.continueBtn.style.display = "block";
+        }
+    }
+
     /**
      * Gets the element that has focus.
      * If there is no focused element, it returns `null`.

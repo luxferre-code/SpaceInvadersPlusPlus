@@ -76,6 +76,8 @@ declare global {
     };
 
     type GameData = {
+        _physics_process: number | undefined;
+        _process: number | undefined;
         enemies: Vec2[];
         bullets: ServerBullet[];
         players: PlayerData[];

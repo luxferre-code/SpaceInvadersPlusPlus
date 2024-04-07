@@ -115,6 +115,7 @@ window.addEventListener("keydown", (e) => {
                 UI.hidePauseMenu();
             }
         } else {
+            console.log("the client has paused the game");
             UI.pauseGame(SettingsDB.name, true);
             // It has to be assigned here to make sure
             // we can detect if the pause was triggered by
@@ -127,6 +128,7 @@ window.addEventListener("keydown", (e) => {
 
 function unpause() {
     socket.emit("game_pause_toggled");
+    unpaused = true;
 }
 
 UI.onUnpause(unpause);
@@ -153,14 +155,25 @@ function render() {
     requestAnimationFrame(render);
 }
 
+let transferred = false;
+let unpaused = false;
+
 socket.on("game_update", (game: GameData) => {
     if (globalGameData?.score != game.score) {
         UI.setScore(game.score);
     }
+    if (transferred && unpaused) {
+        console.log("the game should be continuing");
+        console.log("globalGameData.paused is", globalGameData!.paused);
+        console.log("game.paused is", game!.paused);
+    }
     if (globalGameData?.paused === false && game.paused) {
         // Executes if the client's game isn't paused
-        // but another player paused it
-        UI.pauseGame(game.players.find(p => p.id === game.paused_by)!.username, false);
+        // but another player paused it. However, since
+        // this event gets triggered so fast, it's possible
+        // that the client paused the game and that it gets
+        // detected here instead of via the event handler.
+        UI.pauseGame(game.players.find(p => p.id === game.paused_by)!.username, game.paused_by === socket.id);
     } else if (globalGameData?.paused === true && !game.paused) {
         // Executes if the client's game is paused,
         // but another player unpaused it.
@@ -177,6 +190,20 @@ socket.on("game_update", (game: GameData) => {
         }, 2000);
         socket.emit("game_ended");
     }
+});
+
+// This event is triggered when the player
+// that has paused the game quit it.
+// In that case a new player must get
+// the right to decide whether or not to continue it.
+socket.on("game_pauser_quit", (game: GameData) => {
+    globalGameData = game;
+    const manager = globalGameData!.players[0];
+    console.log("the pauser quit, transfering to", manager);
+    console.log(`manager id is ${manager.id} and socket.id is ${socket.id}`);
+    console.log("new game is", globalGameData);
+    UI.changePauserName(manager.username, manager.id === socket.id);
+    transferred = true;
 });
 
 setInterval(() => {
