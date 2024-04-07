@@ -7,13 +7,7 @@ import { Difficulty } from "../utils/Difficulty";
 /**
  * Settings for a game.
  */
-export default class {
-  /**
-   * The seed that the random number generator will
-   * use for all the random actions of a game.
-   */
-  public static seed: number = -1;
-
+export default class GameSettings {
   /**
    * The level of difficulty for a game.
    * This level defines presets for most settins,

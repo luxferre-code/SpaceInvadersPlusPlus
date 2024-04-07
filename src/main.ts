@@ -63,7 +63,6 @@ SettingsPage.listenToNameChange((newName) => {
 GameSettingsPage.initDefaultGameSettings();
 GameSettingsPage.onGameStarted(() => {
     if (!loadingAssets) {
-        // Game.random = new Random(GameSettings.seed === -1 ? new Date().getTime() : GameSettings.seed);
         // player.setSkin(SettingsDB.skin);
         // player.useLastGameSettings();
         // player.placeAtStartingPosition(); // call it after changing the skin
