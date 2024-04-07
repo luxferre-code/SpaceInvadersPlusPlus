@@ -90,6 +90,16 @@ export default class {
     });
 
     /**
+     * The pause screen
+     */
+    private static readonly pauseScreen = Object.freeze({
+        screen: document.querySelector("#pause-screen") as HTMLElement,
+        pausedBy: document.querySelector("#pause-screen > p > span") as HTMLSpanElement,
+        continueBtn: document.querySelector("#unpause-game-btn") as HTMLButtonElement,
+        quitBtn: document.querySelector("#quit-game-btn") as HTMLButtonElement,
+    });
+
+    /**
      * The paragraph element that contains the text for telling the user its score during a game.
      */
     public static readonly containerScore = document.querySelector("#container-score") as HTMLElement;
@@ -274,6 +284,38 @@ export default class {
         if (focusedElement) {
             focusedElement.blur();
         }
+    }
+
+    public static pauseGame(author: string, triggered_by_client: boolean) {
+        this.showElement(this.pauseScreen.screen);
+        this.pauseScreen.screen.removeAttribute("inert");
+        this.pauseScreen.pausedBy.textContent = author;
+        if (triggered_by_client) {
+            this.pauseScreen.continueBtn.style.display = "block";
+        } else {
+            this.pauseScreen.continueBtn.style.display = "none";
+        }
+    }
+
+    public static hidePauseMenu() {
+        this.hideElement(this.pauseScreen.screen);
+        this.pauseScreen.screen.setAttribute("inert", "inert");
+    }
+
+    public static onUnpause(callback: () => void) {
+        this.pauseScreen.continueBtn.addEventListener("click", () => {
+            this.pauseScreen.continueBtn.blur();
+            this.hidePauseMenu();
+            callback();
+        });
+    }
+
+    public static onQuitGame(callback: () => void) {
+        this.pauseScreen.quitBtn.addEventListener("click", () => {
+            this.pauseScreen.quitBtn.blur();
+            this.hidePauseMenu();
+            callback();
+        });
     }
 
     /**

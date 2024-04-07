@@ -83,6 +83,7 @@ declare global {
         score: number;
         spawn_chance: number;
         paused: boolean;
+        paused_by: string | undefined;
         esw: number; // enemy skin width
         esh: number; // enemy skin height
         max_enemy_count: number; // the maximum number of enemies at the same time

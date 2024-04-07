@@ -109,8 +109,29 @@ window.addEventListener("load", () => fillScreen());
 
 window.addEventListener("keydown", (e) => {
     if (isInGame() && (e.key === "Esc" || e.key === "Escape")) {
-        socket.emit("game_pause_toggled");
+        if (globalGameData!.paused) {
+            if (globalGameData!.paused_by === socket.id) {
+                unpause();
+                UI.hidePauseMenu();
+            }
+        } else {
+            UI.pauseGame(SettingsDB.name, true);
+            // It has to be assigned here to make sure
+            // we can detect if the pause was triggered by
+            // this client, or another one.
+            globalGameData!.paused = true;
+            socket.emit("game_pause_toggled", socket.id);
+        }
     }
+});
+
+function unpause() {
+    socket.emit("game_pause_toggled");
+}
+
+UI.onUnpause(unpause);
+UI.onQuitGame(() => {
+    socket.emit("quit_game");
 });
 
 function render() {
@@ -126,6 +147,18 @@ function render() {
 socket.on("game_update", (game: GameData) => {
     if (globalGameData?.score != game.score) {
         UI.setScore(game.score);
+    }
+    if (globalGameData?.paused === false && game.paused) {
+        // Executes if the client's game isn't paused
+        // but another player paused it
+        UI.pauseGame(game.players.find(p => p.id === game.paused_by)!.username, false);
+    } else if (globalGameData?.paused === true && !game.paused) {
+        // Executes if the client's game is paused,
+        // but another player unpaused it.
+        // It can only be unpaused by the one that paused it
+        // initially, therefore we can safely assume here that
+        // the pauser unpaused the game.
+        UI.hidePauseMenu();
     }
     globalGameData = game;
     if (globalGameData.players.every(p => p.hp <= 0)) {

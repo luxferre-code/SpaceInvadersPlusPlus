@@ -18,8 +18,17 @@
     <div id="game-left-border" aria-hidden="true"></div>
     <div id="game-right-border" aria-hidden="true"></div>
 
-    <div id="death-screen" aria-hidden="true">
+    <div id="death-screen" class="in-game-overlay" aria-hidden="true">
         <b>wasted</b>
+    </div>
+
+    <div id="pause-screen" class="in-game-overlay" aria-hidden="true" inert>
+        <b>Paused</b>
+        <p>Paused by <span></span></p>
+        <div>
+            <button type="button" id="unpause-game-btn">Reprendre</button>
+            <button type="button" id="quit-game-btn">Quitter</button>
+        </div>
     </div>
 
     <canvas aria-disabled="true" height="400" width="600"></canvas>

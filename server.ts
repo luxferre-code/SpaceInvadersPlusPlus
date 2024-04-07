@@ -220,6 +220,7 @@ io.on("connection", (socket) => {
                 esh,
                 settings,
                 paused: false,
+                paused_by: undefined,
                 max_enemy_count: INITIAL_MAX_ENEMY_COUNT,
                 players: room.players.map(p => ({
                     username: p.username,
@@ -367,12 +368,17 @@ io.on("connection", (socket) => {
         clearGameIntervals();
     });
 
-    socket.on("game_pause_toggled", () => {
+    socket.on("game_pause_toggled", (paused_by: string) => {
         const room_id = getRoom();
         if (room_id) {
             const game = games.get(getRoom() ?? "");
             if (game) {
                 game.paused = !game.paused;
+                if (game.paused) {
+                    game.paused_by = paused_by;
+                } else {
+                    game.paused_by = undefined;
+                }
                 io.to(room_id).emit("game_update", game);
             }
         }
