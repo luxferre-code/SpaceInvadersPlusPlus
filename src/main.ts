@@ -32,6 +32,10 @@ let loadingAssets = true;
 let globalGameData: GameData | undefined = undefined;
 PlayerClient.initConnection(socket);
 
+function isInGame() {
+    return globalGameData != undefined;
+}
+
 LobbyPage.bindEvents(socket);
 LobbyPage.setOnGameStarted((gameData: GameData) => {
     globalGameData = gameData;
@@ -103,12 +107,18 @@ function fillScreen() {
 window.addEventListener("resize", () => fillScreen());
 window.addEventListener("load", () => fillScreen());
 
+window.addEventListener("keydown", (e) => {
+    if (isInGame() && (e.key === "Esc" || e.key === "Escape")) {
+        socket.emit("game_pause_toggled");
+    }
+});
+
 function render() {
-    if (globalGameData) {
+    if (isInGame()) {
         GameClient.getContext().clearRect(0, 0, canvas.width, canvas.height);
-        globalGameData.players.forEach(p => GameClient.renderPlayer(p));
-        globalGameData.bullets.forEach(b => GameClient.renderBullet(b.x, b.y));
-        globalGameData.enemies.forEach(e => GameClient.renderEnemy(e.x, e.y));
+        globalGameData!.players.forEach(p => GameClient.renderPlayer(p));
+        globalGameData!.bullets.forEach(b => GameClient.renderBullet(b.x, b.y));
+        globalGameData!.enemies.forEach(e => GameClient.renderEnemy(e.x, e.y));
     }
     requestAnimationFrame(render);
 }
@@ -128,8 +138,8 @@ socket.on("game_update", (game: GameData) => {
 });
 
 setInterval(() => {
-    if (globalGameData != undefined) {
-        const player = globalGameData.players.find(p => p.id === socket.id)!;
+    if (isInGame() && !globalGameData!.paused) {
+        const player = globalGameData!.players.find(p => p.id === socket.id)!;
         if (player.hp > 0) {
             PlayerClient.move();
             socket.emit("player_moved", PlayerClient.getPosition());

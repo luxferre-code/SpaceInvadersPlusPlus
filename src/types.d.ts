@@ -82,6 +82,7 @@ declare global {
         settings: GameSettings;
         score: number;
         spawn_chance: number;
+        paused: boolean;
         esw: number; // enemy skin width
         esh: number; // enemy skin height
         max_enemy_count: number; // the maximum number of enemies at the same time

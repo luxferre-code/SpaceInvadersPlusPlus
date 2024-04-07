@@ -201,6 +201,7 @@ io.on("connection", (socket) => {
                 esw,
                 esh,
                 settings,
+                paused: false,
                 max_enemy_count: INITIAL_MAX_ENEMY_COUNT,
                 players: room.players.map(p => ({
                     username: p.username,
@@ -219,6 +220,9 @@ io.on("connection", (socket) => {
             physics_interval = setInterval(() => {
                 const game = games.get(room_id);
                 if (game) {
+                    if (game.paused) {
+                        return;
+                    }
                     // - Update position of enemies and bullets.
                     // - Remove bullets that are out of the screen.
                     // - Check for collisions and update the game accordingly.
@@ -307,6 +311,9 @@ io.on("connection", (socket) => {
             process_interval = setInterval(() => {
                 const game = games.get(room_id);
                 if (game) {
+                    if (game.paused) {
+                        return;
+                    }
                     // - Create new enemies
                     // - Make the enemies shoot
                     if (game.enemies.length < game.max_enemy_count && game.spawn_chance > Math.random()) {
@@ -335,6 +342,16 @@ io.on("connection", (socket) => {
     });
     socket.on("game_ended", () => {
         clearGameIntervals();
+    });
+    socket.on("game_pause_toggled", () => {
+        const room_id = getRoom();
+        if (room_id) {
+            const game = games.get(getRoom() ?? "");
+            if (game) {
+                game.paused = !game.paused;
+                io.to(room_id).emit("game_update", game);
+            }
+        }
     });
     socket.on("player_moved", (player_position) => {
         const game = games.get(getRoom() ?? "");
