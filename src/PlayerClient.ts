@@ -10,11 +10,6 @@ export default class PlayerClient {
     private static socket: Socket;
 
     /**
-     * The delay between two shots in milliseconds.
-     */
-    private static readonly SHOOT_DELAY = 500; // in ms
-
-    /**
      * It describes by how many pixels pressing a control key moves the player on each frame.
      * The higher this value, the higher the player's acceleration towards {@link MAX_VELOCITY}.
      */
@@ -74,11 +69,19 @@ export default class PlayerClient {
     private static player_skin_img: HTMLImageElement | null = null;
 
     /**
+     * The delay in milliseconds between two shots.
+     * It can be customised in the game settings.
+     * Defaults to 500ms.
+     */
+    private static shoot_delay: number = 500;
+
+    /**
      * Defines the player's metadata such as its skin, username, initial position, etc.
      */
-    public static setPlayerData(player_data: Readonly<PlayerData>) {
+    public static setPlayerData(player_data: Readonly<PlayerData>, shoot_delay: number) {
         this.player_position = player_data.position;
         this.player_skin_img = getSkinImage(player_data.skin);
+        this.shoot_delay = shoot_delay;
         this.controls = {};
     }
 
@@ -217,7 +220,7 @@ export default class PlayerClient {
             this.can_shoot = false;
             setTimeout(() => {
                 this.can_shoot = true;
-            }, this.SHOOT_DELAY);
+            }, this.shoot_delay);
         }
     }
 }

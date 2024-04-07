@@ -206,6 +206,7 @@ io.on("connection", (socket) => {
                 bullets: [],
                 score: 0,
                 spawn_chance: 0.02,
+                settings,
                 players: room.players.map(p => ({
                     username: p.username,
                     position: getRandomPlayerSpawnPosition(room.computed_screen_limits),

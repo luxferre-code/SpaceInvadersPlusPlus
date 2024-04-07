@@ -1,6 +1,7 @@
 import type { Skin } from "./utils/Skins";
 import type RankingTable from "./ui/RankingPage";
 import type Ranking from "./models/Ranking";
+import type GameSettings from "./models/GameSettings";
 
 declare global {
     type PlayerSettings = {
@@ -76,6 +77,7 @@ declare global {
         enemies: Vec2[];
         bullets: ServerBullet[];
         players: PlayerData[];
+        settings: GameSettings;
         score: number;
         spawn_chance: number;
     }

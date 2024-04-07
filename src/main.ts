@@ -35,7 +35,7 @@ PlayerClient.initConnection(socket);
 LobbyPage.bindEvents(socket);
 LobbyPage.setOnGameStarted((gameData: GameData) => {
     globalGameData = gameData;
-    PlayerClient.setPlayerData(gameData.players.find(p => p.id === socket.id)!);
+    PlayerClient.setPlayerData(gameData.players.find(p => p.id === socket.id)!, gameData.settings.playerShootDelay);
     UI.hideUI();
 });
 
