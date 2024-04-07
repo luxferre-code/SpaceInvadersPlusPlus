@@ -152,6 +152,7 @@ export default class LobbyPage {
                 if (success) {
                     this.joined_room_id = room_id;
                     this.hostButton.setAttribute("aria-hidden", "true");
+                    this.changeSettingsButton.setAttribute("aria-hidden", "true");
                     this.containerPlayers.setAttribute("aria-hidden", "false");
                     this.lobbiesTable.setAttribute("aria-hidden", "true");
                     this.noteForAwaitingPlayers.setAttribute("aria-hidden", "false");
@@ -220,6 +221,7 @@ export default class LobbyPage {
     private static resetView(): void {
         this.hostButton.textContent = "Host une game";
         this.hostButton.setAttribute("aria-hidden", "false");
+        this.changeSettingsButton.setAttribute("aria-hidden", "false");
         this.hosted_room_id = undefined;
         this.joined_room_id = undefined;
         this.containerPlayers.setAttribute("aria-hidden", "true");
