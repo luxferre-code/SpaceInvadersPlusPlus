@@ -145,13 +145,17 @@ export default class GameSettingsPage {
      * @param input The instance of the input that should be listened to.
      */
     private static handleNumberInputForSetting(setting: keyof GameSettings, input: HTMLInputElement) {
-        input.addEventListener('input', (e) => {
-            if (e.target) {
-                const newValue = parseInt(((e.target as HTMLInputElement).value));
-                if (!Number.isNaN(newValue)) {
-                    this.settings[setting] = newValue as any;
-                }
+        input.addEventListener('blur', (e) => {
+            const target = e.target as HTMLInputElement;
+            const value = parseInt(target.value);
+            const min = parseInt(target.getAttribute("min")!);
+            const max = parseInt(target.getAttribute("max")!);
+            if (value < min) {
+                target.value = min.toString();
+            } else if (value > max) {
+                target.value = max.toString();
             }
+            this.settings[setting] = parseInt(target.value) as any;
         });
     }
 }
