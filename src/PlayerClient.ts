@@ -79,6 +79,7 @@ export default class PlayerClient {
     public static setPlayerData(player_data: Readonly<PlayerData>) {
         this.player_position = player_data.position;
         this.player_skin_img = getSkinImage(player_data.skin);
+        this.controls = {};
     }
 
     /**

@@ -1,5 +1,7 @@
 import type { Socket } from "socket.io-client";
 import GameClient from "../GameClient";
+import GameSettingsPage from "./GameSettingsPage";
+import UI from "./UI";
 
 export default class LobbyPage {
     private static readonly lobbyPage = document.querySelector("#lobby-page") as HTMLElement;
@@ -10,6 +12,7 @@ export default class LobbyPage {
     private static readonly hostUsername = this.noteAwaitingForManager.querySelector("span") as HTMLSpanElement;
     private static readonly hostButton = this.lobbyPage.querySelector("#host-game-button") as HTMLButtonElement;
     private static readonly quitRoomButton = this.lobbyPage.querySelector("#quit-lobby-button") as HTMLButtonElement;
+    private static readonly changeSettingsButton = this.lobbyPage.querySelector("#change-settings-lobby-button") as HTMLButtonElement;
     private static readonly lobbiesTable = this.lobbyPage.querySelector("table tbody") as HTMLTableSectionElement;
 
     private static init = false;
@@ -62,7 +65,7 @@ export default class LobbyPage {
                         this.noteForAwaitingPlayers.setAttribute("aria-hidden", "false");
                     });
                 } else {
-                    socket.emit("start_game", this.getRoomId(), (gameData: GameData) => {
+                    socket.emit("start_game", this.getRoomId(), GameSettingsPage.settings, (gameData: GameData) => {
                         this.game_started = true;
                         this.game_started_callback?.(gameData);
                     });
@@ -74,6 +77,22 @@ export default class LobbyPage {
                     socket.emit("quit_room", this.getRoomId()!, () => {
                         this.joined_room_id = undefined;
                         this.hosted_room_id = undefined;
+                    });
+                }
+            });
+
+            this.changeSettingsButton.addEventListener("click", () => {
+                if (this.isConnected()) {
+                    // Open settings modal
+                    UI.hideElement(UI.modalPages.lobby);
+                    UI.showElement(UI.modalPages.gameSettings);
+                    GameSettingsPage.setPlayButtonText("Confirmer");
+                    GameSettingsPage.focusDifficulty();
+                    GameSettingsPage.overridePlayButtonCallback(() => {
+                        UI.hideElement(UI.modalPages.gameSettings);
+                        UI.showElement(UI.modalPages.lobby);
+                        GameSettingsPage.setPlayButtonText("Jouer");
+                        this.hostButton.focus();
                     });
                 }
             });

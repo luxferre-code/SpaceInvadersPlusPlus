@@ -5,10 +5,11 @@ import GameSettings from "../models/GameSettings";
  * Handles the logic behind the page that
  * displays the settings of a new game.
  */
-export default class {
+export default class GameSettingsPage {
     private static init = false;
 
-    private static readonly playBowBtn = document.querySelector("#confirm-game-settings") as HTMLButtonElement;
+    private static readonly playNowBtn = document.querySelector("#confirm-game-settings") as HTMLButtonElement;
+    private static readonly playNowText = this.playNowBtn.querySelector("span") as HTMLSpanElement;
     private static readonly difficultyLevelSelect = document.querySelector("#game-level") as HTMLSelectElement;
     private static readonly gamePlayerHpInput = document.querySelector("#game-player-hp") as HTMLInputElement;
     private static readonly gamePlayerBasedAmmoInput = document.querySelector("#game-player-based-ammo") as HTMLInputElement;
@@ -19,12 +20,35 @@ export default class {
      */
     private static readonly customizableInputs = Array.from(document.querySelectorAll("#game-settings-page input:disabled")) as HTMLInputElement[];
 
+    private static on_game_started_overload: (() => void) | undefined = undefined;
+
+    public static settings = new GameSettings();
+
     /**
      * Defines a callback to execute when the player
      * clicks on the button to start the game.
      */
     public static onGameStarted(callback: () => void) {
-        this.playBowBtn.addEventListener('click', callback);
+        this.playNowBtn.addEventListener('click', () => {
+            if (this.on_game_started_overload) {
+                this.on_game_started_overload();
+                this.on_game_started_overload = undefined;
+            } else {
+                callback();
+            }
+        });
+    }
+
+    public static setPlayButtonText(text: string) {
+        this.playNowText.textContent = text;
+    }
+
+    public static overridePlayButtonCallback(overload: () => void) {
+        this.on_game_started_overload = overload;
+    }
+
+    public static focusDifficulty() {
+        this.difficultyLevelSelect.focus();
     }
 
     /**
@@ -36,13 +60,8 @@ export default class {
             return;
         }
 
-        // Easy is the default difficulty,
-        // se here we are making sure that the inputs
-        // show the pre-defined settings for this difficulty.
-        GameSettings.usePresets(Difficulty.EASY);
+        // Make sure the inputs display their default values.
         this.displayGameSettingsValues();
-
-        // The inputs should already be disabled.
 
         this.difficultyLevelSelect.addEventListener('change', (e) => {
             if (e.target) {
@@ -51,11 +70,11 @@ export default class {
                 if (difficulty === Difficulty.CUSTOM) {
                     this.enableInputs();
                 } else {
-                    GameSettings.usePresets(difficulty);
+                    this.settings.usePresets(difficulty);
                     this.displayGameSettingsValues();
                     this.disableInputs();
                 }
-                GameSettings.difficultyLevel = difficulty;
+                this.settings.difficultyLevel = difficulty;
             }
         });
 
@@ -115,8 +134,8 @@ export default class {
      * @param input The reference to a customisable input (one in {@link customizableInputs}).
      * @param setting The name of a property in the {@link GameSettings} class that match the input.
      */
-    private static setInput(input: HTMLInputElement, setting: keyof typeof GameSettings) {
-        input.value = GameSettings[setting].toString();
+    private static setInput(input: HTMLInputElement, setting: Readonly<keyof GameSettings>) {
+        input.value = this.settings[setting].toString();
     }
 
     /**
@@ -125,12 +144,12 @@ export default class {
      * @param setting The name of a property in the GameSettings class.
      * @param input The instance of the input that should be listened to.
      */
-    private static handleNumberInputForSetting(setting: keyof typeof GameSettings, input: HTMLInputElement) {
+    private static handleNumberInputForSetting(setting: keyof GameSettings, input: HTMLInputElement) {
         input.addEventListener('input', (e) => {
             if (e.target) {
                 const newValue = parseInt(((e.target as HTMLInputElement).value));
                 if (!Number.isNaN(newValue)) {
-                    GameSettings[setting] = newValue as any;
+                    this.settings[setting] = newValue as any;
                 }
             }
         });

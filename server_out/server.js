@@ -181,7 +181,7 @@ io.on("connection", (socket) => {
         ack(); // must be called before "updateLobby"
         updateLobby();
     });
-    socket.on("start_game", (room_id, ack) => {
+    socket.on("start_game", (room_id, settings, ack) => {
         const room = rooms.find(r => r.id === room_id);
         if (room) {
             const data = {
@@ -195,7 +195,7 @@ io.on("connection", (socket) => {
                     immune: false,
                     id: p.id,
                     skin: 0, // TODO: fix getRandomPlayerSpawnPosition() so that it doesn't use hard-coded values
-                    hp: 5,
+                    hp: settings.playerHp,
                 })),
             };
             room.game_started = true;

@@ -2,6 +2,7 @@ import { } from "./src/types.js";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import Box from "./src/utils/Box.js"; 
+import GameSettings from "./src/models/GameSettings.js";
 
 const port = 3000;
 const httpServer = createServer();
@@ -197,7 +198,7 @@ io.on("connection", (socket) => {
         updateLobby();
     });
 
-    socket.on("start_game", (room_id: string, ack: (gameData: GameData) => void) => {
+    socket.on("start_game", (room_id: string, settings: GameSettings, ack: (gameData: GameData) => void) => {
         const room = rooms.find(r => r.id === room_id);
         if (room) {
             const data: GameData = {
@@ -211,7 +212,7 @@ io.on("connection", (socket) => {
                     immune: false,
                     id: p.id,
                     skin: 0, // TODO: fix getRandomPlayerSpawnPosition() so that it doesn't use hard-coded values
-                    hp: 5,
+                    hp: settings.playerHp, 
                 })),
             };
 

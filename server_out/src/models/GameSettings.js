@@ -4,38 +4,36 @@
 /**
  * Settings for a game.
  */
-export default class default_1 {
-    /**
-     * The seed that the random number generator will
-     * use for all the random actions of a game.
-     */
-    static seed = -1;
+export default class GameSettings {
     /**
      * The level of difficulty for a game.
      * This level defines presets for most settins,
      * unless the selected level is {@link Difficulty.CUSTOM}.
      */
-    static difficultyLevel = 1 /* Difficulty.EASY */;
+    difficultyLevel = 1 /* Difficulty.EASY */;
     /**
      * The number of HP that the player has.
      * One damage an integer and the HP get
      * reduced by a certain amount of damage.
      */
-    static playerHp = -1;
+    playerHp = -1;
     /**
      * The minimum delay between two shots.
      */
-    static playerShootDelay = -1;
+    playerShootDelay = -1;
     /**
      * The ammunition the player starts with.
      */
-    static playerBasedAmmo = -1;
+    playerBasedAmmo = -1;
+    constructor() {
+        this.usePresets(1 /* Difficulty.EASY */);
+    }
     /**
      * Resets the settings to fit presets that
      * depend on an arbirtary level of difficulty.
      * @param level The level of difficulty to base the presets on.
      */
-    static usePresets(level) {
+    usePresets(level) {
         if (level === 4 /* Difficulty.CUSTOM */) {
             return;
         }
