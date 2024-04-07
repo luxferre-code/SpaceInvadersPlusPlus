@@ -1,26 +1,8 @@
 import type { Skin } from "./utils/Skins";
 import type RankingTable from "./ui/RankingPage";
 import type Ranking from "./models/Ranking";
-import type Player from "./Player";
-import type Vector2 from "./Vector2";
-import type HitBox from "./models/HitBox";
 
 declare global {
-    /**
-     * Describes the shared features between an Enemy and a Player.
-     */
-    interface IEntity {
-        // If this function returns true,
-        // then TypeScript will understand
-        // that the callee is of type Player.
-        isPlayer(): this is Player;
-        getPosition(): Vector2;
-        generateHitBox(): HitBox;
-        render(): void;
-        move(): void;
-        isColliding(enemy: IEntity): boolean;
-    }
-
     type PlayerSettings = {
         name: string;
         skin: Skin;

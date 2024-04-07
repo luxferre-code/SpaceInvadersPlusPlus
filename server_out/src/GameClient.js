@@ -32,16 +32,24 @@ export default class GameClient {
         const skinImg = getSkinImage(isDead ? Skin.TOMBSTONE : data.skin);
         const center = data.position.x + skinImg.width / 2;
         const pseudo_y = data.position.y + skinImg.height + 15; // 15 = font size
-        this.context.beginPath();
         if (isDead) {
             this.context.globalAlpha = 0.2;
         }
+        else {
+            if (data.immune) {
+                this.context.filter = "brightness(0) invert(1)";
+            }
+        }
+        this.context.beginPath();
         this.context.drawImage(skinImg, data.position.x, data.position.y, skinImg.width, skinImg.height);
         this.drawUsername(data.username, center, pseudo_y);
-        this.context.fillText(data.hp + "x\u{2764}", center, pseudo_y + 15);
+        if (!isDead) {
+            this.context.fillText(data.hp + "x\u{2764}", center, pseudo_y + 15);
+        }
         this.context.globalAlpha = 1;
         this.context.fill();
         this.context.closePath();
+        this.context.filter = "brightness(1) invert(0)";
     }
     static renderBullet(x, y) {
         this.context.fillStyle = "white";

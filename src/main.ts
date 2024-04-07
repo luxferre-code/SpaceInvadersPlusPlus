@@ -1,10 +1,10 @@
 import { io } from 'socket.io-client';
 import { preloadSkins } from "./utils/Skins";
 import GameSettingsPage from "./ui/GameSettingsPage";
-import SettingsDB from "./server/GlobalSettingsDB";
+import SettingsDB from "./db/GlobalSettingsDB";
 import SettingsPage from "./ui/SettingsPage";
 import RankingPage from "./ui/RankingPage";
-import RankingDB from "./server/RankingDB";
+import RankingDB from "./db/RankingDB";
 import PlayerClient from './PlayerClient';
 import LobbyPage from "./ui/LobbyPage";
 import GameClient from './GameClient';
