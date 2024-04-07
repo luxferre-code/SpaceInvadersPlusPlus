@@ -2,6 +2,8 @@ import type { Socket } from "socket.io-client";
 import GameClient from "../GameClient";
 import GameSettingsPage from "./GameSettingsPage";
 import UI from "./UI";
+import GlobalSettingsDB from "../db/GlobalSettingsDB";
+import { Skin, getSkinImage } from "../utils/Skins";
 
 export default class LobbyPage {
     private static readonly lobbyPage = document.querySelector("#lobby-page") as HTMLElement;
@@ -65,7 +67,14 @@ export default class LobbyPage {
                         this.noteForAwaitingPlayers.setAttribute("aria-hidden", "false");
                     });
                 } else {
-                    socket.emit("start_game", this.getRoomId(), GameSettingsPage.settings, (gameData: GameData) => {
+                    const skin = GlobalSettingsDB.skin;
+                    const img = getSkinImage(skin);
+                    const sw = img.width;
+                    const sh = img.height;
+                    const enemy_skin = getSkinImage(Skin.GREEN);
+                    const esw = enemy_skin.width;
+                    const esh = enemy_skin.height;
+                    socket.emit("start_game", this.getRoomId(), GameSettingsPage.settings, skin, sw, sh, esw, esh, (gameData: GameData) => {
                         this.game_started = true;
                         this.game_started_callback?.(gameData);
                     });

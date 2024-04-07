@@ -1,7 +1,7 @@
 import { } from "./src/types.js";
 import { createServer } from "http";
 import { Server } from "socket.io";
-import Box from "./src/utils/Box.js"; 
+import Box from "./src/utils/Box.js";
 import GameSettings from "./src/models/GameSettings.js";
 
 const port = 3000;
@@ -17,8 +17,10 @@ const games: Map<string, GameData> = new Map();
 
 const BULLET_VELOCITY = 10;
 const ENEMY_VELOCITY = 4;
-const BULLET_WIDTH = 8;
+const ENEMY_SHOOTING_CHANCE = 0.04;
+const BULLET_SIZE = 8;
 const SCORE_MULTIPLIER = 0.0001;
+const MAX_ENEMY_COUNT = 5;
 
 function generateUniqueRoomId(): string {
     let room = "room-";
@@ -51,10 +53,10 @@ function getRandomInt(min: number, max: number) {
     return Math.floor(Math.random() * (max - min) + min);
 }
 
-function getRandomPlayerSpawnPosition(limits: GameLimits): Vec2 {
+function getRandomPlayerSpawnPosition(limits: GameLimits, skin_width: number, skin_height: number): Vec2 {
     return {
-        x: getRandomInt(limits.minX + 1, limits.maxX - 50),
-        y: limits.maxY - 60,
+        x: getRandomInt(limits.minX + 1, limits.maxX - skin_width),
+        y: limits.maxY - skin_height - 10,
     };
 }
 
@@ -198,7 +200,7 @@ io.on("connection", (socket) => {
         updateLobby();
     });
 
-    socket.on("start_game", (room_id: string, settings: GameSettings, ack: (gameData: GameData) => void) => {
+    socket.on("start_game", (room_id: string, settings: GameSettings, skin: number, sw: number, sh: number, esw: number, esh: number, ack: (gameData: GameData) => void) => {
         const room = rooms.find(r => r.id === room_id);
         if (room) {
             const data: GameData = {
@@ -206,14 +208,18 @@ io.on("connection", (socket) => {
                 bullets: [],
                 score: 0,
                 spawn_chance: 0.02,
+                esw,
+                esh,
                 settings,
                 players: room.players.map(p => ({
                     username: p.username,
-                    position: getRandomPlayerSpawnPosition(room.computed_screen_limits),
+                    position: getRandomPlayerSpawnPosition(room.computed_screen_limits, sw, sh),
                     immune: false,
                     id: p.id,
-                    skin: 0, // TODO: fix getRandomPlayerSpawnPosition() so that it doesn't use hard-coded values
-                    hp: settings.playerHp, 
+                    skin,
+                    sw,
+                    sh,
+                    hp: settings.playerHp,
                 })),
             };
 
@@ -243,11 +249,11 @@ io.on("connection", (socket) => {
                     const killed_enemies: number[] = [];
                     for (let b = 0; b < game.bullets.length; b++) {
                         const bullet = game.bullets[b];
-                        const hit_box = new Box(bullet.x, bullet.y, 8, 8);
+                        const hit_box = new Box(bullet.x, bullet.y, BULLET_SIZE, BULLET_SIZE);
                         if (bullet.shotByPlayer) {
                             for (let i = 0; i < game.enemies.length; i++) {
                                 const enemy = game.enemies[i];
-                                const hurt_box = new Box(enemy.x, enemy.y, 50, 50);
+                                const hurt_box = new Box(enemy.x, enemy.y, game.esw, game.esh);
                                 enemy_hit_boxes.push(hurt_box);
                                 if (hit_box.isColliding(hurt_box)) {
                                     killed_enemies.push(i);
@@ -259,7 +265,7 @@ io.on("connection", (socket) => {
                             }
                         } else {
                             for (const player of game.players) {
-                                const hurt_box = new Box(player.position.x, player.position.y, 50, 50);
+                                const hurt_box = new Box(player.position.x, player.position.y, player.sw, player.sh);
                                 player_hurt_boxes.push(hurt_box);
                                 if (player.hp > 0) {
                                     if (hit_box.isColliding(hurt_box)) {
@@ -279,11 +285,11 @@ io.on("connection", (socket) => {
                     }
                     for (let i = 0; i < game.enemies.length; i++) {
                         const enemy = game.enemies[i];
-                        const hit_box = i >= enemy_hit_boxes.length ? new Box(enemy.x, enemy.y, 50, 50) : enemy_hit_boxes[i];
+                        const hit_box = i >= enemy_hit_boxes.length ? new Box(enemy.x, enemy.y, game.esw, game.esh) : enemy_hit_boxes[i];
                         for (let i = 0; i < game.players.length; i++) {
                             const player = game.players[i];
                             if (player.hp > 0 && !player.immune) {
-                                const hurt_box = i >= player_hurt_boxes.length ? new Box(player.position.x, player.position.y, 50, 50) : player_hurt_boxes[i];
+                                const hurt_box = i >= player_hurt_boxes.length ? new Box(player.position.x, player.position.y, player.sw, player.sh) : player_hurt_boxes[i];
                                 if (hit_box.isColliding(hurt_box)) {
                                     player.hp -= 1;
                                     player.immune = true;
@@ -313,21 +319,21 @@ io.on("connection", (socket) => {
                 if (game) {
                     // - Creates new enemies
                     // - Make the enemies shoot
-                    if (game.enemies.length < 5 && game.spawn_chance > Math.random()) {
+                    if (game.enemies.length < MAX_ENEMY_COUNT && game.spawn_chance > Math.random()) {
                         game.enemies.push({
-                            y: -50, // -50 is the size of the skin
+                            y: -game.esh,
                             x: getRandomInt(
                                 room.computed_screen_limits.minX,
-                                room.computed_screen_limits.maxX - 50
+                                room.computed_screen_limits.maxX - game.esw,
                             ),
                         });
                     }
                     for (const enemy of game.enemies) {
-                        if (0.04 > Math.random()) {
+                        if (ENEMY_SHOOTING_CHANCE > Math.random()) {
                             game.bullets.push({
                                 shotByPlayer: false,
-                                x: enemy.x + 25 - 8,
-                                y: enemy.y + 50,
+                                x: enemy.x + (game.esw / 2) - BULLET_SIZE,
+                                y: enemy.y + game.esh,
                             });
                         }
                     }
@@ -362,7 +368,7 @@ io.on("connection", (socket) => {
             if (shooter) {
                 game.bullets.push({
                     shotByPlayer: true,
-                    x: shooter.position.x + 25 - BULLET_WIDTH,
+                    x: shooter.position.x + (shooter.sw / 2) - BULLET_SIZE,
                     y: shooter.position.y,
                 });
             }

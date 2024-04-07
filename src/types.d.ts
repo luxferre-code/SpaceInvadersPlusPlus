@@ -71,6 +71,8 @@ declare global {
         skin: Skin;
         hp: number;
         immune: boolean;
+        sw: number;
+        sh: number;
     };
 
     type GameData = {
@@ -80,6 +82,8 @@ declare global {
         settings: GameSettings;
         score: number;
         spawn_chance: number;
+        esw: number; // enemy skin width
+        esh: number; // enemy skin height
     }
 }
 
