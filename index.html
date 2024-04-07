@@ -13,14 +13,30 @@
   <body>
     <img class="main-background" src="/assets/pictures/main-background-2k.jpg" alt="Main background with stars">
 
-    <p id="container-score" aria-hidden="true">Score: <span id="score"></span></p>
-    <div id="container-hearts" aria-hidden="true"></div>
+    <p id="container-score" aria-hidden="true">Score: <span id="score">0</span></p>
 
     <div id="game-left-border" aria-hidden="true"></div>
     <div id="game-right-border" aria-hidden="true"></div>
 
-    <div id="death-screen" aria-hidden="true">
+    <div id="death-screen" class="in-game-overlay" aria-hidden="true">
         <b>wasted</b>
+    </div>
+
+    <div id="pause-screen" class="in-game-overlay" aria-hidden="true" inert>
+        <b>Paused</b>
+        <p>Paused by <span></span></p>
+        <div>
+            <button type="button" id="unpause-game-btn">Reprendre</button>
+            <button type="button">Quitter</button>
+        </div>
+    </div>
+
+    <div id="game-over-screen" class="in-game-overlay" aria-hidden="true" inert>
+        <b>Game Over</b>
+        <div>
+            <button type="button" id="restart-game-btn">Recommencer</button>
+            <button type="button">Quitter</button>
+        </div>
     </div>
 
     <canvas aria-disabled="true" height="400" width="600"></canvas>
@@ -69,18 +85,6 @@
               </div>
             </div>
 
-            <div class="author-card">
-              <img src="/assets/credits/thomas.png" alt="Photo de profile de Thomas Gysemans">
-              <div class="author-details">
-                <h3>Thomas Gysemans</h3>
-                <span>aka ThomasG2201</span>
-                <ul>
-                  <li>Groupe: S4-K</li>
-                  <li>Jeu favori: Minecraft</li>
-                  <li>Note: 33%</li>
-                </ul>
-              </div>
-            </div>
           </div>
         </div>
 
@@ -162,7 +166,7 @@
           <div>
             <button type="button" class="primary with-icon" id="confirm-game-settings">
               <i class="fa-solid fa-play"></i>
-              Jouer
+              <span>Jouer</span>
             </button>
             <h2>Options de votre partie&nbsp;:</h2>
             <h3>
@@ -175,24 +179,42 @@
               </select>
             </h3>
             <div class="game-specific-settings">
-              <!-- all fields except the seed input must be disabled by default -->
-              <div>
-                <label for="game-seed">Seed :</label>
-                <input type="number" id="game-seed" placeholder="Automatique" min="1" step="1000">
-              </div>
+              <!-- all fields must be disabled by default -->
               <div>
                 <label for="game-player-hp">HP du joueur :</label>
-                <input type="number" id="game-player-hp" min="1" max="5" disabled>
+                <input type="number" id="game-player-hp" min="1" max="100" disabled>
               </div>
               <div>
                 <label for="game-shoot-delay">Interval des tirs :</label>
-                <input type="number" id="game-shoot-delay" min="1" max="10000" step="100" disabled>
+                <input type="number" id="game-shoot-delay" min="100" max="10000" step="100" disabled>
               </div>
               <div>
                 <label for="game-player-based-ammo">Munitions de base :</label>
                 <input type="number" id="game-player-based-ammo" min="1" max="100" disabled>
               </div>
             </div>
+          </div>
+        </div>
+
+        <div id="lobby-page" aria-hidden="true">
+          <div>
+            <button type="button" class="primary" id="host-game-button">
+                Host une game
+            </button>
+            <h2>Salons de jeux disponibles</h2>
+            <div class="container-players-in-lobby" aria-hidden="true">
+                <p aria-hidden="true">Note: vous devez attendre que <span></span> lance la partie</p>
+                <p aria-hidden="true">En attente de joueurs...</p>
+                <ul>
+                </ul>
+                <button type="button" id="change-settings-lobby-button">Customiser la partie</button>
+                <button type="button" id="quit-lobby-button">Quitter</button>
+            </div>
+            <table>
+                <tbody>
+                    
+                </tbody>
+            </table>
           </div>
         </div>
 

@@ -1,38 +1,30 @@
 import { Skin } from "./utils/Skins";
 import Bullet from "./Bullet";
-import Game from "./Game";
-import Player from "./Player";
 import Sprite2D from "./Sprite2D";
 import Vector2 from "./Vector2";
-import HitBox from "./models/HitBox";
-
 /**
  *  This class represents the enemy entity in the game.
  */
-export default class Enemy extends Sprite2D implements IEntity {
-    public static readonly TIMEOUT_SHOOT: number = 500;
-    private static _shootProbability: number = 0.02;
-
-    private _gravity: number;
-    private _dead: boolean = false;
-    private _hp: number = 1;
-    private _scoreToGive: number = 10;
-    private _canShoot: boolean = true;
-
-    constructor(canvas: HTMLCanvasElement, position?: Vector2, gravity = 2) {
-        super(canvas, Skin.GREEN);
+export default class Enemy extends Sprite2D {
+    static TIMEOUT_SHOOT = 500;
+    static _shootProbability = 0.02;
+    _gravity;
+    _dead = false;
+    _hp = 1;
+    _scoreToGive = 10;
+    _canShoot = true;
+    constructor(position, gravity = 2) {
+        super(Skin.GREEN);
         this._position = position ?? Enemy.generateRandomSpawnPosition(this._skinImg.width, this._skinImg.height);
         this._gravity = gravity;
     }
-
     /**
      * This method checks if the entity is a player.
      * @returns True if the entity is a player, false otherwise.
      */
-    public isPlayer(): this is Player {
+    isPlayer() {
         return false;
     }
-
     /**
      * This method generates a random spawn position outside of the screen.
      * The enemy spawns above the screen and progressively goes down.
@@ -42,73 +34,69 @@ export default class Enemy extends Sprite2D implements IEntity {
      * @param height The height of the enemy.
      * @returns The random position.
      */
-    public static generateRandomSpawnPosition(width: number, height: number): Vector2 {
-        return new Vector2(Game.random.nextInt(
-            Game.limits.minX + 1,
-            Game.limits.maxX - width
-        ), -height - 10);
+    static generateRandomSpawnPosition(width, height) {
+        // return new Vector2(Game.random.nextInt(
+        //     Game.limits.minX + 1,
+        //     Game.limits.maxX - width
+        // ), -height - 10);
+        // TODO: remove hard coded value
+        return new Vector2(500, 300);
     }
-
     /**
      * Generates a new random position for the enemy.
      */
-    public newSpawnPosition() {
+    newSpawnPosition() {
         this._position = Enemy.generateRandomSpawnPosition(this._skinImg.width, this._skinImg.height);
     }
-
     /**
      * This method kills the enemy and increments the general score of the game.
      * @returns True if the enemy is dead, false otherwise.
      */
-    public die(): boolean {
+    die() {
         this._hp--;
         if (this._hp > 0) {
             return false;
-        } else {
+        }
+        else {
             this._dead = true;
-            Game.getInstance()?.incrementScore(this._scoreToGive);
+            // Increment score
+            // Game.getInstance()?.incrementScore(this._scoreToGive);
             return true;
         }
     }
-
-    public shoot(): void {
-        const bullet = new Bullet(this._canvas, this._position);
+    shoot() {
+        const bullet = new Bullet(this._position);
         bullet.attachTo(this);
         this._canShoot = false;
         setTimeout(() => {
             this._canShoot = true;
         }, Enemy.TIMEOUT_SHOOT);
-        Game.getInstance().addBullet(bullet);
+        // Add bullet
     }
-
-    
     /**
      * Moves the enemy down at every frame
      * by a fixed amount of pixels (see {@link _gravity}).
-     * The enemy also has a small chance of shooting. 
+     * The enemy also has a small chance of shooting.
      */
-    public move(): void {
+    move() {
         this._position.y += this._gravity;
-        if (this._canShoot && Enemy._shootProbability > Game.random.next()) {
-            this.shoot();
-        }
+        // if (this._canShoot && Enemy._shootProbability > Game.random.next()) {
+        //     this.shoot();
+        // }
     }
-
     /**
      * This method renders the enemy on the canvas.
      */
-    public render(): void {
-        if (this._dead) return;
+    render() {
+        if (this._dead)
+            return;
         super.render();
     }
-    
-    public isColliding(enemy: IEntity): boolean {
-        // This code check if the enemy is colliding with another entity
-        const hitBox: HitBox = this.generateHitBox();
-        const otherHitBox: HitBox = enemy.generateHitBox();
+    isColliding(enemy) {
+        const hitBox = this.generateHitBox();
+        const otherHitBox = enemy.generateHitBox();
         return hitBox.isColliding(otherHitBox);
     }
-
-    public setGravity(gravity: number) { this._gravity = gravity; }
-    public isDead(): boolean { return this._dead; }
-} 
+    setGravity(gravity) { this._gravity = gravity; }
+    isDead() { return this._dead; }
+}

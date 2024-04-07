@@ -1,3 +1,4 @@
+import LobbyPage from "./LobbyPage";
 import RankingTable from "./RankingPage";
 
 /**
@@ -75,7 +76,8 @@ export default class {
         credits: this.modal.querySelector("#credits-page") as HTMLDivElement,
         ranking: this.modal.querySelector("#ranking-page") as HTMLDivElement,
         settings: this.modal.querySelector("#settings-page") as HTMLDivElement,
-        gameSettings: this.modal.querySelector("#game-settings-page") as HTMLDivElement
+        gameSettings: this.modal.querySelector("#game-settings-page") as HTMLDivElement,
+        lobby: this.modal.querySelector("#lobby-page") as HTMLDivElement,
     });
 
     /**
@@ -88,6 +90,22 @@ export default class {
     });
 
     /**
+     * The pause screen
+     */
+    private static readonly pauseScreen = Object.freeze({
+        screen: document.querySelector("#pause-screen") as HTMLElement,
+        pausedBy: document.querySelector("#pause-screen > p > span") as HTMLSpanElement,
+        continueBtn: document.querySelector("#unpause-game-btn") as HTMLButtonElement,
+        quitBtn: document.querySelector("#pause-screen > div > button:last-of-type") as HTMLButtonElement,
+    });
+
+    private static readonly gameOverScreen = Object.freeze({
+        screen: document.querySelector("#game-over-screen") as HTMLElement,
+        restartBtn: document.querySelector("#restart-game-btn") as HTMLButtonElement,
+        quitBtn: document.querySelector("#game-over-screen > div > button:last-of-type") as HTMLButtonElement,
+    });
+
+    /**
      * The paragraph element that contains the text for telling the user its score during a game.
      */
     public static readonly containerScore = document.querySelector("#container-score") as HTMLElement;
@@ -96,12 +114,6 @@ export default class {
      * The actual element span that holds the score.
      */
     public static readonly scoreElement = this.containerScore.querySelector("#score") as HTMLElement;
-
-    /**
-     * The container that contains the heart images,
-     * which represent the health points of the player.
-     */
-    public static readonly containerHearts = document.querySelector("#container-hearts") as HTMLElement;
 
     /**
      * The death screen. Show it when the player is dead,
@@ -209,6 +221,10 @@ export default class {
         if (!this.initialized) {
             this.mainButtons.playNow.addEventListener('click', () => this.showModal(this.modalPages.gameSettings));
             this.mainButtons.credits.addEventListener('click', () => this.showModal(this.modalPages.credits));
+            this.mainButtons.playCoop.addEventListener('click', () => {
+                LobbyPage.requestRooms();
+                this.showModal(this.modalPages.lobby);
+            });
 
             // Events related to the corner buttons
             this.cornerButtons.rankings.addEventListener('click', () => this.showModal(this.modalPages.ranking));
@@ -247,7 +263,7 @@ export default class {
         this.hideElement(this.containerScore);
         this.hideElement(this.gameBorders.left);
         this.hideElement(this.gameBorders.right);
-        this.hideElement(this.containerHearts);
+        this.resetScore();
         // Focus the main button (Play now)
         this.mainButtons.playNow.focus();
     }
@@ -270,12 +286,73 @@ export default class {
         this.showElement(this.gameBorders.left);
         this.showElement(this.gameBorders.right);
         this.showElement(this.containerScore);
-        this.showElement(this.containerHearts);
         this.closeModal();
-        const focusedElement = this.getFocusedElement();
-        if (focusedElement) {
-            focusedElement.blur();
+        this.getFocusedElement()?.blur();
+    }
+
+    public static pauseGame(author: string, triggered_by_client: boolean) {
+        this.showElement(this.pauseScreen.screen);
+        this.pauseScreen.screen.removeAttribute("inert");
+        this.pauseScreen.pausedBy.textContent = author;
+        if (triggered_by_client) {
+            this.pauseScreen.continueBtn.style.display = "block";
+        } else {
+            this.pauseScreen.continueBtn.style.display = "none";
         }
+    }
+
+    public static hidePauseMenu() {
+        this.hideElement(this.pauseScreen.screen);
+        this.pauseScreen.screen.setAttribute("inert", "inert");
+    }
+
+    public static onUnpause(callback: () => void) {
+        this.pauseScreen.continueBtn.addEventListener("click", () => {
+            this.pauseScreen.continueBtn.blur();
+            this.hidePauseMenu();
+            callback();
+        });
+    }
+
+    public static onQuitGame(callback: () => void) {
+        this.pauseScreen.quitBtn.addEventListener("click", () => {
+            this.pauseScreen.quitBtn.blur();
+            this.hidePauseMenu();
+            callback();
+        });
+    }
+
+    public static changePauserName(new_name: string, is_client: boolean) {
+        this.pauseScreen.pausedBy.textContent = new_name;
+        if (is_client) {
+            this.pauseScreen.continueBtn.style.display = "block";
+        }
+    }
+
+    public static showGameOver() {
+        this.showElement(this.gameOverScreen.screen);
+        this.gameOverScreen.screen.removeAttribute("inert");
+    }
+
+    public static hideGameOver() {
+        this.hideElement(this.gameOverScreen.screen);
+        this.gameOverScreen.screen.setAttribute("inert", "inert");
+    }
+
+    public static onRestartGame(callback: () => void) {
+        this.gameOverScreen.restartBtn.addEventListener('click', () => {
+            this.gameOverScreen.restartBtn.blur();
+            this.hideGameOver();
+            callback();
+        });
+    }
+
+    public static onGameOverQuitGame(callback: () => void) {
+        this.gameOverScreen.quitBtn.addEventListener('click', () => {
+            this.gameOverScreen.quitBtn.blur();
+            this.hideGameOver();
+            callback();
+        });
     }
 
     /**
@@ -294,24 +371,8 @@ export default class {
         this.scoreElement.textContent = score.toString();
     }
 
-    /**
-     * Creates a heart to be added to the UI, more precisely
-     * in the container made for this (see {@link containerHearts}).
-     */
-    public static createHeart() {
-        const img = document.createElement("img");
-        img.src = "/assets/icons/heart-icon.png";
-        this.containerHearts.appendChild(img);
-    }
-
-    /**
-     * Removes a heart from the UI, meaning the player
-     * has just lost an HP.
-     */
-    public static removeHeart() {
-        if (this.containerHearts.lastElementChild) {
-            this.containerHearts.removeChild(this.containerHearts.lastElementChild);
-        }
+    public static resetScore() {
+        this.setScore(0);
     }
     
     public static showDeathScreen() {
