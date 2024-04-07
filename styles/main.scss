@@ -209,61 +209,71 @@ main button {
 #death-screen {
     height: 20vh;
     min-height: 200px;
+}
 
-    b {
-        font-size: 5.5em;
-        color: rgb(255, 30, 30);
+#death-screen b,
+#game-over-screen b {
+    font-size: 5.5em;
+    color: rgb(255, 30, 30);
 
-        @media screen and (max-width: 400px) {
-            font-size: 4em;
+    @media screen and (max-width: 400px) {
+        font-size: 4em;
+    }
+}
+
+#pause-screen b {
+    font-size: 3.5em;
+    color: rgb(22, 51, 145);
+}
+
+#pause-screen p {
+    font-family: $font;
+    color: #fff;
+    font-weight: bolder;
+    text-align: center;
+    margin: 20px 0;
+    font-size: 18px;
+}
+
+#pause-screen,
+#game-over-screen {
+    height: 30vh;
+    min-height: 200px;
+    flex-direction: column;
+}
+
+#pause-screen button,
+#game-over-screen button {
+    color: #fff;
+    font-family: $font;
+    font-weight: bolder;
+}
+
+#pause-screen>div,
+#game-over-screen>div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    button {
+        cursor: pointer;
+        background-color: transparent;
+        display: block;
+        border: none;
+        text-decoration: underline;
+        font-size: 18px;
+        text-align: center;
+        margin-bottom: 10px;
+        transition: text-shadow 200ms ease;
+
+        &:hover,
+        &:focus {
+            text-shadow: 0 1px 1px #fff;
         }
     }
 }
 
-#pause-screen {
-    height: 30vh;
-    min-height: 200px;
-    flex-direction: column;
-
-    b {
-        font-size: 3.5em;
-        color: rgb(22, 51, 145);
-    }
-
-    p,
-    button {
-        font-family: $font;
-        color: #fff;
-        font-weight: bolder;
-    }
-
-    p {
-        text-align: center;
-        margin: 20px 0;
-        font-size: 18px;
-    }
-
-    & > div {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-
-        button {
-            cursor: pointer;
-            background-color: transparent;
-            display: block;
-            border: none;
-            text-decoration: underline;
-            font-size: 18px;
-            text-align: center;
-            margin-bottom: 10px;
-            transition: text-shadow 200ms ease;
-
-            &:hover,
-            &:focus {
-                text-shadow: 0 1px 1px #fff;
-            }
-        }
-    }
+#game-over-screen > div {
+    margin-top: 30px;
 }

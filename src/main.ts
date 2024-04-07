@@ -33,11 +33,21 @@ function isInGame() {
     return globalGameData != undefined;
 }
 
+function initGame(game_data: GameData) {
+    globalGameData = game_data;
+    PlayerClient.setPlayerData(game_data.players.find(p => p.id === socket.id)!, game_data.settings.playerShootDelay);
+}
+
 LobbyPage.bindEvents(socket);
-LobbyPage.setOnGameStarted((gameData: GameData) => {
-    globalGameData = gameData;
-    PlayerClient.setPlayerData(gameData.players.find(p => p.id === socket.id)!, gameData.settings.playerShootDelay);
+LobbyPage.setOnGameStarted((game_data: GameData) => {
+    initGame(game_data);
     UI.hideUI();
+});
+
+socket.on("game_restarted", (game_data: GameData) => {
+    initGame(game_data);
+    clearCanvas();
+    UI.hideGameOver();
 });
 
 // Allow the button to be interactive.
@@ -107,14 +117,13 @@ window.addEventListener("resize", () => fillScreen());
 window.addEventListener("load", () => fillScreen());
 
 window.addEventListener("keydown", (e) => {
-    if (isInGame() && (e.key === "Esc" || e.key === "Escape")) {
+    if (isInGame() && !globalGameData!.is_over && (e.key === "Esc" || e.key === "Escape")) {
         if (globalGameData!.paused) {
             if (globalGameData!.paused_by === socket.id) {
                 unpause();
                 UI.hidePauseMenu();
             }
         } else {
-            console.log("the client has paused the game");
             UI.pauseGame(SettingsDB.name, true);
             // It has to be assigned here to make sure
             // we can detect if the pause was triggered by
@@ -127,18 +136,29 @@ window.addEventListener("keydown", (e) => {
 
 function unpause() {
     socket.emit("game_pause_toggled");
-    unpaused = true;
 }
 
-UI.onUnpause(unpause);
-UI.onQuitGame(() => {
-    socket.emit("quit_game");
+function quit() {
     globalGameData = undefined;
     LobbyPage.reset();
     PlayerClient.resetControls();
     UI.showUI();
     clearCanvas();
+}
+
+UI.onUnpause(unpause);
+
+UI.onQuitGame(() => {
+    socket.emit("quit_game");
+    quit();
 });
+
+UI.onGameOverQuitGame(() => {
+    socket.emit("game_ended");
+    quit();
+});
+
+UI.onRestartGame(() => socket.emit("game_restart"));
 
 function clearCanvas() {
     GameClient.getContext().clearRect(0, 0, canvas.width, canvas.height);
@@ -154,17 +174,12 @@ function render() {
     requestAnimationFrame(render);
 }
 
-let transferred = false;
-let unpaused = false;
-
 socket.on("game_update", (game: GameData) => {
+    if (game.is_over) {
+        return;
+    }
     if (globalGameData?.score != game.score) {
         UI.setScore(game.score);
-    }
-    if (transferred && unpaused) {
-        console.log("the game should be continuing");
-        console.log("globalGameData.paused is", globalGameData!.paused);
-        console.log("game.paused is", game!.paused);
     }
     if (globalGameData?.paused === false && game.paused) {
         // Executes if the client's game isn't paused
@@ -183,13 +198,23 @@ socket.on("game_update", (game: GameData) => {
     }
     globalGameData = game;
     if (globalGameData.players.every(p => p.hp <= 0)) {
-        UI.showDeathScreen();
-        setTimeout(() => {
-            UI.hideDeathScreen();
-        }, 2000);
-        socket.emit("game_ended");
+        socket.emit("game_over");
+        UI.showGameOver();
+    } else {
+        // We want the death screen to appear only in multiplayer.
+        // If the player dies in a solo game then the
+        // game over screen must be displayed instead.
+        const current_player = globalGameData.players.find(p => p.id === socket.id)!;
+        if (!PlayerClient.is_dead && current_player.hp <= 0) {
+            UI.showDeathScreen();
+            setTimeout(() => {
+                UI.hideDeathScreen();
+            }, 2000);
+            PlayerClient.is_dead = true;
+        }
     }
 });
+
 
 // This event is triggered when the player
 // that has paused the game quit it.
@@ -198,15 +223,11 @@ socket.on("game_update", (game: GameData) => {
 socket.on("game_pauser_quit", (game: GameData) => {
     globalGameData = game;
     const manager = globalGameData!.players[0];
-    console.log("the pauser quit, transfering to", manager);
-    console.log(`manager id is ${manager.id} and socket.id is ${socket.id}`);
-    console.log("new game is", globalGameData);
     UI.changePauserName(manager.username, manager.id === socket.id);
-    transferred = true;
 });
 
 setInterval(() => {
-    if (isInGame() && !globalGameData!.paused) {
+    if (isInGame() && !globalGameData!.paused && !globalGameData!.is_over) {
         const player = globalGameData!.players.find(p => p.id === socket.id)!;
         if (player.hp > 0) {
             PlayerClient.move();

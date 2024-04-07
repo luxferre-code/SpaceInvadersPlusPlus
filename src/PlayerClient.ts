@@ -75,6 +75,8 @@ export default class PlayerClient {
      */
     private static shoot_delay: number = 500;
 
+    public static is_dead: boolean = false;
+
     /**
      * Defines the player's metadata such as its skin, username, initial position, etc.
      */
@@ -82,11 +84,14 @@ export default class PlayerClient {
         this.player_position = player_data.position;
         this.player_skin_img = getSkinImage(player_data.skin);
         this.shoot_delay = shoot_delay;
+        this.is_dead = false;
         this.resetControls();
     }
 
     public static resetControls() {
         this.controls = {};
+        this.mX = 0;
+        this.mY = 0;
     }
 
     /**

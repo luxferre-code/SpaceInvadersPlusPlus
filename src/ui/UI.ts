@@ -96,7 +96,13 @@ export default class {
         screen: document.querySelector("#pause-screen") as HTMLElement,
         pausedBy: document.querySelector("#pause-screen > p > span") as HTMLSpanElement,
         continueBtn: document.querySelector("#unpause-game-btn") as HTMLButtonElement,
-        quitBtn: document.querySelector("#quit-game-btn") as HTMLButtonElement,
+        quitBtn: document.querySelector("#pause-screen > div > button:last-of-type") as HTMLButtonElement,
+    });
+
+    private static readonly gameOverScreen = Object.freeze({
+        screen: document.querySelector("#game-over-screen") as HTMLElement,
+        restartBtn: document.querySelector("#restart-game-btn") as HTMLButtonElement,
+        quitBtn: document.querySelector("#game-over-screen > div > button:last-of-type") as HTMLButtonElement,
     });
 
     /**
@@ -280,10 +286,7 @@ export default class {
         this.showElement(this.gameBorders.right);
         this.showElement(this.containerScore);
         this.closeModal();
-        const focusedElement = this.getFocusedElement();
-        if (focusedElement) {
-            focusedElement.blur();
-        }
+        this.getFocusedElement()?.blur();
     }
 
     public static pauseGame(author: string, triggered_by_client: boolean) {
@@ -323,6 +326,32 @@ export default class {
         if (is_client) {
             this.pauseScreen.continueBtn.style.display = "block";
         }
+    }
+
+    public static showGameOver() {
+        this.showElement(this.gameOverScreen.screen);
+        this.gameOverScreen.screen.removeAttribute("inert");
+    }
+
+    public static hideGameOver() {
+        this.hideElement(this.gameOverScreen.screen);
+        this.gameOverScreen.screen.setAttribute("inert", "inert");
+    }
+
+    public static onRestartGame(callback: () => void) {
+        this.gameOverScreen.restartBtn.addEventListener('click', () => {
+            this.gameOverScreen.restartBtn.blur();
+            this.hideGameOver();
+            callback();
+        });
+    }
+
+    public static onGameOverQuitGame(callback: () => void) {
+        this.gameOverScreen.quitBtn.addEventListener('click', () => {
+            this.gameOverScreen.quitBtn.blur();
+            this.hideGameOver();
+            callback();
+        });
     }
 
     /**

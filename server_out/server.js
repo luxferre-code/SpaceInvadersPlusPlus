@@ -52,22 +52,24 @@ function getRandomPlayerSpawnPosition(limits, skin_width, skin_height) {
 }
 io.on("connection", (socket) => {
     console.log("connection", socket.id);
-    function clearGameIntervals() {
-        const room = getRoom();
-        if (room) {
-            const game = games.get(room);
-            if (game) {
-                clearInterval(game._physics_process);
-                clearInterval(game._process);
+    function clearGameIntervals(game) {
+        if (game === undefined) {
+            const room = getRoom();
+            if (room) {
+                game = games.get(room);
             }
         }
+        if (game?._physics_process)
+            clearInterval(game._physics_process);
+        if (game?._process)
+            clearInterval(game._process);
     }
     function quitGame() {
         const room_id = getRoom();
         if (room_id) {
-            leaveRoom(room_id);
-            removePlayerFromGameData(socket.id, room_id);
             clearGameIntervals();
+            removePlayerFromGameData(socket.id, room_id);
+            leaveRoom(room_id);
             updateLobby();
         }
     }
@@ -176,6 +178,164 @@ io.on("connection", (socket) => {
         game.spawn_chance = Math.min(game.spawn_chance + game.score * SCORE_MULTIPLIER, 1);
         game.max_enemy_count = INITIAL_MAX_ENEMY_COUNT + Math.floor(game.score / 100);
     }
+    function startGame(room, settings, skin, sw, sh, esw, esh) {
+        const data = {
+            enemies: [],
+            bullets: [],
+            score: 0,
+            spawn_chance: INITIAL_SPAWN_CHANCE,
+            esw,
+            esh,
+            settings,
+            paused: false,
+            paused_by: undefined,
+            is_over: false,
+            _physics_process: undefined,
+            _process: undefined,
+            max_enemy_count: INITIAL_MAX_ENEMY_COUNT,
+            players: room.players.map(p => ({
+                username: p.username,
+                position: getRandomPlayerSpawnPosition(room.computed_screen_limits, sw, sh),
+                immune: false,
+                id: p.id,
+                skin,
+                sw,
+                sh,
+                hp: settings.playerHp,
+            })),
+        };
+        room.game_started = true;
+        games.set(room.id, data);
+        socket.to(room.id).emit("host_started_game", data);
+        const physics_process = setInterval(() => {
+            const game = games.get(room.id);
+            if (game) {
+                if (game.paused || game.is_over) {
+                    return;
+                }
+                // - Update position of enemies and bullets.
+                // - Remove bullets that are out of the screen.
+                // - Check for collisions and update the game accordingly.
+                for (let i = game.enemies.length - 1; i >= 0; i--) {
+                    if (game.enemies[i].y >= room.computed_screen_limits.maxY) {
+                        game.enemies.splice(i, 1);
+                    }
+                }
+                for (let i = game.bullets.length - 1; i >= 0; i--) {
+                    if (game.bullets[i].y < 10 || game.bullets[i].y >= room.computed_screen_limits.maxY) {
+                        game.bullets.splice(i, 1);
+                    }
+                }
+                const enemy_hit_boxes = [];
+                const player_hurt_boxes = [];
+                const used_bullets = [];
+                const killed_enemies = [];
+                for (let b = 0; b < game.bullets.length; b++) {
+                    const bullet = game.bullets[b];
+                    const hit_box = new Box(bullet.x, bullet.y, BULLET_SIZE, BULLET_SIZE);
+                    if (bullet.shotByPlayer) {
+                        for (let i = 0; i < game.enemies.length; i++) {
+                            const enemy = game.enemies[i];
+                            const hurt_box = new Box(enemy.x, enemy.y, game.esw, game.esh);
+                            enemy_hit_boxes.push(hurt_box);
+                            if (hit_box.isColliding(hurt_box)) {
+                                killed_enemies.push(i);
+                                used_bullets.push(b);
+                                game.score += 10;
+                                increaseDifficulty(game);
+                                break;
+                            }
+                        }
+                    }
+                    else {
+                        for (const player of game.players) {
+                            const hurt_box = new Box(player.position.x, player.position.y, player.sw, player.sh);
+                            player_hurt_boxes.push(hurt_box);
+                            if (player.hp > 0) {
+                                if (hit_box.isColliding(hurt_box)) {
+                                    if (!player.immune) {
+                                        player.hp -= 1;
+                                        player.immune = true;
+                                        setTimeout(() => {
+                                            player.immune = false;
+                                        }, 500);
+                                    }
+                                    used_bullets.push(b);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                for (let i = 0; i < game.enemies.length; i++) {
+                    const enemy = game.enemies[i];
+                    const hit_box = i >= enemy_hit_boxes.length ? new Box(enemy.x, enemy.y, game.esw, game.esh) : enemy_hit_boxes[i];
+                    for (let i = 0; i < game.players.length; i++) {
+                        const player = game.players[i];
+                        if (player.hp > 0 && !player.immune) {
+                            const hurt_box = i >= player_hurt_boxes.length ? new Box(player.position.x, player.position.y, player.sw, player.sh) : player_hurt_boxes[i];
+                            if (hit_box.isColliding(hurt_box)) {
+                                player.hp -= 1;
+                                player.immune = true;
+                                setTimeout(() => {
+                                    player.immune = false;
+                                }, 500);
+                            }
+                        }
+                    }
+                }
+                for (let i = killed_enemies.length - 1; i >= 0; i--) {
+                    game.enemies.splice(killed_enemies[i], 1);
+                }
+                for (let i = used_bullets.length - 1; i >= 0; i--) {
+                    game.bullets.splice(used_bullets[i], 1);
+                }
+                game.bullets.forEach(b => b.y += b.shotByPlayer ? -BULLET_VELOCITY : BULLET_VELOCITY);
+                game.enemies.forEach(e => e.y += ENEMY_VELOCITY);
+                io.to(room.id).emit("game_update", game);
+            }
+            else {
+                clearInterval(data._physics_process);
+            }
+        }, 1000 / 60);
+        const process = setInterval(() => {
+            const game = games.get(room.id);
+            if (game) {
+                if (game.paused || game.is_over) {
+                    return;
+                }
+                // - Create new enemies
+                // - Make the enemies shoot
+                if (game.enemies.length < game.max_enemy_count && game.spawn_chance > Math.random()) {
+                    game.enemies.push({
+                        y: -game.esh,
+                        x: getRandomInt(room.computed_screen_limits.minX, room.computed_screen_limits.maxX - game.esw),
+                    });
+                }
+                for (const enemy of game.enemies) {
+                    if (ENEMY_SHOOTING_CHANCE > Math.random()) {
+                        game.bullets.push({
+                            shotByPlayer: false,
+                            x: enemy.x + (game.esw / 2) - BULLET_SIZE,
+                            y: enemy.y + game.esh,
+                        });
+                    }
+                }
+            }
+            else {
+                clearInterval(data._process);
+            }
+        }, 1000 / 20);
+        // I have learned the hard way that variables stored in this scope
+        // are global to all players. Therefore, the intervals must be attached 
+        // to individuals games via properties. However, it is not possible
+        // to send a variable of type `NodeJS.Timeout` via socket.io.
+        // As a consequence, those intervals must be converted into
+        // their primitive value (numbers).
+        data._physics_process = physics_process[Symbol.toPrimitive]();
+        data._process = process[Symbol.toPrimitive]();
+        return data;
+    }
     socket.on("username_changed", (new_name) => {
         for (const room of rooms) {
             const playerIdx = room.players.findIndex(p => p.id === socket.id);
@@ -202,166 +362,37 @@ io.on("connection", (socket) => {
     socket.on("start_game", (room_id, settings, skin, sw, sh, esw, esh, ack) => {
         const room = rooms.find(r => r.id === room_id);
         if (room) {
-            const data = {
-                enemies: [],
-                bullets: [],
-                score: 0,
-                spawn_chance: INITIAL_SPAWN_CHANCE,
-                esw,
-                esh,
-                settings,
-                paused: false,
-                paused_by: undefined,
-                _physics_process: undefined,
-                _process: undefined,
-                max_enemy_count: INITIAL_MAX_ENEMY_COUNT,
-                players: room.players.map(p => ({
-                    username: p.username,
-                    position: getRandomPlayerSpawnPosition(room.computed_screen_limits, sw, sh),
-                    immune: false,
-                    id: p.id,
-                    skin,
-                    sw,
-                    sh,
-                    hp: settings.playerHp,
-                })),
-            };
-            room.game_started = true;
-            games.set(room_id, data);
-            socket.to(room_id).emit("host_started_game", data);
-            const physics_process = setInterval(() => {
-                const game = games.get(room_id);
-                if (game) {
-                    if (game.paused) {
-                        return;
-                    }
-                    // - Update position of enemies and bullets.
-                    // - Remove bullets that are out of the screen.
-                    // - Check for collisions and update the game accordingly.
-                    for (let i = game.enemies.length - 1; i >= 0; i--) {
-                        if (game.enemies[i].y >= room.computed_screen_limits.maxY) {
-                            game.enemies.splice(i, 1);
-                        }
-                    }
-                    for (let i = game.bullets.length - 1; i >= 0; i--) {
-                        if (game.bullets[i].y < 10 || game.bullets[i].y >= room.computed_screen_limits.maxY) {
-                            game.bullets.splice(i, 1);
-                        }
-                    }
-                    const enemy_hit_boxes = [];
-                    const player_hurt_boxes = [];
-                    const used_bullets = [];
-                    const killed_enemies = [];
-                    for (let b = 0; b < game.bullets.length; b++) {
-                        const bullet = game.bullets[b];
-                        const hit_box = new Box(bullet.x, bullet.y, BULLET_SIZE, BULLET_SIZE);
-                        if (bullet.shotByPlayer) {
-                            for (let i = 0; i < game.enemies.length; i++) {
-                                const enemy = game.enemies[i];
-                                const hurt_box = new Box(enemy.x, enemy.y, game.esw, game.esh);
-                                enemy_hit_boxes.push(hurt_box);
-                                if (hit_box.isColliding(hurt_box)) {
-                                    killed_enemies.push(i);
-                                    used_bullets.push(b);
-                                    game.score += 10;
-                                    increaseDifficulty(game);
-                                    break;
-                                }
-                            }
-                        }
-                        else {
-                            for (const player of game.players) {
-                                const hurt_box = new Box(player.position.x, player.position.y, player.sw, player.sh);
-                                player_hurt_boxes.push(hurt_box);
-                                if (player.hp > 0) {
-                                    if (hit_box.isColliding(hurt_box)) {
-                                        if (!player.immune) {
-                                            player.hp -= 1;
-                                            player.immune = true;
-                                            setTimeout(() => {
-                                                player.immune = false;
-                                            }, 500);
-                                        }
-                                        used_bullets.push(b);
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    for (let i = 0; i < game.enemies.length; i++) {
-                        const enemy = game.enemies[i];
-                        const hit_box = i >= enemy_hit_boxes.length ? new Box(enemy.x, enemy.y, game.esw, game.esh) : enemy_hit_boxes[i];
-                        for (let i = 0; i < game.players.length; i++) {
-                            const player = game.players[i];
-                            if (player.hp > 0 && !player.immune) {
-                                const hurt_box = i >= player_hurt_boxes.length ? new Box(player.position.x, player.position.y, player.sw, player.sh) : player_hurt_boxes[i];
-                                if (hit_box.isColliding(hurt_box)) {
-                                    player.hp -= 1;
-                                    player.immune = true;
-                                    setTimeout(() => {
-                                        player.immune = false;
-                                    }, 500);
-                                }
-                            }
-                        }
-                    }
-                    for (let i = killed_enemies.length - 1; i >= 0; i--) {
-                        game.enemies.splice(killed_enemies[i], 1);
-                    }
-                    for (let i = used_bullets.length - 1; i >= 0; i--) {
-                        game.bullets.splice(used_bullets[i], 1);
-                    }
-                    game.bullets.forEach(b => b.y += b.shotByPlayer ? -BULLET_VELOCITY : BULLET_VELOCITY);
-                    game.enemies.forEach(e => e.y += ENEMY_VELOCITY);
-                    io.to(room_id).emit("game_update", game);
-                }
-                else {
-                    clearInterval(data._physics_process);
-                }
-            }, 1000 / 60);
-            const process = setInterval(() => {
-                const game = games.get(room_id);
-                if (game) {
-                    if (game.paused) {
-                        return;
-                    }
-                    // - Create new enemies
-                    // - Make the enemies shoot
-                    if (game.enemies.length < game.max_enemy_count && game.spawn_chance > Math.random()) {
-                        game.enemies.push({
-                            y: -game.esh,
-                            x: getRandomInt(room.computed_screen_limits.minX, room.computed_screen_limits.maxX - game.esw),
-                        });
-                    }
-                    for (const enemy of game.enemies) {
-                        if (ENEMY_SHOOTING_CHANCE > Math.random()) {
-                            game.bullets.push({
-                                shotByPlayer: false,
-                                x: enemy.x + (game.esw / 2) - BULLET_SIZE,
-                                y: enemy.y + game.esh,
-                            });
-                        }
-                    }
-                }
-                else {
-                    clearInterval(data._process);
-                }
-            }, 1000 / 20);
-            // I have learned the hard way that variables stored in this scope
-            // are global to all players. Therefore, the intervals must be attached 
-            // to individuals games via properties. However, it is not possible
-            // to send a variable of type `NodeJS.Timeout` via socket.io.
-            // As a consequence, those intervals must be converted into
-            // their primitive value (numbers).
-            data._physics_process = physics_process[Symbol.toPrimitive]();
-            data._process = process[Symbol.toPrimitive]();
+            const data = startGame(room, settings, skin, sw, sh, esw, esh);
             ack(data);
             updateLobby();
         }
     });
     socket.on("game_ended", () => {
-        clearGameIntervals();
+        quitGame();
+    });
+    socket.on("game_over", () => {
+        const room_id = getRoom();
+        if (room_id) {
+            const game = games.get(room_id);
+            if (game) {
+                game.is_over = true;
+                io.to(room_id).emit("game_update", game);
+            }
+        }
+    });
+    socket.on("game_restart", () => {
+        const room_id = getRoom();
+        if (room_id) {
+            const room = rooms.find(r => r.id === room_id);
+            const game = games.get(room_id);
+            if (room && game) {
+                clearGameIntervals(game);
+                const p = game.players[0];
+                const new_game = startGame(room, game.settings, p.skin, p.sw, p.sh, game.esw, game.esh);
+                games.set(room_id, new_game);
+                io.to(room_id).emit("game_restarted", new_game);
+            }
+        }
     });
     socket.on("game_pause_toggled", (paused_by) => {
         const room_id = getRoom();
