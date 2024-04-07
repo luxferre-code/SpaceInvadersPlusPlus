@@ -423,7 +423,7 @@ io.on("connection", (socket) => {
         ack(getAvailableRooms());
     });
 
-    socket.on("disconnect", () => {
+    function quitGame() {
         const to_remove: number[] = [];
         for (let i = 0; i < rooms.length; i++) {
             const room = rooms[i];
@@ -435,14 +435,17 @@ io.on("connection", (socket) => {
                     recomputeGameLimits(room);
                 }
                 removePlayerFromGameData(socket.id, room.id);
+                clearGameIntervals();
             }
         }
         for (let i = to_remove.length - 1; i >= 0; i--) {
             rooms.splice(i, 1);
         }
         updateLobby();
-        clearGameIntervals();
-    });
+    }
+
+    socket.on("disconnect", quitGame);
+    socket.on("quit_game", quitGame);
 });
 
 httpServer.listen(port, () => {

@@ -82,6 +82,10 @@ export default class PlayerClient {
         this.player_position = player_data.position;
         this.player_skin_img = getSkinImage(player_data.skin);
         this.shoot_delay = shoot_delay;
+        this.resetControls();
+    }
+
+    public static resetControls() {
         this.controls = {};
     }
 

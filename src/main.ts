@@ -132,11 +132,20 @@ function unpause() {
 UI.onUnpause(unpause);
 UI.onQuitGame(() => {
     socket.emit("quit_game");
+    globalGameData = undefined;
+    LobbyPage.reset();
+    PlayerClient.resetControls();
+    UI.showUI();
+    clearCanvas();
 });
+
+function clearCanvas() {
+    GameClient.getContext().clearRect(0, 0, canvas.width, canvas.height);
+}
 
 function render() {
     if (isInGame()) {
-        GameClient.getContext().clearRect(0, 0, canvas.width, canvas.height);
+        clearCanvas();
         globalGameData!.players.forEach(p => GameClient.renderPlayer(p));
         globalGameData!.bullets.forEach(b => GameClient.renderBullet(b.x, b.y));
         globalGameData!.enemies.forEach(e => GameClient.renderEnemy(e.x, e.y));

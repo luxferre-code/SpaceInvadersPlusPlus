@@ -38,10 +38,14 @@ export default class LobbyPage {
     }
 
     public static disconnect() {
+        this.socket = undefined;
+        this.reset();
+    }
+
+    public static reset() {
         this.game_started = false;
         this.joined_room_id = undefined;
         this.hosted_room_id = undefined;
-        this.socket = undefined;
         this.resetView();
     }
 
