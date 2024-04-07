@@ -22,9 +22,6 @@ socket.on('disconnect', () => {
     console.log('Disconnected from server');
 });
 
-// Send to the server the username of the current user
-socket.emit("username_changed", SettingsDB.name);
-
 const canvas = document.querySelector("canvas") as HTMLCanvasElement;
 GameClient.initWith(canvas);
 
@@ -61,7 +58,9 @@ SettingsPage.listenToMusicVolumeChange((newVolume) => SettingsDB.musicVolume = n
 SettingsPage.listenToSkinChange((newSkin) => SettingsDB.skin = newSkin);
 SettingsPage.listenToNameChange((newName) => {
     SettingsDB.name = newName;
-    socket.emit("username_changed", newName);
+    if (LobbyPage.isConnected()) {
+        socket.emit("username_changed", newName);
+    }
 });
 
 GameSettingsPage.initDefaultGameSettings();

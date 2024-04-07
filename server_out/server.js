@@ -51,7 +51,6 @@ function getRandomPlayerSpawnPosition(limits, skin_width, skin_height) {
     };
 }
 io.on("connection", (socket) => {
-    let username = "";
     console.log("connection", socket.id);
     function clearGameIntervals() {
         const room = getRoom();
@@ -93,7 +92,7 @@ io.on("connection", (socket) => {
             }
         }
     }
-    function createRoom(initialLimits) {
+    function createRoom(initialLimits, host_username) {
         // Leave the other rooms where the already player was.
         if (socket.rooms.size > 1) {
             for (const room_id of socket.rooms) {
@@ -106,8 +105,8 @@ io.on("connection", (socket) => {
             id: roomId,
             game_started: false,
             players: [{
-                    username,
                     id: socket.id,
+                    username: host_username,
                     game_limits: initialLimits,
                 }],
             computed_screen_limits: structuredClone(initialLimits),
@@ -122,7 +121,7 @@ io.on("connection", (socket) => {
         }
         return null;
     }
-    function joinExistingRoom(room_id, game_limits) {
+    function joinExistingRoom(room_id, game_limits, client_username) {
         // Basically checking if the user is already in another room.
         // If he is in another room, then leave it.
         // Also make sure that if the room he's already in is the
@@ -137,7 +136,7 @@ io.on("connection", (socket) => {
         for (const room of rooms) {
             if (room.id === room_id) {
                 room.players.push({
-                    username,
+                    username: client_username,
                     id: socket.id,
                     game_limits,
                 });
@@ -177,22 +176,21 @@ io.on("connection", (socket) => {
         game.spawn_chance = Math.min(game.spawn_chance + game.score * SCORE_MULTIPLIER, 1);
         game.max_enemy_count = INITIAL_MAX_ENEMY_COUNT + Math.floor(game.score / 100);
     }
-    socket.on("username_changed", (name) => {
-        username = name;
+    socket.on("username_changed", (new_name) => {
         for (const room of rooms) {
             const playerIdx = room.players.findIndex(p => p.id === socket.id);
             if (playerIdx >= 0) {
-                room.players[playerIdx].username = name;
+                room.players[playerIdx].username = new_name;
             }
         }
         updateLobby(); // necessary in the lobby when we're waiting for players to arrive
     });
-    socket.on("host", (initial_game_limits, ack) => {
-        ack(createRoom(initial_game_limits)); // will be called on the client
+    socket.on("host", (initial_game_limits, host_username, ack) => {
+        ack(createRoom(initial_game_limits, host_username)); // will be called on the client
         updateLobby();
     });
-    socket.on("join_room", (room_id, limits, ack) => {
-        const success = joinExistingRoom(room_id, limits);
+    socket.on("join_room", (room_id, limits, client_username, ack) => {
+        const success = joinExistingRoom(room_id, limits, client_username);
         ack(success);
         updateLobby();
     });
