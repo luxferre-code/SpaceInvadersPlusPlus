@@ -1,5 +1,6 @@
 import { createServer } from "http";
 import { Server } from "socket.io";
+import Box from "./src/utils/Box.js";
 const port = 3000;
 const httpServer = createServer();
 const io = new Server(httpServer, {
@@ -45,24 +46,6 @@ function getRandomPlayerSpawnPosition(limits) {
         x: getRandomInt(limits.minX + 1, limits.maxX - 50),
         y: limits.maxY - 60,
     };
-}
-class Box {
-    top_left;
-    top_right;
-    bottom_left;
-    bottom_right;
-    constructor(x, y, width, height) {
-        this.top_left = { x, y };
-        this.top_right = { x: x + width, y };
-        this.bottom_left = { x, y: y + height };
-        this.bottom_right = { x: x + width, y: y + height };
-    }
-    isColliding(hitbox) {
-        return this.top_left.x < hitbox.bottom_right.x &&
-            this.bottom_right.x > hitbox.top_left.x &&
-            this.top_left.y < hitbox.bottom_right.y &&
-            this.bottom_right.y > hitbox.top_left.y;
-    }
 }
 io.on("connection", (socket) => {
     let username = "";
