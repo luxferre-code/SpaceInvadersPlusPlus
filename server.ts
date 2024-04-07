@@ -16,6 +16,7 @@ const games: Map<string, GameData> = new Map();
 const BULLET_VELOCITY = 10;
 const ENEMY_VELOCITY = 4;
 const BULLET_WIDTH = 8;
+const SCORE_MULTIPLIER = 0.0001;
 
 function generateUniqueRoomId(): string {
     let room = "room-";
@@ -184,6 +185,10 @@ io.on("connection", (socket) => {
         room.computed_screen_limits.maxY = maxY;
     }
 
+    function increaseDifficulty(game: GameData) {
+        game.spawn_chance = Math.min(game.spawn_chance + game.score * SCORE_MULTIPLIER, 1);
+    }
+
     socket.on("username_changed", (name: string) => {
         username = name;
         for (const room of rooms) {
@@ -219,6 +224,7 @@ io.on("connection", (socket) => {
                 enemies: [],
                 bullets: [],
                 score: 0,
+                spawn_chance: 0.02,
                 players: room.players.map(p => ({
                     username: p.username,
                     position: getRandomPlayerSpawnPosition(room.computed_screen_limits),
@@ -265,6 +271,7 @@ io.on("connection", (socket) => {
                                     killed_enemies.push(i);
                                     used_bullets.push(b);
                                     game.score += 10;
+                                    increaseDifficulty(game);
                                     break;
                                 }
                             }
@@ -324,7 +331,7 @@ io.on("connection", (socket) => {
                 if (game) {
                     // - Creates new enemies
                     // - Make the enemies shoot
-                    if (game.enemies.length < 5 && 0.1 > Math.random()) {
+                    if (game.enemies.length < 5 && game.spawn_chance > Math.random()) {
                         game.enemies.push({
                             y: -50, // -50 is the size of the skin
                             x: getRandomInt(

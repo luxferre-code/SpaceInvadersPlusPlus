@@ -77,6 +77,7 @@ declare global {
         bullets: ServerBullet[];
         players: PlayerData[];
         score: number;
+        spawn_chance: number;
     }
 }
 
