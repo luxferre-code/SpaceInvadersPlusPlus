@@ -15,7 +15,8 @@ const ENEMY_VELOCITY = 4;
 const ENEMY_SHOOTING_CHANCE = 0.04;
 const BULLET_SIZE = 8;
 const SCORE_MULTIPLIER = 0.0001;
-const MAX_ENEMY_COUNT = 5;
+const INITIAL_MAX_ENEMY_COUNT = 5;
+const INITIAL_SPAWN_CHANCE = 0.02;
 function generateUniqueRoomId() {
     let room = "room-";
     for (let i = 0; i < 4; i++) {
@@ -156,8 +157,14 @@ io.on("connection", (socket) => {
         room.computed_screen_limits.maxX = maxX;
         room.computed_screen_limits.maxY = maxY;
     }
+    /**
+     * Increases the difficulty of the same depending on the current score.
+     * It increases the spawn chance for faster spawns.
+     * It also increases the maximum number of enemies every 100 points.
+     */
     function increaseDifficulty(game) {
         game.spawn_chance = Math.min(game.spawn_chance + game.score * SCORE_MULTIPLIER, 1);
+        game.max_enemy_count = INITIAL_MAX_ENEMY_COUNT + Math.floor(game.score / 100);
     }
     socket.on("username_changed", (name) => {
         username = name;
@@ -190,10 +197,11 @@ io.on("connection", (socket) => {
                 enemies: [],
                 bullets: [],
                 score: 0,
-                spawn_chance: 0.02,
+                spawn_chance: INITIAL_SPAWN_CHANCE,
                 esw,
                 esh,
                 settings,
+                max_enemy_count: INITIAL_MAX_ENEMY_COUNT,
                 players: room.players.map(p => ({
                     username: p.username,
                     position: getRandomPlayerSpawnPosition(room.computed_screen_limits, sw, sh),
@@ -299,9 +307,9 @@ io.on("connection", (socket) => {
             process_interval = setInterval(() => {
                 const game = games.get(room_id);
                 if (game) {
-                    // - Creates new enemies
+                    // - Create new enemies
                     // - Make the enemies shoot
-                    if (game.enemies.length < MAX_ENEMY_COUNT && game.spawn_chance > Math.random()) {
+                    if (game.enemies.length < game.max_enemy_count && game.spawn_chance > Math.random()) {
                         game.enemies.push({
                             y: -game.esh,
                             x: getRandomInt(room.computed_screen_limits.minX, room.computed_screen_limits.maxX - game.esw),
