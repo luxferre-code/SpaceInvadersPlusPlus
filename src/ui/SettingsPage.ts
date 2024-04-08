@@ -38,7 +38,10 @@ export default class {
      * Plays the music.
      */
     public static listenMusic() : void {
-        (document.querySelector("#music") as HTMLMediaElement)!.play();
+        const music = (document.querySelector("#music") as HTMLMediaElement)!;
+        if(music.played.length === 0) {
+            music.play();
+        }
     }
 
     /**

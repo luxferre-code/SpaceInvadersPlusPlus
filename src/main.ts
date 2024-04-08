@@ -65,7 +65,6 @@ SettingsPage.listenToNameChange((newName) => {
         socket.emit("username_changed", newName);
     }
 });
-SettingsPage.listenMusic();
 
 GameSettingsPage.initDefaultGameSettings();
 GameSettingsPage.onGameStarted(() => {
@@ -85,6 +84,7 @@ GameSettingsPage.onGameStarted(() => {
         socket.emit("start_solo_game", set, lts, nam, ski, esw, esh, ps, (gd: GameData) => {
             initGame(gd);
             UI.hideUI();
+            SettingsPage.listenMusic();
         });
     }
 });
@@ -180,6 +180,7 @@ function render() {
 }
 
 socket.on("game_update", (game: GameData) => {
+    SettingsPage.listenMusic();
     if (game.is_over) {
         return;
     }
