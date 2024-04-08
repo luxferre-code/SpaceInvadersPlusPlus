@@ -244,6 +244,17 @@ setInterval(() => {
     if (isInGame() && !globalGameData!.paused && !globalGameData!.is_over) {
         const player = globalGameData!.players.find(p => p.id === socket.id)!;
         if (player.hp > 0) {
+            const current_pos = PlayerClient.getPosition();
+            if (
+                current_pos.x > GameClient.limits.maxX ||
+                current_pos.x < GameClient.limits.minX ||
+                current_pos.y < GameClient.limits.minY ||
+                current_pos.y > GameClient.limits.maxY
+            ) {
+                // Emergency replace if the player resizes its screen
+                // and gets out of the screen
+                PlayerClient.replace();
+            }
             PlayerClient.move();
             socket.emit("player_moved", PlayerClient.getPosition());
         }

@@ -101,6 +101,11 @@ export default class PlayerClient {
         return this.player_position;
     }
 
+    public static replace() {
+        this.player_position.x = GameClient.limits.maxX / 2;
+        this.player_position.y = GameClient.limits.maxY - this.getSkinHeight() - 10;
+    }
+
     /**
      * Gets the player's skin width, or 0 if it's not defined;
      */
