@@ -35,6 +35,13 @@ export default class {
     }
 
     /**
+     * Plays the music.
+     */
+    public static listenMusic() : void {
+        (document.querySelector("#music") as HTMLMediaElement)!.play();
+    }
+
+    /**
      * Adds an event listener to whenever an audio slider change.
      * @param input The slider in the settings page.
      * @param callback The function to call whenever a change is made to the slider.

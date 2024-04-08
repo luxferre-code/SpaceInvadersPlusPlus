@@ -65,6 +65,7 @@ SettingsPage.listenToNameChange((newName) => {
         socket.emit("username_changed", newName);
     }
 });
+SettingsPage.listenMusic();
 
 GameSettingsPage.initDefaultGameSettings();
 GameSettingsPage.onGameStarted(() => {
