@@ -11,7 +11,9 @@
     "preview": "vite preview",
     "test": "vitest",
     "server:compile": "tsc -t esnext -m esnext --moduleResolution node --watch --outDir ./server_out server.ts",
-    "server:run": "node --watch ./server_out/server.js"
+    "server:compileonce": "tsc -t esnext -m esnext --moduleResolution node --outDir ./server_out server.ts",
+    "server:run": "node --watch ./server_out/server.js",
+    "server:launch": "node ./server_out/server.js"
   },
   "devDependencies": {
     "@types/node": "^20.11.24",
