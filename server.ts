@@ -206,7 +206,6 @@ io.on("connection", (socket) => {
     function generateBoxFor(enemy: EnemyData, game: GameData) {
         const scale = enemy.boss ? 2 : 1;
         const box = new Box(enemy.x, enemy.y, game.esw * scale, game.esh * scale);
-        console.log("box for enemy", enemy, box);
         return box;
     }
 

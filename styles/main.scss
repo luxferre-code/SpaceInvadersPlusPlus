@@ -19,7 +19,19 @@ img.main-background {
     width: 100%;
     height: 100vh;
     object-fit: cover;
+    filter: opacity(0.5);
+    animation: backgroundblink 5s ease infinite alternate;
     @include disable-interactivity();
+}
+
+@keyframes backgroundblink {
+    from {
+        filter: opacity(0.2);
+    }
+
+    to {
+        filter: opacity(0.5);
+    }
 }
 
 body {
