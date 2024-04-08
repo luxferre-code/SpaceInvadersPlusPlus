@@ -23,6 +23,9 @@ const SCORE_MULTIPLIER = 0.0001;
 const INITIAL_MAX_ENEMY_COUNT = 5;
 const INITIAL_SPAWN_CHANCE = 0.02;
 const MAX_POWERUPS = 5;
+const BOSS_HP = 4;
+const BOSS_SPAWN_CHANCE = 0.2;
+const BOSS_VELOCITY = 1.5;
 
 function generateUniqueRoomId(): string {
     let room = "room-";
@@ -200,6 +203,13 @@ io.on("connection", (socket) => {
         game.max_enemy_count = INITIAL_MAX_ENEMY_COUNT + Math.floor(game.score / 100);
     }
 
+    function generateBoxFor(enemy: EnemyData, game: GameData) {
+        const scale = enemy.boss ? 2 : 1;
+        const box = new Box(enemy.x, enemy.y, game.esw * scale, game.esh * scale);
+        console.log("box for enemy", enemy, box);
+        return box;
+    }
+
     function startGame(room: Room, settings: GameSettings, esw: number, esh: number): GameData {
         const data: GameData = {
             enemies: [],
@@ -263,13 +273,16 @@ io.on("connection", (socket) => {
                     if (bullet.shotByPlayer) {
                         for (let i = 0; i < game.enemies.length; i++) {
                             const enemy = game.enemies[i];
-                            const hurt_box = new Box(enemy.x, enemy.y, game.esw, game.esh);
+                            const hurt_box = generateBoxFor(enemy, game);
                             enemy_hit_boxes.push(hurt_box);
                             if (hit_box.isColliding(hurt_box)) {
-                                killed_enemies.push(i);
+                                enemy.hp -= 1;
+                                if (enemy.hp <= 0) {
+                                    killed_enemies.push(i);
+                                    game.score += 10;
+                                    increaseDifficulty(game);
+                                }
                                 used_bullets.push(b);
-                                game.score += 10;
-                                increaseDifficulty(game);
                                 break;
                             }
                         }
@@ -295,7 +308,7 @@ io.on("connection", (socket) => {
                 }
                 for (let e = 0; e < game.enemies.length; e++) {
                     const enemy = game.enemies[e];
-                    const hit_box = e >= enemy_hit_boxes.length ? new Box(enemy.x, enemy.y, game.esw, game.esh) : enemy_hit_boxes[e];
+                    const hit_box = e >= enemy_hit_boxes.length ? generateBoxFor(enemy, game): enemy_hit_boxes[e];
                     for (let i = 0; i < game.players.length; i++) {
                         const player = game.players[i];
                         if (player.hp > 0 && !player.immune) {
@@ -340,7 +353,7 @@ io.on("connection", (socket) => {
                     game.powerups.splice(used_powerups[i], 1);
                 }
                 game.bullets.forEach(b => b.y += b.shotByPlayer ? -BULLET_VELOCITY : BULLET_VELOCITY);
-                game.enemies.forEach(e => e.y += ENEMY_VELOCITY);
+                game.enemies.forEach(e => e.y += e.boss ? BOSS_VELOCITY : ENEMY_VELOCITY);
                 io.to(room.id).emit("game_update", game);
             } else {
                 clearInterval(data._physics_process);
@@ -357,11 +370,15 @@ io.on("connection", (socket) => {
                 // - Make the enemies shoot
                 // - Create powerups
                 if (game.enemies.length < game.max_enemy_count && game.spawn_chance > Math.random()) {
+                    const boss = BOSS_SPAWN_CHANCE > Math.random();
+                    const scale = boss ? 2 : 1;
                     game.enemies.push({
-                        y: -game.esh,
+                        boss,
+                        hp: boss ? BOSS_HP : 1,
+                        y: -(game.esh * scale),
                         x: getRandomInt(
                             room.computed_screen_limits.minX,
-                            room.computed_screen_limits.maxX - game.esw,
+                            room.computed_screen_limits.maxX - game.esw * scale,
                         ),
                     });
                 }
@@ -375,10 +392,11 @@ io.on("connection", (socket) => {
                 }
                 for (const enemy of game.enemies) {
                     if (ENEMY_SHOOTING_CHANCE > Math.random()) {
+                        const scale = enemy.boss ? 2 : 1;
                         game.bullets.push({
                             shotByPlayer: false,
-                            x: enemy.x + (game.esw / 2) - BULLET_SIZE,
-                            y: enemy.y + game.esh,
+                            x: enemy.x + (game.esw * scale / 2) - BULLET_SIZE,
+                            y: enemy.y + (game.esh * scale),
                         });
                     }
                 }

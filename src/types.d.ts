@@ -76,7 +76,7 @@ declare global {
         shotByPlayer: boolean;
         x: number;
         y: number;
-    };
+    }
 
     type PlayerData = {
         id: string;
@@ -88,7 +88,7 @@ declare global {
         sh: number;
         skin: number;
         ammo: number;
-    };
+    }
 
     type PowerupData = {
         x: number;
@@ -96,10 +96,17 @@ declare global {
         type: Powerup;
     }
 
+    type EnemyData = {
+        x: number;
+        y: number;
+        boss: boolean;
+        hp: number;
+    }
+
     type GameData = {
         _physics_process: number | undefined;
         _process: number | undefined;
-        enemies: Vec2[];
+        enemies: EnemyData[];
         bullets: ServerBullet[];
         players: PlayerData[];
         powerups: PowerupData[];

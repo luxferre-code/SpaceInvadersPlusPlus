@@ -184,7 +184,7 @@ function render() {
         globalGameData!.powerups.forEach(p => GameClient.renderPowerup(p));
         globalGameData!.players.forEach(p => GameClient.renderPlayer(p));
         globalGameData!.bullets.forEach(b => GameClient.renderBullet(b.x, b.y));
-        globalGameData!.enemies.forEach(e => GameClient.renderEnemy(e.x, e.y));
+        globalGameData!.enemies.forEach(e => GameClient.renderEnemy(e.x, e.y, e.boss, e.hp));
     }
     requestAnimationFrame(render);
 }

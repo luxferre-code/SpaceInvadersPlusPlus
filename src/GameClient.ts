@@ -28,7 +28,7 @@ export default class GameClient {
     }
 
     private static drawUsername(username: string, x: number, y: number) {
-        this.context!.globalAlpha = 0.2;
+        this.context!.globalAlpha = 0.64;
         this.context!.fillStyle = "white";
         this.context!.font = "15px SpaceInvadersFont";
         this.context!.textAlign = "center";
@@ -68,8 +68,19 @@ export default class GameClient {
         this.context!.closePath();
     }
 
-    public static renderEnemy(x: number, y: number) {
-        this.drawSimpleImage(getSkinImage(Skin.GREEN), x, y);
+    public static renderEnemy(x: number, y: number, boss: boolean, hp: number) {
+        const img = getSkinImage(Skin.GREEN);
+        this.drawSimpleImage(img, x, y, boss ? 2 : 1);
+        if (boss) {
+            const health_bar_y = y + (img.height * 2) + 15;
+            const health_bar_width = img.width * 2;
+            this.context!.beginPath();
+            this.context!.fillStyle = "#f00";
+            this.context!.fillRect(x, health_bar_y, health_bar_width, 10);
+            this.context!.fillStyle = "#2ca614";
+            this.context!.fillRect(x, health_bar_y, health_bar_width * (hp / 4), 10);
+            this.context!.closePath();
+        }
     }
 
     public static renderPowerup(p: PowerupData) {
@@ -78,9 +89,9 @@ export default class GameClient {
         this.context!.globalAlpha = 1;
     }
 
-    private static drawSimpleImage(img: HTMLImageElement, x: number, y: number) {
+    private static drawSimpleImage(img: HTMLImageElement, x: number, y: number, scale = 1) {
         this.context!.beginPath();
-        this.context!.drawImage(img, x, y, img.width, img.height);
+        this.context!.drawImage(img, x, y, img.width * scale, img.height * scale);
         this.context!.fill();
         this.context!.closePath();
     }
