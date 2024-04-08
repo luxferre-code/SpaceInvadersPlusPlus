@@ -48,6 +48,7 @@ export default class {
                     if (Number.isNaN(newValue)) {
                         throw new Error("");
                     }
+                    (document.querySelector("#music") as HTMLMediaElement)!.volume = parseInt(this.musicInput.value) / 100;
                 } catch (_) {
                     console.warn("Attempting to corrupt audio slider.");
                 }
