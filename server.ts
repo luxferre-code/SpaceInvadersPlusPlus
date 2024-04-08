@@ -25,7 +25,7 @@ const INITIAL_SPAWN_CHANCE = 0.02;
 const MAX_POWERUPS = 5;
 const BOSS_HP = 4;
 const BOSS_SPAWN_CHANCE = 0.2;
-const BOSS_VELOCITY = 1.5;
+const BOSS_VELOCITY = 1;
 
 function generateUniqueRoomId(): string {
     let room = "room-";
@@ -279,7 +279,7 @@ io.on("connection", (socket) => {
                                 enemy.hp -= 1;
                                 if (enemy.hp <= 0) {
                                     killed_enemies.push(i);
-                                    game.score += 10;
+                                    game.score += enemy.boss ? 30 : 10;
                                     increaseDifficulty(game);
                                 }
                                 used_bullets.push(b);
