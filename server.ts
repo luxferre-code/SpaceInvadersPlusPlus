@@ -224,6 +224,7 @@ io.on("connection", (socket) => {
                 skin: p.skin,
                 sw: p.sw,
                 sh: p.sh,
+                ammo: settings.playerBasedAmmo,
                 hp: settings.playerHp,
             })),
         };
@@ -321,6 +322,7 @@ io.on("connection", (socket) => {
                                 used_powerups.push(i);
                                 switch (powerup.type) {
                                     case 0: player.hp += 1; break;
+                                    case 1: player.ammo += 5; break;
                                     default:
                                         console.error("undefined powerup");
                                 } 
@@ -509,11 +511,14 @@ io.on("connection", (socket) => {
         if (game) {
             const shooter = game.players.find(p => p.id === socket.id);
             if (shooter) {
-                game.bullets.push({
-                    shotByPlayer: true,
-                    x: shooter.position.x + (shooter.sw / 2) - BULLET_SIZE,
-                    y: shooter.position.y,
-                });
+                if (shooter.ammo > 0) {
+                    shooter.ammo -= 1;
+                    game.bullets.push({
+                        shotByPlayer: true,
+                        x: shooter.position.x + (shooter.sw / 2) - BULLET_SIZE,
+                        y: shooter.position.y,
+                    });
+                }
             }
         }
     });

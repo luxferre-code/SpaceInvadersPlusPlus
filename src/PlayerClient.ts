@@ -77,6 +77,8 @@ export default class PlayerClient {
 
     public static is_dead: boolean = false;
 
+    public static ammo: number = 0;
+
     /**
      * Defines the player's metadata such as its skin, username, initial position, etc.
      */
@@ -85,6 +87,7 @@ export default class PlayerClient {
         this.player_skin_img = getSkinImage(player_data.skin);
         this.shoot_delay = shoot_delay;
         this.is_dead = false;
+        this.ammo = player_data.ammo;
         this.resetControls();
     }
 
@@ -229,7 +232,7 @@ export default class PlayerClient {
      * then emit a signal to the server and start {@link SHOOT_DELAY}.
      */
     private static shoot() {
-        if (this.can_shoot) {
+        if (this.can_shoot && this.ammo > 0) {
             this.socket.emit("game_player_shooting");
             this.can_shoot = false;
             setTimeout(() => {

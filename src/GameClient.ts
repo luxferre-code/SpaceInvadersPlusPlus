@@ -52,6 +52,7 @@ export default class GameClient {
         this.drawUsername(data.username, center, pseudo_y); 
         if (!isDead) {
             this.context!.fillText(data.hp + "x\u{2764}", center, pseudo_y + 15);
+            this.context!.fillText(data.ammo + "x\u{2022}", center, pseudo_y + 30);
         }
         this.context!.globalAlpha = 1;
         this.context!.fill();

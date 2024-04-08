@@ -1,5 +1,6 @@
 export enum Powerup {
     HEART,
+    AMMO
 }
 
 export const PowerupImages: HTMLImageElement[] = [];
@@ -7,6 +8,7 @@ export const PowerupImages: HTMLImageElement[] = [];
 export function getPowerupSkinUrl(powerup: Powerup): string {
     switch (powerup) {
         case Powerup.HEART: return "/assets/icons/heart-icon-small.png";
+        case Powerup.AMMO: return "/assets/icons/bullet.png";
     }
 }
 

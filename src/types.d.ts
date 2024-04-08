@@ -87,6 +87,7 @@ declare global {
         sw: number; // all three are herited from the Room
         sh: number;
         skin: number;
+        ammo: number;
     };
 
     type PowerupData = {
