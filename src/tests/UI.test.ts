@@ -48,13 +48,11 @@ describe("Testing the UI abstraction", async () => {
     // there would not be any way to change that.
     const UI = (await import("../ui/UI")).default;
     const SettingsPage = (await import("../ui/SettingsPage")).default;
-    const RankingPage = (await import("../ui/RankingPage")).default;
     const GameSettingsPage = (await import("../ui/GameSettingsPage")).default;
     const SettingsDB = (await import("../db/GlobalSettingsDB")).default;
 
     // The player settings shared for the entire test suite.
     const settings: PlayerSettings = {
-        effectsVolume: 60,
         musicVolume: 20,
         name: "Thomas",
         skin: 1
@@ -130,69 +128,11 @@ describe("Testing the UI abstraction", async () => {
         expect(UI.isModalOpen()).toBe(false);
     });
 
-    test("should have a defined ranking page", () => {
-        expect(RankingPage.personalScore == null).toBe(false);
-        expect(RankingPage.personalScoreBtn == null).toBe(false);
-        expect(RankingPage.personalRank == null).toBe(false);
-        expect(RankingPage.arrow == null).toBe(false);
-        expect(RankingPage.last10ScoresTable == null).toBe(false);
-        expect(RankingPage.last10ScoresLabel == null).toBe(false);
-        expect(RankingPage.worldWideRecordsTable == null).toBe(false);
-        expect(RankingPage.worldWideRecords == null).toBe(false);
-        for (const key of (["first", "second", "third"] as RankingKey[])) {
-            expect(key in RankingPage.worldWideRecords).toBe(true);
-            expect(RankingPage.worldWideRecords[key].name).not.toBeNull();
-            expect(RankingPage.worldWideRecords[key].highestScore == null).toBe(false);
-        }
-    });
-
-    test("should control the table of the ranking page with less than 5 scores", () => {
-        const scores = [
-            {
-                score: 55,
-                date: new Date()
-            },
-            {
-                score: 66,
-                date: new Date()
-            }
-        ];
-        RankingPage.build10LastScores(scores);
-        const tables = RankingPage.last10ScoresTable.querySelectorAll("table");
-        expect(tables).toHaveLength(2);
-        const trs = tables[0].querySelectorAll("tbody > tr");
-        expect(trs).toHaveLength(5);
-        const td1 = trs[0].querySelectorAll("td");
-        expect(td1).toHaveLength(1);
-        const spans = td1[0].querySelectorAll("span");
-        expect(spans).toHaveLength(2);
-        expect(spans[0].textContent).toEqual(scores[0].date.toLocaleDateString());
-        expect(spans[1].textContent).toEqual(scores[0].score.toString());
-    });
-
-    test("should control the table of the ranking page with more than 5 scores", () => {
-        const scores = [
-            { score: 11, date: new Date() },
-            { score: 22, date: new Date() },
-            { score: 33, date: new Date() },
-            { score: 44, date: new Date() },
-            { score: 55, date: new Date() },
-            { score: 66, date: new Date() },
-        ];
-        RankingPage.build10LastScores(scores);
-        const tables = RankingPage.last10ScoresTable.querySelectorAll("table");
-        expect(tables).toHaveLength(2);
-        expect(tables[0].querySelectorAll('tbody > tr')).toHaveLength(5);
-        expect(tables[1].querySelectorAll('tbody > tr')).toHaveLength(5);
-        expect(tables[1].querySelectorAll('tbody > tr:nth-child(3) span')).toHaveLength(2);
-    });
-
     test("shouldn't have any undefined field in SettingsPage", () => {
         expect(SettingsPage.inputName == null).toBe(false);
         expect(SettingsPage.skinChoices == null).toBe(false);
         expect(SettingsPage.skinChoices).toHaveLength(3);
         expect(SettingsPage.musicInput == null).toBe(false);
-        expect(SettingsPage.effectsInput == null).toBe(false);
     });
 
     test("should initialize SettingsPage correctly with initial settings", () => {
@@ -200,7 +140,6 @@ describe("Testing the UI abstraction", async () => {
         expect(SettingsPage.inputName.value).toStrictEqual(settings.name);
         expect(SettingsPage.skinChoices[1].classList.contains("selected")).toBe(true);
         expect(SettingsPage.musicInput.value).toEqual(settings.musicVolume.toString());
-        expect(SettingsPage.effectsInput.value).toEqual(settings.effectsVolume.toString());
     });
 
     test("should listen to skin changes", () => {
@@ -223,7 +162,6 @@ describe("Testing the UI abstraction", async () => {
     test("should have default settings stored in local storage", () => {
         expect(localStorage.getItem("SpaceInvadersPlayerSettings")).not.toEqual(null);
         const parsed = JSON.parse(localStorage.getItem("SpaceInvadersPlayerSettings")!) as PlayerSettings;
-        expect(parsed.effectsVolume).toEqual(SettingsDB.effectsVolume);
         expect(parsed.musicVolume).toEqual(SettingsDB.musicVolume);
         expect(parsed.name).toEqual(SettingsDB.name);
         expect(parsed.skin).toEqual(SettingsDB.skin);
@@ -232,11 +170,9 @@ describe("Testing the UI abstraction", async () => {
     test("should save changes to local storage", () => {
         expect(localStorage.getItem("SpaceInvadersPlayerSettings")).not.toEqual(null);
         SettingsDB.name = "Yoyo";
-        SettingsDB.effectsVolume = 10;
         SettingsDB.musicVolume = 0;
         SettingsDB.skin = Skin.PURPLE;
         const parsed = JSON.parse(localStorage.getItem("SpaceInvadersPlayerSettings")!) as PlayerSettings;
-        expect(parsed.effectsVolume).toEqual(10);
         expect(parsed.musicVolume).toEqual(0);
         expect(parsed.name).toEqual("Yoyo");
         expect(parsed.skin).toEqual(Skin.PURPLE);

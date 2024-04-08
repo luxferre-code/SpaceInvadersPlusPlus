@@ -5,8 +5,6 @@ import GameSettingsPage from "./ui/GameSettingsPage";
 import GlobalSettingsDB from './db/GlobalSettingsDB';
 import SettingsDB from "./db/GlobalSettingsDB";
 import SettingsPage from "./ui/SettingsPage";
-import RankingPage from "./ui/RankingPage";
-import RankingDB from "./db/RankingDB";
 import PlayerClient from './PlayerClient';
 import LobbyPage from "./ui/LobbyPage";
 import GameClient from './GameClient';
@@ -58,16 +56,7 @@ socket.on("game_restarted", (game_data: GameData) => {
 // Without it, the buttons wouldn't work.
 UI.bindEvents();
 
-// Fetch the rankings from the database.
-const rankings = RankingDB.fetchRankingsAndScores();
-
-// Display that into the ranking table.
-// Even if the data is empty, the initWith()
-// method has to be called.
-RankingPage.initWith(rankings);
-
 SettingsPage.initWith(SettingsDB.cloned);
-SettingsPage.listenToEffectsVolumeChange((newVolume) => SettingsDB.effectsVolume = newVolume);
 SettingsPage.listenToMusicVolumeChange((newVolume) => SettingsDB.musicVolume = newVolume);
 SettingsPage.listenToSkinChange((newSkin) => SettingsDB.skin = newSkin);
 SettingsPage.listenToNameChange((newName) => {

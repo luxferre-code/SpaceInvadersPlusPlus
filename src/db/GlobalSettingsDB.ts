@@ -13,7 +13,6 @@ export default class {
      */
     private static useDefaultSettings(): PlayerSettings {
         const defaults = {
-            effectsVolume: 50,
             musicVolume: 50,
             name: "Anonymous",
             skin: Skin.RED
@@ -45,8 +44,7 @@ export default class {
      * @returns `true` if it'ss valid player settings, `false` otherwise.
      */
     private static checkValidity(parsingResult: { [key: string]: any }): parsingResult is PlayerSettings {
-        return "effectsVolume" in parsingResult &&
-            "musicVolume" in parsingResult &&
+        return "musicVolume" in parsingResult &&
             "name" in parsingResult &&
             "skin" in parsingResult &&
             parsingResult.musicVolume >= 0 && parsingResult.musicVolume <= 100 &&
@@ -85,10 +83,8 @@ export default class {
     public static get name(): string { return this.settings.name; }
     public static get skin(): Skin { return this.settings.skin; }
     public static get musicVolume(): number { return this.settings.musicVolume; }
-    public static get effectsVolume(): number { return this.settings.effectsVolume; }
 
     public static set name(newName: string) { this.settings.name = newName; this.saveSettings(); }
     public static set skin(newSkin: Skin) { this.settings.skin = newSkin; this.saveSettings(); }
     public static set musicVolume(newMusicVolume: number) { this.settings.musicVolume = newMusicVolume; this.saveSettings(); }
-    public static set effectsVolume(newEffectsVolume: number) { this.settings.effectsVolume = newEffectsVolume; this.saveSettings(); }
 }

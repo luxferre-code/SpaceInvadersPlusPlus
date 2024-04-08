@@ -1,5 +1,4 @@
 import LobbyPage from "./LobbyPage";
-import RankingTable from "./RankingPage";
 
 /**
  * Handles the User Interface.
@@ -63,7 +62,6 @@ export default class {
      * It the button to show the ranking and the player's settings.
      */
     public static readonly cornerButtons = Object.freeze({
-        rankings: document.querySelector("#openRankings") as HTMLButtonElement,
         playerSettings: document.querySelector("#openPlayerSettings") as HTMLButtonElement,
     });
 
@@ -74,7 +72,6 @@ export default class {
      */
     public static readonly modalPages = Object.freeze({
         credits: this.modal.querySelector("#credits-page") as HTMLDivElement,
-        ranking: this.modal.querySelector("#ranking-page") as HTMLDivElement,
         settings: this.modal.querySelector("#settings-page") as HTMLDivElement,
         gameSettings: this.modal.querySelector("#game-settings-page") as HTMLDivElement,
         lobby: this.modal.querySelector("#lobby-page") as HTMLDivElement,
@@ -226,8 +223,6 @@ export default class {
                 this.showModal(this.modalPages.lobby);
             });
 
-            // Events related to the corner buttons
-            this.cornerButtons.rankings.addEventListener('click', () => this.showModal(this.modalPages.ranking));
             this.cornerButtons.playerSettings.addEventListener('click', () => this.showModal(this.modalPages.settings));
 
             // Events related to the modal
@@ -241,13 +236,6 @@ export default class {
                     this.closeModalWithDelay();
                 }
             });
-
-            // Events related to the ranking table
-            for (const key of ["first", "second", "third"]) {
-                const btn = RankingTable.worldWideRecords[key as RankingKey].name;
-                btn.addEventListener('click', () => this.moveArrowToElement(btn));
-            }
-            RankingTable.personalScoreBtn.addEventListener('click', () => this.moveArrowToElement(RankingTable.personalScoreBtn));
 
             this.initialized = true;
         }
@@ -405,21 +393,5 @@ export default class {
             this.isClosing = true;
             this.closeModalWithDelay();
         }
-    }
-
-    /**
-     * Moves the arrow of the ranking page so that is's aligned
-     * with the name of the player that has his scores currently
-     * displayed in the table of the last 10 highest scores.
-     */
-    public static moveArrowToElement(element: HTMLElement) {
-        if (RankingTable.isArrowHidden()) {
-            return;
-        }
-        const heightDifference = RankingTable.arrow.getBoundingClientRect().height / 4;
-        const modalY = this.modal.getBoundingClientRect().y;
-        const y = element.getBoundingClientRect().y;
-        RankingTable.arrow.style.position = "absolute";
-        RankingTable.arrow.style.top = (y - modalY - heightDifference) + "px";
     }
 }

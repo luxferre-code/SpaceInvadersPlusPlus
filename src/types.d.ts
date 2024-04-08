@@ -1,7 +1,5 @@
 import type { Skin } from "./utils/Skins";
 import type { Powerup } from "./utils/Powerups";
-import type RankingTable from "./ui/RankingPage";
-import type Ranking from "./models/Ranking";
 import type GameSettings from "./models/GameSettings";
 
 declare global {
@@ -9,7 +7,6 @@ declare global {
         name: string;
         skin: Skin;
         musicVolume: number;
-        effectsVolume: number;
     }
 
     type GameSettingsInterface = {
@@ -29,19 +26,6 @@ declare global {
         minX: number;
         minY: number;
     }
-
-    type Rankings = {
-        player?: Ranking; // the current player's scores
-        playerRank?: number; // the current player's rank
-        first?: Ranking; // the first player worldwide
-        second?: Ranking; // the second
-        third?: Ranking; // the third
-    }
-
-    // helper type to make iterating over the
-    // properties of an object which has properties
-    // named "first", "second" and "third" easier.
-    type RankingKey = keyof typeof RankingTable.worldWideRecords;
 
     type Room = {
         id: string;
