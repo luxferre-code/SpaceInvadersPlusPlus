@@ -4,6 +4,7 @@ import GameSettingsPage from "./GameSettingsPage";
 import UI from "./UI";
 import GlobalSettingsDB from "../db/GlobalSettingsDB";
 import { Skin, getSkinImage } from "../utils/Skins";
+import { PowerupImages } from "../utils/Powerups";
 
 export default class LobbyPage {
     private static readonly lobbyPage = document.querySelector("#lobby-page") as HTMLElement;
@@ -63,7 +64,12 @@ export default class LobbyPage {
 
             this.hostButton.addEventListener("click", () => {
                 if (!this.isHostingGame()) {
-                    socket.emit("host", GameClient.limits, GlobalSettingsDB.name, GlobalSettingsDB.getSkinInformation(), (room_id: string) => {
+                    const powerups_data = PowerupImages.map((v, i) => ({
+                        skin: i,
+                        sw: v.width,
+                        sh: v.height,
+                    }));
+                    socket.emit("host", GameClient.limits, GlobalSettingsDB.name, GlobalSettingsDB.getSkinInformation(), powerups_data, (room_id: string) => {
                         this.hostButton.textContent = "Lancer la partie";
                         this.hosted_room_id = room_id;
                         this.containerPlayers.setAttribute("aria-hidden", "false");

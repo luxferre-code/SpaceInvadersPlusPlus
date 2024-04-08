@@ -1,3 +1,4 @@
+import { PowerupImages } from "./utils/Powerups";
 import { Skin, getSkinImage } from "./utils/Skins";
 
 export default class GameClient {
@@ -67,9 +68,18 @@ export default class GameClient {
     }
 
     public static renderEnemy(x: number, y: number) {
-        const skinImg = getSkinImage(Skin.GREEN);
+        this.drawSimpleImage(getSkinImage(Skin.GREEN), x, y);
+    }
+
+    public static renderPowerup(p: PowerupData) {
+        this.context!.globalAlpha = 0.7;
+        this.drawSimpleImage(PowerupImages[p.type], p.x, p.y);
+        this.context!.globalAlpha = 1;
+    }
+
+    private static drawSimpleImage(img: HTMLImageElement, x: number, y: number) {
         this.context!.beginPath();
-        this.context!.drawImage(skinImg, x, y, skinImg.width, skinImg.height);
+        this.context!.drawImage(img, x, y, img.width, img.height);
         this.context!.fill();
         this.context!.closePath();
     }
