@@ -22,6 +22,7 @@ const BULLET_SIZE = 8;
 const SCORE_MULTIPLIER = 0.0001;
 const INITIAL_MAX_ENEMY_COUNT = 5;
 const INITIAL_SPAWN_CHANCE = 0.02;
+const MAX_POWERUPS = 5;
 
 function generateUniqueRoomId(): string {
     let room = "room-";
@@ -106,7 +107,7 @@ io.on("connection", (socket) => {
         }
     }
 
-    function createRoom(initialLimits: GameLimits, host_username: string, si: FullSkinInformation): string {
+    function createRoom(initialLimits: GameLimits, host_username: string, si: FullSkinInformation, ps: FullSkinInformation[]): string {
         // Leave the other rooms where the already player was.
         if (socket.rooms.size > 1) {
             for (const room_id of socket.rooms) {
@@ -127,6 +128,7 @@ io.on("connection", (socket) => {
                 sh: si.sh,
             }],
             computed_screen_limits: structuredClone(initialLimits),
+            all_powerups: ps,
         });
         return roomId;
     }
@@ -202,6 +204,7 @@ io.on("connection", (socket) => {
         const data: GameData = {
             enemies: [],
             bullets: [],
+            powerups: [],
             score: 0,
             spawn_chance: INITIAL_SPAWN_CHANCE,
             esw,
@@ -252,6 +255,7 @@ io.on("connection", (socket) => {
                 const player_hurt_boxes: Box[] = [];
                 const used_bullets: number[] = [];
                 const killed_enemies: number[] = [];
+                const used_powerups: number[] = [];
                 for (let b = 0; b < game.bullets.length; b++) {
                     const bullet = game.bullets[b];
                     const hit_box = new Box(bullet.x, bullet.y, BULLET_SIZE, BULLET_SIZE);
@@ -288,9 +292,9 @@ io.on("connection", (socket) => {
                         }
                     }
                 }
-                for (let i = 0; i < game.enemies.length; i++) {
-                    const enemy = game.enemies[i];
-                    const hit_box = i >= enemy_hit_boxes.length ? new Box(enemy.x, enemy.y, game.esw, game.esh) : enemy_hit_boxes[i];
+                for (let e = 0; e < game.enemies.length; e++) {
+                    const enemy = game.enemies[e];
+                    const hit_box = e >= enemy_hit_boxes.length ? new Box(enemy.x, enemy.y, game.esw, game.esh) : enemy_hit_boxes[e];
                     for (let i = 0; i < game.players.length; i++) {
                         const player = game.players[i];
                         if (player.hp > 0 && !player.immune) {
@@ -305,11 +309,33 @@ io.on("connection", (socket) => {
                         }
                     }
                 }
+                for (let i = 0; i < game.powerups.length; i++) {
+                    const powerup = game.powerups[i];
+                    const skin = room.all_powerups[powerup.type];
+                    const hit_box = new Box(powerup.x, powerup.y, skin.sw, skin.sh);
+                    for (let p = 0; p < game.players.length; p++) {
+                        const player = game.players[p];
+                        if (player.hp > 0) {
+                            const hurt_box = p >= player_hurt_boxes.length ? new Box(player.position.x, player.position.y, player.sw, player.sh) : player_hurt_boxes[p];
+                            if (hit_box.isColliding(hurt_box)) {
+                                used_powerups.push(i);
+                                switch (powerup.type) {
+                                    case 0: player.hp += 1; break;
+                                    default:
+                                        console.error("undefined powerup");
+                                } 
+                            }
+                        }
+                    }
+                }
                 for (let i = killed_enemies.length - 1; i >= 0; i--) {
                     game.enemies.splice(killed_enemies[i], 1);
                 }
                 for (let i = used_bullets.length - 1; i >= 0; i--) {
                     game.bullets.splice(used_bullets[i], 1);
+                }
+                for (let i = used_powerups.length - 1; i >= 0; i--) {
+                    game.powerups.splice(used_powerups[i], 1);
                 }
                 game.bullets.forEach(b => b.y += b.shotByPlayer ? -BULLET_VELOCITY : BULLET_VELOCITY);
                 game.enemies.forEach(e => e.y += ENEMY_VELOCITY);
@@ -327,6 +353,7 @@ io.on("connection", (socket) => {
                 }
                 // - Create new enemies
                 // - Make the enemies shoot
+                // - Create powerups
                 if (game.enemies.length < game.max_enemy_count && game.spawn_chance > Math.random()) {
                     game.enemies.push({
                         y: -game.esh,
@@ -334,6 +361,14 @@ io.on("connection", (socket) => {
                             room.computed_screen_limits.minX,
                             room.computed_screen_limits.maxX - game.esw,
                         ),
+                    });
+                }
+                if (game.powerups.length < MAX_POWERUPS && 0.01 > Math.random()) {
+                    const powerup = room.all_powerups[getRandomInt(0, room.all_powerups.length)];
+                    game.powerups.push({
+                        x: getRandomInt(room.computed_screen_limits.minX, room.computed_screen_limits.maxX - powerup.sw),
+                        y: getRandomInt(room.computed_screen_limits.minY, room.computed_screen_limits.maxY - powerup.sh),
+                        type: powerup.skin,
                     });
                 }
                 for (const enemy of game.enemies) {
@@ -372,8 +407,8 @@ io.on("connection", (socket) => {
         updateLobby(); // necessary in the lobby when we're waiting for players to arrive
     });
 
-    socket.on("host", (initial_game_limits: GameLimits, host_username: string, si: FullSkinInformation, ack: (room_id: string) => void) => {
-        ack(createRoom(initial_game_limits, host_username, si)); // will be called on the client
+    socket.on("host", (initial_game_limits: GameLimits, host_username: string, si: FullSkinInformation, ps: FullSkinInformation[], ack: (room_id: string) => void) => {
+        ack(createRoom(initial_game_limits, host_username, si, ps)); // will be called on the client
         updateLobby();
     });
 
@@ -398,12 +433,21 @@ io.on("connection", (socket) => {
         }
     });
 
-    socket.on("start_solo_game", (sett: GameSettings, lts: GameLimits, name: string, si: FullSkinInformation, esw: number, esh: number, ack: (gameData: GameData) => void) => {
-        const room_id = createRoom(lts, name, si);
-        const room = rooms.find(r => r.id === room_id)!;
-        const data = startGame(room, sett, esw, esh);
-        ack(data);
-    });
+    socket.on("start_solo_game",
+        (
+            sett: GameSettings,
+            lts: GameLimits,
+            name: string,
+            si: FullSkinInformation,
+            esw: number,
+            esh: number,
+            ps: FullSkinInformation[],
+            ack: (gameData: GameData) => void) => {
+            const room_id = createRoom(lts, name, si, ps);
+            const room = rooms.find(r => r.id === room_id)!;
+            const data = startGame(room, sett, esw, esh);
+            ack(data);
+        });
 
     socket.on("game_ended", () => {
         quitGame();

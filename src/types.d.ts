@@ -1,4 +1,5 @@
 import type { Skin } from "./utils/Skins";
+import type { Powerup } from "./utils/Powerups";
 import type RankingTable from "./ui/RankingPage";
 import type Ranking from "./models/Ranking";
 import type GameSettings from "./models/GameSettings";
@@ -54,6 +55,7 @@ declare global {
             sh: number;
         }[]; // the room's manager is the first player
         computed_screen_limits: GameLimits; // maximums and minimums among all players' limits
+        all_powerups: FullSkinInformation[];
     };
 
     // The skin of the player,
@@ -87,12 +89,19 @@ declare global {
         skin: number;
     };
 
+    type PowerupData = {
+        x: number;
+        y: number;
+        type: Powerup;
+    }
+
     type GameData = {
         _physics_process: number | undefined;
         _process: number | undefined;
         enemies: Vec2[];
         bullets: ServerBullet[];
         players: PlayerData[];
+        powerups: PowerupData[];
         settings: GameSettings;
         score: number;
         spawn_chance: number;

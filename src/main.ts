@@ -1,6 +1,8 @@
 import { io } from 'socket.io-client';
+import { PowerupImages, preloadPowerups } from './utils/Powerups';
 import { Skin, getSkinImage, preloadSkins } from "./utils/Skins";
 import GameSettingsPage from "./ui/GameSettingsPage";
+import GlobalSettingsDB from './db/GlobalSettingsDB';
 import SettingsDB from "./db/GlobalSettingsDB";
 import SettingsPage from "./ui/SettingsPage";
 import RankingPage from "./ui/RankingPage";
@@ -9,7 +11,6 @@ import PlayerClient from './PlayerClient';
 import LobbyPage from "./ui/LobbyPage";
 import GameClient from './GameClient';
 import UI from "./ui/UI";
-import GlobalSettingsDB from './db/GlobalSettingsDB';
 
 const socket = io(`${window.location.hostname}:3000`);
 
@@ -86,7 +87,12 @@ GameSettingsPage.onGameStarted(() => {
         const lts = GameClient.limits;
         const nam = GlobalSettingsDB.name;
         const ski = GlobalSettingsDB.getSkinInformation();
-        socket.emit("start_solo_game", set, lts, nam, ski, esw, esh, (gd: GameData) => {
+        const ps = PowerupImages.map((v, i) => ({
+            skin: i,
+            sw: v.width,
+            sh: v.height,
+        }));
+        socket.emit("start_solo_game", set, lts, nam, ski, esw, esh, ps, (gd: GameData) => {
             initGame(gd);
             UI.hideUI();
         });
@@ -96,6 +102,7 @@ GameSettingsPage.onGameStarted(() => {
 async function preloadAssets() {
     try {
         await preloadSkins();
+        await preloadPowerups();
     } catch (e) {
         alert("Quelques skins n'ont pas pu être chargés correctement.");
     }
@@ -174,6 +181,7 @@ function clearCanvas() {
 function render() {
     if (isInGame()) {
         clearCanvas();
+        globalGameData!.powerups.forEach(p => GameClient.renderPowerup(p));
         globalGameData!.players.forEach(p => GameClient.renderPlayer(p));
         globalGameData!.bullets.forEach(b => GameClient.renderBullet(b.x, b.y));
         globalGameData!.enemies.forEach(e => GameClient.renderEnemy(e.x, e.y));
@@ -221,7 +229,6 @@ socket.on("game_update", (game: GameData) => {
         }
     }
 });
-
 
 // This event is triggered when the player
 // that has paused the game quit it.
